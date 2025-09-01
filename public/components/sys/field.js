@@ -562,7 +562,7 @@ Vue.component('AdminAdd', {
 								</div>
 							</el-form-item>
 						</el-row>
-						<el-row v-if="(list_item || [2,3,4,5,30,33].includes(form.type)) && dbtype !== 'mongo'">
+						<el-row v-if="(list_item || [2,3,4,5,30,33,41].includes(form.type)) && dbtype !== 'mongo'">
 							<el-form-item label="sql数据源" prop="sql">
 								<el-input type="textarea" v-model="form.sql" clearable placeholder="单选/下拉/多选选项/session/隐藏域, sql数据源"/>
 							</el-form-item>
@@ -916,7 +916,7 @@ Vue.component('AdminAdd', {
 									<el-checkbox key="1" label="sort">表头排序</el-checkbox>
 									<el-checkbox key="2" label="sum">字段汇总求和</el-checkbox>
 									<el-checkbox v-if="[2,3,4,5].includes(form.type)" key="3" label="tabs">列表选项卡</el-checkbox>
-									<el-checkbox v-if="[2,3,4,5,35,30,33].includes(form.type) && form.sql != ''" key="4" label="fanzhuan">数据显示反转</el-checkbox>
+									<el-checkbox v-if="[2,3,4,5,35,30,33,41].includes(form.type) && form.sql != ''" key="4" label="fanzhuan">数据显示反转</el-checkbox>
 									<el-checkbox v-if="![13,14,15,16,21,39,25,26,27,38,30].includes(form.type)" key="5" label="readonly">编辑只读</el-checkbox>
 								</el-checkbox-group>
 							</el-form-item>
@@ -924,7 +924,7 @@ Vue.component('AdminAdd', {
 						
 						<el-row>
 							<el-form-item label="列表方法" prop="list_action">
-							    <el-select v-model="form.other_config.list_action" placeholder="选择在列表触发的方法" style="width: 100%;">
+							    <el-select v-model="form.other_config.list_action" clearable placeholder="选择在列表触发的方法" style="width: 100%;">
                                     <el-option
                                     v-for="(item,index) in my_actions"
                                     :key="index"
@@ -1140,6 +1140,9 @@ Vue.component('AdminAdd', {
                             this.form.create_table_field = 0
                             this.form.post_status = 0
                         }
+                        if(this.form.type == 41){
+                            this.form.post_status = 0
+                        }
                         this.propertyField.forEach(vo => {
                             if (item.property == vo.type) {
                                 this.form.datatype = vo.name
@@ -1164,6 +1167,9 @@ Vue.component('AdminAdd', {
                     if (this.form.type == item.type) {
                         if (this.form.type == 40) {
                             this.form.create_table_field = 0
+                            this.form.post_status = 0
+                        }
+                        if(this.form.type == 41){
                             this.form.post_status = 0
                         }
                         this.propertyField.forEach(vo => {
@@ -1607,7 +1613,7 @@ Vue.component('AdminUpdate', {
 							</el-form-item>
 						</el-row>
 						
-						<el-row v-if="(list_item || [2,3,4,5,30,33].includes(form.type)) && dbtype !== 'mongo'">
+						<el-row v-if="(list_item || [2,3,4,5,30,33,41].includes(form.type)) && dbtype !== 'mongo'">
 							<el-form-item label="sql数据源" prop="sql">
 								<el-input type="textarea" v-model="form.sql" clearable placeholder="单选/下拉/多选选项 sql数据源"/>
 							</el-form-item>
@@ -1956,7 +1962,7 @@ Vue.component('AdminUpdate', {
 									<el-checkbox key="1" label="sort">表头排序</el-checkbox>
 									<el-checkbox key="2" label="sum">字段汇总求和</el-checkbox>
 									<el-checkbox v-if="[2,3,4,5].includes(form.type)" key="3" label="tabs">列表选项卡</el-checkbox>
-									<el-checkbox v-if="[2,3,4,5,35,30,33].includes(form.type) && form.sql != ''" key="4" label="fanzhuan">数据显示反转</el-checkbox>
+									<el-checkbox v-if="[2,3,4,5,35,30,33,41].includes(form.type) && form.sql != ''" key="4" label="fanzhuan">数据显示反转</el-checkbox>
 									<el-checkbox v-if="![13,14,15,16,21,39,25,26,27,38,30].includes(form.type)" key="5" label="readonly">编辑只读</el-checkbox>
 								</el-checkbox-group>
 							</el-form-item>
@@ -1965,7 +1971,7 @@ Vue.component('AdminUpdate', {
 						
 						<el-row>
 							<el-form-item label="列表方法" prop="list_action">
-							    <el-select v-model="form.other_config.list_action" placeholder="选择在列表触发的方法" style="width: 100%;">
+							    <el-select v-model="form.other_config.list_action" clearable placeholder="选择在列表触发的方法" style="width: 100%;">
                                     <el-option
                                     v-for="(item,index) in my_actions"
                                     :key="index"
@@ -2262,6 +2268,9 @@ Vue.component('AdminUpdate', {
                             this.form.create_table_field = 0
                             this.form.post_status = 0
                         }
+                        if(this.form.type == 41){
+                            this.form.post_status = 0
+                        }
                         this.propertyField.forEach(vo => {
                             if (item.property == vo.type) {
                                 this.form.datatype = vo.name
@@ -2286,6 +2295,9 @@ Vue.component('AdminUpdate', {
                     if (this.form.type == item.type) {
                         if (this.form.type == 40) {
                             this.form.create_table_field = 0
+                            this.form.post_status = 0
+                        }
+                        if(this.form.type == 41){
                             this.form.post_status = 0
                         }
                         this.propertyField.forEach(vo => {

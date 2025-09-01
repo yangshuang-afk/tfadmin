@@ -57,17 +57,94 @@ class Admin extends BaseController
 	protected function getBaseMenus(){
 		$appname = app('http')->getName();
 		$field = 'menu_id,pid,title,controller_name,status,icon,sortid,url';
-		$list = db("menu")->field($field)->where(['status'=>1,'app_id'=>1])->order('sortid asc')->select()->toArray();
-		if($list){
-			foreach($list as $key=>$val){
-				$menus[$key]['pid'] = $val['pid'];
-				$menus[$key]['menu_id'] = $val['menu_id'];
-				$menus[$key]['title'] = $val['title'];
-				$menus[$key]['sortid'] = $val['sortid'];
-				$menus[$key]['icon'] = $val['icon'] ? $val['icon'] : 'el-icon-menu';
-				$menus[$key]['url'] = $this->getUrl($val,$appname);
-				$menus[$key]['access'] = $val['url'] ? $val['url'] : $appname.'/'.$val['controller_name'];
-			}
+        // 提醒 - 2025-08-29
+        $field .= ",prompt,table_name,prompt_session";
+        
+        $list = db("menu")->field($field)->where(['status' => 1, 'app_id' => 1])->order('sortid asc')->select()->toArray();
+        if ($list) {
+            foreach ($list as $key => $val) {
+                $menus[$key]['pid'] = $val['pid'];
+                $menus[$key]['menu_id'] = $val['menu_id'];
+                $menus[$key]['title'] = $val['title'];
+                $menus[$key]['sortid'] = $val['sortid'];
+                $menus[$key]['icon'] = $val['icon'] ? $val['icon'] : 'el-icon-menu';
+                $menus[$key]['url'] = $this->getUrl($val, $appname);
+                $menus[$key]['access'] = $val['url'] ? $val['url'] : $appname . '/' . $val['controller_name'];
+                
+                
+                // 提醒 - 2025-08-29
+                $show = false;
+                $tj = [
+                    1 => '>',     // 大于
+                    2 => '<',     // 小于
+                    3 => '=',     // 等于
+                    4 => '>=',    // 大于等于
+                    5 => '<=',    // 小于等于
+                    6 => 'like',  // 包含
+                    7 => 'not like', // 不包含
+                    8 => '<>',    // 不等于
+                    // 9和10不需要值，因为是判断空或非空
+                ];
+                
+                // 查条件字段
+                if ($val['prompt'] == 1) {
+                    $where = [];
+                    if ($val['prompt_session']) {
+                        $where[$val['prompt_session']] = session('admin')[$val['prompt_session']];
+                    }
+                    
+                    $menu_fileds = Db::name('field')
+                        ->where('menu_id', $val['menu_id'])
+                        ->where('tx_config', '<>', '')
+                        ->whereNotNull('tx_config')
+                        ->select()
+                        ->toArray();
+                    
+                    // 多循环
+                    foreach ($menu_fileds as $menu_filed) {
+                        $menu_tx_config = $menu_filed['tx_config'] ? json_decode($menu_filed['tx_config'], true) : [];
+                        if (!empty($menu_tx_config)) {
+                            // [{"tx_tiaojian":3,"tx_zhi":"\"匹配交往中\"","tx_color":"#6967ce"}]
+                            foreach ($menu_tx_config as $tx_config) {
+                                $condition = $tx_config['tx_tiaojian'];
+                                $value = $tx_config['tx_zhi'];
+                                if (empty($condition)) {
+                                    continue;
+                                }
+                                // 处理不同的条件类型
+                                if ($condition == 9) { // 为空
+                                    $show = Db::name($val['table_name'])
+                                            ->where($menu_filed['field'], '=', '')
+                                            ->orWhereNull($menu_filed['field'])
+                                            ->where($where)
+                                            ->count() > 0;
+                                } elseif ($condition == 10) { // 不为空
+                                    $show = Db::name($val['table_name'])
+                                            ->where($menu_filed['field'], '<>', '')
+                                            ->whereNotNull($menu_filed['field'])
+                                            ->where($where)
+                                            ->count() > 0;
+                                } else {
+                                    // 其他条件使用映射的关系运算符
+                                    $operator = $tj[$condition] ?? '=';
+                                    if ($operator == 'like' || $operator == 'not like') {
+                                        $value = '%' . $value . '%';
+                                    }
+                                    $show = Db::name($val['table_name'])
+                                            ->where($menu_filed['field'], $operator, $value)
+                                            ->where($where)
+                                            ->count() > 0;
+                                    
+                                }
+                            }
+                            if ($show) break;
+                        }
+                    }
+                }
+                
+                $menus[$key]['prompt'] = $show ? 1 : 0;
+                
+            }
 			return _generateListTree($menus,0,['menu_id','pid']);
 		}
 	}

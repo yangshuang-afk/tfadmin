@@ -11,7 +11,7 @@
  Target Server Version : 80036 (8.0.36)
  File Encoding         : 65001
 
- Date: 25/08/2025 17:28:39
+ Date: 01/09/2025 15:22:29
 */
 
 SET NAMES utf8mb4;
@@ -149,7 +149,7 @@ CREATE TABLE `cd_admin_user`  (
 -- ----------------------------
 -- Records of cd_admin_user
 -- ----------------------------
-INSERT INTO `cd_admin_user` VALUES (1, '铁粉', 'admin', '35bfa44f104ddfe466d1889daeff6e35', 1, '超级管理员', 1, 1548558919, '429cf9aa6659a789410b4e71bdc48eb1');
+INSERT INTO `cd_admin_user` VALUES (1, '铁粉', 'admin', '35bfa44f104ddfe466d1889daeff6e35', 1, '超级管理员', 1, 1548558919, '0514589cb7a55fdaf9f29d798bb8e7dc');
 
 -- ----------------------------
 -- Table structure for cd_application
@@ -354,7 +354,7 @@ CREATE TABLE `cd_log`  (
   `type` smallint NULL DEFAULT NULL COMMENT '类型',
   `times` int NULL DEFAULT NULL COMMENT '日期',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of cd_log
@@ -363,6 +363,11 @@ INSERT INTO `cd_log` VALUES (1, 'admin', 'admin', 'http://git.tiefen.net/admin/L
 INSERT INTO `cd_log` VALUES (2, 'admin', 'admin', 'http://ultra.hl.jf.ivimoo.com/admin/Login/index.html', '112.98.93.24', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 HBPC/12.1.4.300', NULL, NULL, 1754873160, 1, NULL);
 INSERT INTO `cd_log` VALUES (3, 'admin', 'admin', 'http://git.tiefen.net/admin/Login/index.html', '112.98.93.24', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', NULL, NULL, 1754880945, 1, NULL);
 INSERT INTO `cd_log` VALUES (4, 'admin', 'admin', 'http://git.tiefen.net/admin/Login/index.html', '112.98.73.27', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 HBPC/12.1.4.300', NULL, NULL, 1755311170, 1, NULL);
+INSERT INTO `cd_log` VALUES (5, 'admin', 'admin', 'http://git.tiefen.net/admin/Login/index.html', '112.99.70.172', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', NULL, NULL, 1756114299, 1, NULL);
+INSERT INTO `cd_log` VALUES (6, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/secrect.html', '112.99.70.172', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '[]', NULL, 1756114323, 2, NULL);
+INSERT INTO `cd_log` VALUES (7, 'admin', 'admin', 'http://git.tiefen.net/admin/Login/index.html', '112.99.70.172', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', NULL, NULL, 1756258591, 1, NULL);
+INSERT INTO `cd_log` VALUES (8, 'admin', 'admin', 'http://git.tiefen.net/admin/Login/index.html', '112.99.70.172', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', NULL, NULL, 1756258632, 1, NULL);
+INSERT INTO `cd_log` VALUES (9, 'admin', 'admin', 'http://git.tiefen.net/admin/Login/index.html', '112.99.68.93', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 HBPC/12.1.4.300', NULL, NULL, 1756710665, 1, NULL);
 
 -- ----------------------------
 -- Table structure for cd_menu
@@ -390,6 +395,8 @@ CREATE TABLE `cd_menu`  (
   `home_show` tinyint NULL DEFAULT 0 COMMENT '首页快捷导航显示状态',
   `menu_pic` varchar(250) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '快捷导航的图片',
   `notice` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL COMMENT '列表提示说明',
+  `prompt_session` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '提醒区别session字段名',
+  `prompt` tinyint NULL DEFAULT 0 COMMENT '显示提醒图标',
   PRIMARY KEY (`menu_id`) USING BTREE,
   INDEX `controller_name`(`controller_name` ASC) USING BTREE,
   INDEX `module_id`(`app_id` ASC) USING BTREE,
@@ -399,22 +406,22 @@ CREATE TABLE `cd_menu`  (
 -- ----------------------------
 -- Records of cd_menu
 -- ----------------------------
-INSERT INTO `cd_menu` VALUES (1, 0, '', '控制台', '', '', 0, 1, 1, 0, '/admin/Index/main.html', 'el-icon-platform-eleme', NULL, 1, NULL, NULL, NULL, NULL, 0, NULL, NULL);
-INSERT INTO `cd_menu` VALUES (2, 0, 'Config', '站长配置', NULL, NULL, NULL, 1, 1000, NULL, NULL, 'fas fa-database', NULL, 1, NULL, NULL, NULL, NULL, 0, NULL, NULL);
-INSERT INTO `cd_menu` VALUES (3, 2, 'Baseconfig', '基本配置', 'id', 'base_config', 1, 1, 1, 1, NULL, NULL, NULL, 1, NULL, NULL, 'mysql', NULL, 0, NULL, '');
-INSERT INTO `cd_menu` VALUES (4, 2, 'Uploadconfig', '缩略图配置', 'id', 'upload_config', 1, 1, 2, 1, NULL, 'el-icon-camera-solid', NULL, 1, NULL, NULL, 'mysql', 1, 0, NULL, '');
-INSERT INTO `cd_menu` VALUES (5, 0, 'System', '系统管理', '', '', 0, 1, 1001, 0, '', 'fas fa-user-cog', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL);
-INSERT INTO `cd_menu` VALUES (6, 5, 'Adminuser', '用户管理', 'user_id', 'admin_user', 1, 1, 6, 1, '', 'el-icon-user-solid', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL);
-INSERT INTO `cd_menu` VALUES (7, 5, 'Role', '角色管理', 'role_id', 'role', 1, 1, 7, 1, '', 'el-icon-s-check', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL);
-INSERT INTO `cd_menu` VALUES (8, 5, 'Log', '日志管理', 'id', 'log', 1, 1, 8, 1, '', 'el-icon-s-promotion', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL);
-INSERT INTO `cd_menu` VALUES (9, 0, 'Tool', '工具管理', '', '', 1, 1, 1002, 0, '', 'dripicons-gear', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL);
-INSERT INTO `cd_menu` VALUES (10, 9, 'Application', '应用管理', '', '', 0, 1, 10, 0, '/admin/Sys.Base/applicationList', 'el-icon-s-shop', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL);
-INSERT INTO `cd_menu` VALUES (11, 0, 'Menu', '菜单管理', '', '', 1, 1, 9999, 0, '/admin/Sys.Base/menu', '', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL);
-INSERT INTO `cd_menu` VALUES (12, 11, 'Action', '方法管理', '', '', 1, 0, 12, 0, '', '', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL);
-INSERT INTO `cd_menu` VALUES (13, 11, 'Field', '字段管理', '', '', 0, 0, 13, 0, '', '', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL);
-INSERT INTO `cd_menu` VALUES (19, 9, 'Secrect', '秘钥管理', '', '', 0, 1, 19, 0, '/admin/Sys.Base/secrect', 'el-icon-s-tools', NULL, 1, 0, NULL, 'mysql', 2, 0, NULL, NULL);
-INSERT INTO `cd_menu` VALUES (104, 11, 'Actionremarks', '版本记录', 'id', 'action_remarks', 1, 0, 104, 1, '', NULL, NULL, 1, 0, 0, 'mysql', 1, 0, '', '');
-INSERT INTO `cd_menu` VALUES (179, 2, 'MyConfig', '系统配置', '', '', 1, 1, 179, 0, '', 'el-icon-cpu', NULL, 1, 0, 0, 'mysql', 1, 0, '', '');
+INSERT INTO `cd_menu` VALUES (1, 0, '', '控制台', '', '', 0, 1, 1, 0, '/admin/Index/main.html', 'el-icon-platform-eleme', NULL, 1, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0);
+INSERT INTO `cd_menu` VALUES (2, 0, 'Config', '站长配置', NULL, NULL, NULL, 1, 1000, NULL, NULL, 'fas fa-database', NULL, 1, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0);
+INSERT INTO `cd_menu` VALUES (3, 2, 'Baseconfig', '基本配置', 'id', 'base_config', 1, 1, 1, 1, NULL, NULL, NULL, 1, NULL, NULL, 'mysql', NULL, 0, NULL, '', NULL, 0);
+INSERT INTO `cd_menu` VALUES (4, 2, 'Uploadconfig', '缩略图配置', 'id', 'upload_config', 1, 1, 2, 1, NULL, 'el-icon-camera-solid', NULL, 1, NULL, NULL, 'mysql', 1, 0, NULL, '', NULL, 0);
+INSERT INTO `cd_menu` VALUES (5, 0, 'System', '系统管理', '', '', 0, 1, 1001, 0, '', 'fas fa-user-cog', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0);
+INSERT INTO `cd_menu` VALUES (6, 5, 'Adminuser', '用户管理', 'user_id', 'admin_user', 1, 1, 6, 1, '', 'el-icon-user-solid', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0);
+INSERT INTO `cd_menu` VALUES (7, 5, 'Role', '角色管理', 'role_id', 'role', 1, 1, 7, 1, '', 'el-icon-s-check', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0);
+INSERT INTO `cd_menu` VALUES (8, 5, 'Log', '日志管理', 'id', 'log', 1, 1, 8, 1, '', 'el-icon-s-promotion', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0);
+INSERT INTO `cd_menu` VALUES (9, 0, 'Tool', '工具管理', '', '', 1, 1, 1002, 0, '', 'dripicons-gear', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0);
+INSERT INTO `cd_menu` VALUES (10, 9, 'Application', '应用管理', '', '', 0, 1, 10, 0, '/admin/Sys.Base/applicationList', 'el-icon-s-shop', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0);
+INSERT INTO `cd_menu` VALUES (11, 0, 'Menu', '菜单管理', '', '', 1, 1, 9999, 0, '/admin/Sys.Base/menu', '', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0);
+INSERT INTO `cd_menu` VALUES (12, 11, 'Action', '方法管理', '', '', 1, 0, 12, 0, '', '', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0);
+INSERT INTO `cd_menu` VALUES (13, 11, 'Field', '字段管理', '', '', 0, 0, 13, 0, '', '', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0);
+INSERT INTO `cd_menu` VALUES (19, 9, 'Secrect', '秘钥管理', '', '', 0, 1, 19, 0, '/admin/Sys.Base/secrect', 'el-icon-s-tools', NULL, 1, 0, NULL, 'mysql', 2, 0, NULL, NULL, NULL, 0);
+INSERT INTO `cd_menu` VALUES (104, 11, 'Actionremarks', '版本记录', 'id', 'action_remarks', 1, 0, 104, 1, '', NULL, NULL, 1, 0, 0, 'mysql', 1, 0, '', '', NULL, 0);
+INSERT INTO `cd_menu` VALUES (179, 2, 'MyConfig', '系统配置', '', '', 1, 1, 179, 0, '', 'el-icon-cpu', NULL, 1, 0, 0, 'mysql', 1, 0, '', '', NULL, 0);
 
 -- ----------------------------
 -- Table structure for cd_role

@@ -1,83 +1,121 @@
 <div id="sidebar-menu">
-	<div class="navbar-brand-box">
-		<div class="logo logo-light">
+    <div class="navbar-brand-box">
+        <div class="logo logo-light">
 			<span class="logo-sm">
 				<img src="__PUBLIC__/assets/images/xinlogo.png" alt="" height="22">
 			</span>
-			<span class="logo-lg" style="font-size:16px;">
+            <span class="logo-lg" style="font-size:16px;">
 				{:config('base_config.site_title')}
 			</span>
-		</div>
-	</div>
-	<ul class="metismenu list-unstyled" id="side-menu">
-		
-	</ul>
+        </div>
+    </div>
+    <ul class="metismenu list-unstyled" id="side-menu">
+    
+    </ul>
 </div>
 <script type="text/javascript">
-const base_url = '<?php echo getBaseUrl()?>';
-
-axios.post(base_url + '/Base/getMenu').then(res => {
-	if(res.data.status == 200){
-		Cookies.set(base_url+'breadcrumb','')
-		var str = '';
-		res.data.data.forEach(one=>{
-			if(!one.children || one.children.length == 0){
-				str += '<li><a target="iframe0" class="waves-effect j_menu" href="'+one.url+'"><i class="'+one.icon+'"></i><span key="'+one.url+'">'+one.title+'</span></a></li>'
-			}else{
-				str += '<li><a target="iframe0" class="has-arrow waves-effect" href="javascript: void(0);"><i class="'+one.icon+'"></i><span key="'+one.url+'">'+one.title+'</span></a>'
-				str += '<ul class="sub-menu" aria-expanded="false">'
-				one.children.forEach(two=>{
-					if(!two.children || two.children.length == 0){
-						str += '<li><a target="iframe0" class="waves-effect j_menu" href="'+two.url+'"><i class="'+two.icon+'"></i><span key="'+two.url+'">'+two.title+'</span></a></li>'
-					}else{
-						str += '<li><a target="iframe0" class="has-arrow waves-effect" href="javascript: void(0);"><i class="'+two.icon+'"></i><span key="'+two.url+'">'+two.title+'</span></a>'
-						str += '<ul class="sub-menu" aria-expanded="false">'
-						two.children.forEach(third=>{
-							str += '<li><a target="iframe0" class="waves-effect j_menu" href="'+third.url+'"><i class="'+third.icon+'"></i><span key="'+third.url+'">'+third.title+'</span></a></li>'
-						})
-						str += '</ul>'
-					}
-				})
-				str += '</ul>'
-				str +='</li>'
-			}
-		})
-		
-		$('#side-menu').metisMenu('dispose');
-		$("#side-menu").append(str);
-		$('#side-menu').metisMenu();
-		sessionStorage.setItem(base_url+'breadcrumb',JSON.stringify(res.data.data))
-	}
-})
-
-$(function(){
-	Cookies.set(base_url+'menu','')
-	$(document).on('click','.j_menu',function(){
-		menu = []
-		var path = {
-			title:$(this).find('span').text(),
-			url:$(this).attr('href'),
-			fullurl:$(this).attr('href'),
-		}
-				
-		if(path.title !== '控制台'){
-			var noUrl = true
-			if(Cookies.get(base_url+'menu')){
-				var tags = JSON.parse(Cookies.get(base_url+'menu'))
-				tags.forEach(item=>{
-					if(item.url == path.url){
-						noUrl = false 
-					}
-				})
-				if(noUrl){
-					tags.push(path)
-					Cookies.set(base_url+'menu',JSON.stringify(tags))
-				}
-			}else{
-				menu.push(path)
-				Cookies.set(base_url+'menu',JSON.stringify(menu))
-			}
-		}
-	});
-})
+    const base_url = '<?php echo getBaseUrl()?>';
+    
+    axios.post(base_url + '/Base/getMenu').then(res => {
+        if(res.data.status == 200){
+            Cookies.set(base_url+'breadcrumb','')
+            var str = '';
+            res.data.data.forEach(one => {
+                // 先处理子级，确保从底层开始向上传递prompt状态
+                if (one.children && one.children.length > 0) {
+                    one.children.forEach(two => {
+                        // 处理三级菜单
+                        if (two.children && two.children.length > 0) {
+                            two.children.forEach(third => {
+                                // 如果三级菜单有prompt=1，设置二级菜单prompt=1
+                                if (third.prompt == 1) {
+                                    two.prompt = 1;
+                                }
+                            });
+                        }
+                        
+                        // 如果二级菜单有prompt=1（可能是自身或子级设置的），设置一级菜单prompt=1
+                        if (two.prompt == 1) {
+                            one.prompt = 1;
+                        }
+                    });
+                }
+                
+                // 生成提示图标
+                const prompt_icon = one.prompt == 1
+                        ? '<i class="fas fa-circle" style="font-size: 8px;margin-left: 5px;color: red !important;"></i>'
+                        : '';
+                
+                if (!one.children || one.children.length == 0) {
+                    str += `<li><a target="iframe0" class="waves-effect j_menu" href="${one.url}"><i class="${one.icon}"></i><span key="${one.url}">${one.title}${prompt_icon}</span></a></li>`;
+                } else {
+                    str += `<li><a target="iframe0" class="has-arrow waves-effect" href="javascript: void(0);"><i class="${one.icon}"></i><span key="${one.url}">${one.title}${prompt_icon}</span></a>`;
+                    str += '<ul class="sub-menu" aria-expanded="false">';
+                    
+                    one.children.forEach(two => {
+                        // 二级菜单的提示图标
+                        const two_prompt_icon = two.prompt == 1
+                                ? '<i class="fas fa-circle" style="font-size: 8px;margin-left: 5px;color: red !important;"></i>'
+                                : '';
+                        
+                        if (!two.children || two.children.length == 0) {
+                            str += `<li><a target="iframe0" class="waves-effect j_menu" href="${two.url}"><i class="${two.icon}"></i><span key="${two.url}">${two.title}${two_prompt_icon}</span></a></li>`;
+                        } else {
+                            str += `<li><a target="iframe0" class="has-arrow waves-effect" href="javascript: void(0);"><i class="${two.icon}"></i><span key="${two.url}">${two.title}${two_prompt_icon}</span></a>`;
+                            str += '<ul class="sub-menu" aria-expanded="false">';
+                            
+                            two.children.forEach(third => {
+                                // 三级菜单的提示图标
+                                const third_prompt_icon = third.prompt == 1
+                                        ? '<i class="fas fa-circle" style="font-size: 8px;margin-left: 5px;color: red !important;"></i>'
+                                        : '';
+                                
+                                str += `<li><a target="iframe0" class="waves-effect j_menu" href="${third.url}"><i class="${third.icon}"></i><span key="${third.url}">${third.title}${third_prompt_icon}</span></a></li>`;
+                            });
+                            
+                            str += '</ul>';
+                        }
+                    });
+                    
+                    str += '</ul></li>';
+                }
+            });
+            
+            $('#side-menu').metisMenu('dispose');
+            $("#side-menu").append(str);
+            $('#side-menu').metisMenu();
+            sessionStorage.setItem(base_url+'breadcrumb',JSON.stringify(res.data.data))
+        }
+    })
+    
+    $(function(){
+        Cookies.set(base_url+'menu','')
+        $(document).on('click','.j_menu',function(){
+            menu = []
+            var path = {
+                title:$(this).find('span').text(),
+                url:$(this).attr('href'),
+                fullurl:$(this).attr('href'),
+            }
+            if(path.title !== '控制台'){
+                var noUrl = true
+                if(Cookies.get(base_url+'menu')){
+                    var tags = JSON.parse(Cookies.get(base_url+'menu'))
+                    tags.forEach(item=>{
+                        if(item.url == path.url){
+                            noUrl = false
+                        }
+                    })
+                    if(noUrl){
+                        tags.push(path)
+                        Cookies.set(base_url+'menu',JSON.stringify(tags))
+                    }
+                }else{
+                    menu.push(path)
+                    Cookies.set(base_url+'menu',JSON.stringify(menu))
+                }
+            }
+        })
+        
+    })
 </script>

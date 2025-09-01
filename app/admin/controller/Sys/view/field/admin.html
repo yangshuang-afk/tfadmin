@@ -2,32 +2,53 @@
 {block name="content"}
 <div style="margin:0 15px 15px 15px;">
     <el-card shadow="never" style="min-height:650px;">
-        <div style="border-bottom:1px solid #ebeef5; padding-bottom:15px; font-size:14px;" class="clearfix">
-            <span>{{app_name}}-{{menu_title}} 字段列表 (支持拖动排序)</span>
-            <el-button size="small" @click="backup" type="primary" icon="el-icon-back"
-                       style="float:right; margin-left:10px;">返回菜单
-            </el-button>
-            <el-button size="small" @click="backupAction" type="primary" icon="el-icon-back" style="float:right">
-                前往方法
-            </el-button>
+        <div style="display: flex; justify-content: space-between; border-bottom:1px solid #ebeef5; padding-bottom:15px; font-size:14px;" class="clearfix">
+<!--            <span>{{app_name}}-{{menu_title}} 字段列表 (支持拖动排序)</span>-->
+<!--            <el-button size="small" @click="backup" type="primary" icon="el-icon-back"-->
+<!--                       style="float:right; margin-left:10px;">返回菜单-->
+<!--            </el-button>-->
+<!--            <el-button size="small" @click="backupAction" type="primary" icon="el-icon-back" style="float:right">-->
+<!--                前往方法-->
+<!--            </el-button>-->
+            <span v-text="app_title_name"></span>
+            <span style="margin-right: 2px">
+				<el-button v-for="(item, i) in topGroupButtons" :key="i"  :disabled="$data[item.disabled]" :type="item.color" size="mini"
+                           :icon="item.icon" @click="fn(item.clickname,item.param)">
+					<span v-text="item.name"></span>
+				</el-button>
+			</span>
         </div>
 
         <el-row style="margin-bottom:9px; margin-top:11px;">
             <el-col :span="21">
-                <el-button type="success" size="mini" icon="el-icon-plus" @click="dialog.addDialogStatus = true">新增
-                </el-button>
-                <el-button type="danger" size="mini" icon="el-icon-delete" :disabled="multiple"
-                           @click="deleteField(ids)">删除
-                </el-button>
-                <el-button type="info" size="mini" icon="el-icon-edit-outline" @click="create(1)">生成代码</el-button>
+<!--                <el-button type="success" size="mini" icon="el-icon-plus" @click="dialog.addDialogStatus = true">新增-->
+<!--                </el-button>-->
+<!--                <el-button type="danger" size="mini" icon="el-icon-delete" :disabled="multiple"-->
+<!--                           @click="deleteField(ids)">删除-->
+<!--                </el-button>-->
+<!--                <el-button type="info" size="mini" icon="el-icon-edit-outline" @click="create(1)">生成代码</el-button>-->
+
+                <span v-for="(item, i) in filterGroupButtons" :key="i" style="margin-right: 2px">
+					<el-button :disabled="$data[item.disabled]" :type="item.color" size="mini"
+                               :icon="item.icon" @click="fn(item.clickname,item.param)">
+						<span v-text="item.name"></span>
+					</el-button>
+				</span>
+
                 <el-select size="small" style="margin-left:5px; width:140px;" class="select" clearable v-model="appid"
                            placeholder="字段同步到应用">
                     <el-option v-for="(item,i) in copy_app_list" :key="i" :label="item.application_name"
                                :value="item.app_id"></el-option>
                 </el-select>
-                <el-button type="primary" size="mini" style="margin-left:5px;" icon="el-icon-check"
-                           @click="copyField()">确定同步
-                </el-button>
+                <span v-for="item in filterGroupButtonsQ" :key="item.clickname" style="margin-right: 2px">
+					<el-button :type="item.color" size="mini"
+                               :icon="item.icon" @click="fn(item.clickname,item.param)">
+						<span v-text="item.name"></span>
+					</el-button>
+				</span>
+<!--                <el-button type="primary" size="mini" style="margin-left:5px;" icon="el-icon-check"-->
+<!--                           @click="copyField()">确定同步-->
+<!--                </el-button>-->
             </el-col>
             <el-col :span="3" style="text-align:right">
                 <table-tool :expand_status="false" @refesh_list="loadlist"></table-tool>
@@ -185,6 +206,7 @@
                     updateDialogStatus: false,
                 },
                 app_name: '',
+                app_title_name: '',
                 menu_title: '',
                 ids: {},
                 field_titles: [],
@@ -198,13 +220,91 @@
                 appid: '',
                 loading: false,
                 page_data: {
-                    limit: 20,
+                    limit: 100,
                     page: 1,
                     total: 50,
                 },
+                button_group_q:[{
+                    name:'确定同步',
+                    color:'primary',
+                    access:'',
+                    icon:'el-icon-check',
+                    disabled:'',
+                    clickname:'copyField',
+                    param:'',
+                    showGroup:'1',
+                    showList:''
+                }],
+                button_group:[{
+                    name:'新增',
+                    color:'success',
+                    access:'',
+                    icon:'el-icon-plus',
+                    disabled:'',
+                    clickname:'add',
+                    param:'',
+                    showGroup:'1',
+                    showList:''
+                }, {
+                    name:'删除',
+                    color:'danger',
+                    access:'',
+                    icon:'el-icon-delete',
+                    disabled:'multiple',
+                    clickname:'deleteField',
+                    param:'',
+                    showGroup:'1',
+                    showList:''
+                }, {
+                    name:'生成代码',
+                    color:'info',
+                    access:'',
+                    icon:'el-icon-edit-outline',
+                    disabled:'',
+                    clickname:'create',
+                    param:'',
+                    showGroup:'1',
+                    showList:''
+                }],
+                top_button_group:[{
+                    name:'前往方法',
+                    color:'primary',
+                    access:'',
+                    icon:'el-icon-back',
+                    disabled:'',
+                    clickname:'backupAction',
+                    param:'',
+                    showGroup:'1',
+                    showList:''
+                },{
+                    name:'返回菜单',
+                    color:'primary',
+                    access:'',
+                    icon:'el-icon-back',
+                    disabled:'',
+                    clickname:'backup',
+                    param:'',
+                    showGroup:'1',
+                    showList:''
+                }],
             };
         },
+        computed: {
+            filterGroupButtons() {
+                return this.button_group;
+            },
+            filterGroupButtonsQ() {
+                return this.button_group_q;
+            },
+            topGroupButtons() {
+                return this.top_button_group;
+            },
+        },
         methods: {
+            add() {
+                this.dialog.addDialogStatus = true
+            },
+
             editor(row) {
                 let id = row.id ? row.id : this.ids.join(',')
                 axios.post(base_url + '/Sys.Base/getFieldInfo', {id: id}).then(res => {
@@ -330,7 +430,7 @@
                     this.page_data.total = res.data.data.total
                     this.copy_app_list = res.data.app_list.filter(item => item.app_type !== 3)
                     this.loading = false
-
+                    this.app_title_name = this.app_name + '-' + this.menu_title + ' 字段列表 (支持拖动排序)';
                     const list_data = [];
                     if (this.list.length > 0) {
                         this.list.forEach(item => {
@@ -392,6 +492,13 @@
                         })
                     }
                 })
+            },
+            fn(method,data){
+                if(data){
+                    this[method](data)
+                }else{
+                    this[method](this.ids)
+                }
             },
         },
         mounted() {

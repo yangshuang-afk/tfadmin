@@ -2,20 +2,38 @@
 {block name="content"}
 <div style="margin:0 15px 15px 15px;">
 	<el-card shadow="never" style="min-height:650px;">
-		<div style="border-bottom:1px solid #ebeef5; padding-bottom:15px; font-size:14px;" class="clearfix">
-			<span>{{app_name}}-{{menu_title}} 方法列表 (支持拖动排序)</span>
-			<el-button size="small" @click="backup" type="primary" icon="el-icon-back" style="float:right; margin-left:10px;">返回菜单</el-button>
-			<el-button size="small" @click="backupAction" type="primary" icon="el-icon-back" style="float:right">前往字段</el-button>
+		<div style="display: flex; justify-content: space-between; border-bottom:1px solid #ebeef5; padding-bottom:15px; font-size:14px;" class="clearfix">
+			<span v-text="app_title_name"></span>
+			<span style="margin-right: 2px">
+				<el-button v-for="(item, i) in topGroupButtons" :key="i"  :disabled="$data[item.disabled]" :type="item.color" size="mini"
+						   :icon="item.icon" @click="fn(item.clickname,item.param)">
+					<span v-text="item.name"></span>
+				</el-button>
+			</span>
+<!--			<el-button size="small" @click="backup" type="primary" icon="el-icon-back" style="float:right; margin-left:10px;">返回菜单</el-button>-->
+<!--			<el-button size="small" @click="backupAction" type="primary" icon="el-icon-back" style="float:right">前往字段</el-button>-->
 		</div>
 		<el-row style="margin-bottom:12px; margin-top:11px;">
 			<el-col :span="21">
-				<el-button type="success" size="mini" icon="el-icon-plus" @click="dialog.addDialogStatus = true">创建</el-button>
-				<el-button type="danger" size="mini"  icon="el-icon-delete" :disabled="multiple" @click="deleteAction(ids)">删除</el-button>
-				<el-button type="info" size="mini"  icon="el-icon-edit-outline"  @click="create(1)">生成代码</el-button>
+				<span v-for="(item, i) in filterGroupButtons" :key="i" style="margin-right: 2px">
+					<el-button :disabled="$data[item.disabled]" :type="item.color" size="mini"
+							   :icon="item.icon" @click="fn(item.clickname,item.param)">
+						<span v-text="item.name"></span>
+					</el-button>
+				</span>
 				<el-select size="small" style="margin-left:5px; width:150px;" class="select" multiple collapse-tags v-model="select_actions" placeholder="选择方法">
-					<el-option v-for="(item,i) in default_actions" :key="i" :label="item.name" :value="item.type"></el-option>
+					<el-option v-for="(item2,i2) in default_actions" :key="i2" :label="item2.name" :value="item2.type"></el-option>
 				</el-select>
-				<el-button type="primary" size="mini" style="margin-left:5px;" icon="el-icon-check" @click="quckCreateAction">快速创建</el-button>
+				<span v-for="item in filterGroupButtonsQ" :key="item.clickname" style="margin-right: 2px">
+					<el-button :type="item.color" size="mini"
+							   :icon="item.icon" @click="fn(item.clickname,item.param)">
+						<span v-text="item.name"></span>
+					</el-button>
+				</span>
+<!--				<el-button type="primary" size="mini" style="margin-left:5px;" icon="el-icon-check" @click="quckCreateAction">快速创建</el-button>-->
+<!--				<el-button type="success" size="mini" icon="el-icon-plus" @click="dialog.addDialogStatus = true">创建</el-button>-->
+<!--				<el-button type="danger" size="mini"  icon="el-icon-delete" :disabled="multiple" @click="deleteAction(ids)">删除</el-button>-->
+<!--				<el-button type="info" size="mini"  icon="el-icon-edit-outline"  @click="create(1)">生成代码</el-button>-->
 			</el-col>
 			<el-col :span="3" style="text-align:right">
 				<table-tool :expand_status="false" @refesh_list="loadlist" ></table-tool>
@@ -144,85 +162,22 @@
 		</el-row>
 	</el-card>
 
-
-	<el-dialog
-			title="编辑备注"
-			:visible.sync="remarkDialog.visible"
-			fullscreen
-			custom-class="fullscreen-remark-dialog"
-			:modal="false"
-			:close-on-click-modal="false"
-			:show-close="true"
-			:append-to-body="true">
-
-		<div class="fullscreen-dialog-container">
-
-			<!-- 内容区域 -->
-			<div class="content-wrapper">
-				<el-row class="editor-container">
-					<!-- 左侧版本记录 -->
-					<el-col :span="6" class="version-list">
-						<div class="section-title">版本记录</div>
-						<el-scrollbar style="height:calc(100vh - 200px)">
-							<el-timeline>
-								<el-timeline-item
-										v-for="(version, index) in versions"
-										:key="index"
-										:timestamp="formatTime(version.create_time)"
-										@click.native="loadVersionContent(version)">
-									{{ version.version_desc || '无描述' }}
-								</el-timeline-item>
-							</el-timeline>
-						</el-scrollbar>
-					</el-col>
-
-					<!-- 右侧内容区 -->
-					<el-col :span="18" class="content-area">
-						<!-- 代码编辑器 -->
-						<div class="code-editor">
-							<div class="editor-header">
-								<el-select
-										v-model="remarkDialog.language"
-										@change="changeEditorLanguage"
-										size="small">
-									<el-option v-for="item in languageOptions" :key="item.value" :value="item.value" :label="item.label" />
-								</el-select>
-								<el-button type="text" icon="el-icon-finished">代码编辑器</el-button>
-							</div>
-							<textarea id="remark-editor"></textarea>
-						</div>
-
-						<!-- 功能描述 -->
-						<div class="description-area">
-							<div class="section-title">功能描述</div>
-							<el-input
-									type="textarea"
-									:rows="5"
-									resize="none"
-									v-model="remarkDialog.description">
-							</el-input>
-						</div>
-					</el-col>
-				</el-row>
-
-				<div slot="footer" class="dialog-footer">
-					<el-button @click="remarkDialog.visible = false">取消</el-button>
-					<el-button type="primary" @click="saveRemark">保存</el-button>
-				</div>
-			</div>
-		</div>
-	</el-dialog>
-
-
 </div>
 
 <admin-add :show.sync="dialog.addDialogStatus" menuid="{$menu_id}" :action="action" size="small" @refesh_list="loadlist"></admin-add>
 
 <admin-update :show.sync="dialog.updateDialogStatus" menu_id="{$menu_id}" :info="info" :action="action" size="small" @refesh_list="loadlist"></admin-update>
+<remark            :show="remarkDialog.visible"
+				   :row="remarkDialog.currentRow"
+				   @update:show="remarkDialog.visible = $event"
+				   @saved="loadlist">
+
+</remark>
 {/block}
 
 {block name="script"}
 <script src="__PUBLIC__/components/sys/action.js?v=<?php echo rand(100,999)?>"></script>
+<script src="__PUBLIC__/components/sys/remark.js?v=<?php echo rand(100,999)?>"></script>
 <script src="__PUBLIC__/assets/js/Sortable.min.js"></script>
 <script src="__PUBLIC__/assets/js/app.js"></script>
 
@@ -259,6 +214,7 @@
 				},
 				app_name: '',
 				menu_title: '',
+				app_title_name: '',
 				ids: [],
 				single: true,
 				multiple: true,
@@ -270,7 +226,7 @@
 				default_actions: [],
 				loading: false,
 				page_data: {
-					limit: 20,
+					limit: 100,
 					page: 1,
 					total: 50,
 				},
@@ -291,10 +247,88 @@
 					{value: 'javascript', label: 'JavaScript'},
 					{value: 'html', label: 'HTML'},
 					{value: 'x-vue', label: 'Vue'}
-				]
+				],
+				button_group_q:[{
+					name:'快速创建',
+					color:'primary',
+					access:'',
+					icon:'el-icon-check',
+					disabled:'',
+					clickname:'quckCreateAction',
+					param:'',
+					showGroup:'1',
+					showList:''
+				}],
+				button_group:[{
+					name:'创建',
+					color:'success',
+					access:'',
+					icon:'el-icon-plus',
+					disabled:'',
+					clickname:'add',
+					param:'',
+					showGroup:'1',
+					showList:''
+				}, {
+					name:'删除',
+					color:'danger',
+					access:'',
+					icon:'el-icon-delete',
+					disabled:'multiple',
+					clickname:'deleteAction',
+					param:'ids',
+					showGroup:'1',
+					showList:''
+				}, {
+					name:'生成代码',
+					color:'info',
+					access:'',
+					icon:'el-icon-edit-outline',
+					disabled:'',
+					clickname:'create',
+					param:'1',
+					showGroup:'1',
+					showList:''
+				}],
+				top_button_group:[{
+					name:'前往字段',
+					color:'primary',
+					access:'',
+					icon:'el-icon-back',
+					disabled:'',
+					clickname:'backupAction',
+					param:'',
+					showGroup:'1',
+					showList:''
+				},{
+					name:'返回菜单',
+					color:'primary',
+					access:'',
+					icon:'el-icon-back',
+					disabled:'',
+					clickname:'backup',
+					param:'',
+					showGroup:'1',
+					showList:''
+				}],
 			};
 		},
+		computed: {
+			filterGroupButtons() {
+				return this.button_group;
+			},
+			filterGroupButtonsQ() {
+				return this.button_group_q;
+			},
+			topGroupButtons() {
+				return this.top_button_group;
+			},
+		},
 		methods: {
+
+			add() {
+				this.dialog.addDialogStatus = true
+			},
 
 			formatTime(timestamp) {
 				if (!timestamp) return '未知时间';
@@ -305,7 +339,6 @@
 				// 如果是日期字符串
 				return timestamp;
 			},
-
 
 			addBtEditorStyles() {
 				// 添加宝塔编辑器特有的样式
@@ -442,6 +475,7 @@
 					this.default_actions = res.data.actionList.filter(item=>item.default_create)
 					this.page_data.total = res.data.data.total
 					this.loading = false
+					this.app_title_name = this.app_name + '-' + this.menu_title + ' 方法列表 (支持拖动排序)'
 				})
 			},
 
@@ -456,11 +490,11 @@
 					menu_id: row.menu_id || '{$menu_id}' // 确保获取到menu_id
 				};
 
-				this.loadVersions(row.id);
-
-				this.$nextTick(() => {
-					this.initCodeEditor();
-				});
+				// this.loadVersions(row.id);
+				//
+				// this.$nextTick(() => {
+				// 	this.initCodeEditor();
+				// });
 			},
 
 			initCodeEditor() {
@@ -565,7 +599,15 @@
 			loadVersionContent(version) {
 				this.editor.setValue(version.content);
 				this.remarkDialog.description = version.description;
-			}
+			},
+
+			fn(method,data){
+				if(data){
+					this[method](data)
+				}else{
+					this[method](this.ids)
+				}
+			},
 		},
 
 		mounted() {
@@ -574,11 +616,11 @@
 			// 预加载编辑器资源
 			this.$nextTick(() => {
 				// 监听对话框显示状态变化
-				this.$watch('remarkDialog.visible', (newVal) => {
-					if (newVal) {
-						this.initCodeEditor();
-					}
-				});
+				// this.$watch('remarkDialog.visible', (newVal) => {
+				// 	if (newVal) {
+				// 		this.initCodeEditor();
+				// 	}
+				// });
 			});
 		},
 

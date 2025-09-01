@@ -513,10 +513,29 @@ class Base extends Admin
         
         $data['other_config'] = json_encode($data['other_config']);
         
-        $data['tx_config'] = json_encode($data['tx_config'],320);
-        $data['list_background_config'] = json_encode($data['list_background_config'],320);
+        $data['tx_config'] = json_encode($data['tx_config'], 320);
+        $data['list_background_config'] = json_encode($data['list_background_config'], 320);
         
+        // 同目录字段 tx_config
+        $menu_tx_configs = Db::name('field')
+            ->where('menu_id', $data['menu_id'])
+            ->where('tx_config', '<>', '')
+            ->whereNotNull('tx_config')
+            ->column('tx_config');
+        // 值有效？ 0不显示 1显示
+        $prompt = 0;
+        foreach (array_merge($menu_tx_configs, [$data['tx_config']]) as $menu_tx_config) {
+            if (!empty(json_decode($menu_tx_config, true))) {
+                $prompt = 1;
+                break;
+            }
+        }
         try {
+            // 显示状态更新
+            Db::name('menu')->where(['menu_id' => $data['menu_id']])->update([
+                'prompt' => $prompt,
+            ]);
+            
             $res = Field::create($data);
             if ($res->id) {
                 Field::update(['id' => $res->id, 'sortid' => $res->id]);
@@ -625,7 +644,6 @@ class Base extends Admin
     public function updateField()
     {
         $data = $this->request->post();
-        
         if (isset($data['other_config']['shuxing']) && in_array('tabs', $data['other_config']['shuxing'])) {
             $info = Field::where('menu_id', $data['menu_id'])->where('other_config', 'like', '%\"tabs%')->where('id', '<>', $data['id'])->findOrEmpty();
             if (!$info->isEmpty()) {
@@ -644,7 +662,7 @@ class Base extends Admin
             $data['value_placeholder'] = $data['other_config']['value_placeholder'];
             unset($data['other_config']['value_placeholder']); // 避免重复存储
         }
-        
+        $prompt = -1;
         
         if ($data['field_type']) {
             $param['id'] = $data['id'];
@@ -656,9 +674,8 @@ class Base extends Admin
             $data['item_config'] = getItemData($data['item_config']);
             $data['other_config'] = json_encode($data['other_config']);
             $data['validate'] = implode(',', $data['validate']);
-            
-            $data['tx_config'] = json_encode($data['tx_config'],320);
-            $data['list_background_config'] = json_encode($data['list_background_config'],320);
+            $data['tx_config'] = json_encode($data['tx_config'], 320);
+            $data['list_background_config'] = json_encode($data['list_background_config'], 320);
             
             foreach (Config::fieldList() as $v) {
                 if ($v['type'] == $data['type'] && empty($data['belong_table'])) {
@@ -666,10 +683,33 @@ class Base extends Admin
                 }
             }
             
+            // 同目录下其他字段 查询 判断是否需要提醒
+            $menu_tx_configs = Db::name('field')
+                ->where('menu_id', $data['menu_id'])
+                ->whereNotIn('id', [$data['id']])
+                ->where('tx_config', '<>', '')
+                ->whereNotNull('tx_config')
+                ->column('tx_config');
+            // 0不提醒 1提醒
+            $prompt = 0;
+            foreach (array_merge($menu_tx_configs, [$data['tx_config']]) as $menu_tx_config) {
+                if (!empty(json_decode($menu_tx_config, true))) {
+                    $prompt = 1;
+                    break;
+                }
+            }
+            
             $param = $data;
         }
         
         try {
+            if ($prompt > -1) {
+                // 更新显示状态
+                Db::name('menu')->where(['menu_id' => $data['menu_id']])->update([
+                    'prompt' => $prompt,
+                ]);
+            }
+            
             Field::update($param);
         } catch (\Exception $e) {
             abort(501, $e->getMessage());
@@ -1436,7 +1476,6 @@ class Base extends Admin
         $data['domain'] = $_SERVER['HTTP_HOST'];
         $data['base_config'] = Db::name('base_config')->column('data', 'name');
         $res = $this->curlRequest('http://tfadmin.tiefen.net/produce/CreateCode/buildCode', 'POST', $data);
-        
         $res = str_replace("search_visible:true,", "search_visible:false,", $res);
         $res = str_replace("<el-table-column", "<el-table-column header-align='center'", $res);
         $ret = $res;
@@ -1613,6 +1652,7 @@ class Base extends Admin
         foreach ($actionList as $v) {
             if ($v['with_join'] && in_array($v['type'], [2, 3, 5, 11])) {
                 foreach (json_decode($v['with_join'], true) as $n) {
+                    $n['action_id'] = $v['id'];
                     $n['action_type'] = $v['type'];
                     $n['fields'] = $this->getExtendFields($n);
                     array_push($with_join, $n);
