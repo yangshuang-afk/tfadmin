@@ -4,7 +4,7 @@ namespace app\admin\controller\Sys;
 
 class Config
 {
-    
+
     //字段列表
     public static function fieldList()
     {
@@ -295,10 +295,18 @@ class Config
                 'mongoProperty' => 1,
                 'search' => false,
             ],
+            [
+                'name' => '已读字段',
+                'type' => 41,
+                'property' => 1,
+                'mongoProperty' => 1,
+                'item' => true,
+                'search' => true,
+            ],
         ];
         return $list;
     }
-    
+
     /*
     name 方法名
     type 方法类型
@@ -384,7 +392,7 @@ class Config
                 'default_create' => true,
                 'show_admin' => true,
                 'show_api' => true
-            
+
             ],
             [
                 'name' => '复制单条数据',
@@ -418,7 +426,7 @@ class Config
                 'default_create' => false,
                 'show_admin' => true,
                 'show_api' => true
-            
+
             ],
             [
                 'name' => '软删除回收站',
@@ -591,7 +599,7 @@ class Config
                 'default_create' => false,
                 'show_admin' => true,
                 'show_api' => false
-            
+
             ],
             [
                 'name' => '批量修改',
@@ -706,12 +714,29 @@ class Config
                 'button_color' => 'amethyst',
                 'show_admin' => true,
                 'show_api' => false
-            ]
+            ],
+            [
+                'name'=>'xxx字段远程搜索权限',
+                'type'=>56,
+                'dialog'=>false,
+                'button'=>false,
+                'view'=>false,
+                'icon'=>'el-icon-edit',
+                'button_color' => 'primary',
+                'action_name'=>'填写生成的远程搜索方法名',
+                'group_button_status'=>false,
+                'list_button_status'=>false,
+                'sortid'=>52,
+                'default_create'=>false,
+                'dialog_size'=>'',
+                'show_admin'=>true,
+                'show_api'=>false
+            ],
         ];
         return $list;
     }
-    
-    
+
+
     //mysql字段的数据结构
     public static function propertyField()
     {
@@ -727,7 +752,7 @@ class Config
         ];
         return $list;
     }
-    
+
     //mongo字段的数据结构
     public static function propertyMongoField()
     {
@@ -737,7 +762,7 @@ class Config
         ];
         return $list;
     }
-    
+
     public static function itemList()
     {
         $list = [
@@ -763,10 +788,10 @@ class Config
                 ]
             ]
         ];
-        
+
         return $list;
     }
-    
+
     //字段验证规则列表
     public static function ruleList()
     {
@@ -781,8 +806,8 @@ class Config
         ];
         return $list;
     }
-    
-    
+
+
     //菜单页面显示结构
     public static function page_type_list()
     {
@@ -792,8 +817,8 @@ class Config
         ];
         return $list;
     }
-    
-    
+
+
     //内置的短信平台
     public static function sms_list()
     {
@@ -803,8 +828,8 @@ class Config
         ];
         return $list;
     }
-    
-    
+
+
     //默认创建的字段
     public static function defaultFields()
     {
@@ -812,9 +837,10 @@ class Config
             ['title' => '编号', 'type' => 1, 'datatype' => 'int', 'length' => 11, 'list_show' => 2, 'create_table_field' => 1, 'sortid' => 1, 'primary' => true, 'width' => 70],
             ['title' => '标题', 'field' => 'title', 'list_show' => 4, 'type' => 1, 'search_type' => 1],
         ];
-        
+
         return $list;
     }
-    
-    
+
+
 }
+
