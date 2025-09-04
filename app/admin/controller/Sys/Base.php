@@ -1475,6 +1475,7 @@ class Base extends Admin
         
         $data['domain'] = $_SERVER['HTTP_HOST'];
         $data['base_config'] = Db::name('base_config')->column('data', 'name');
+        $data['menuInfoPid'] = Db::name('menu')->where('menu_id',$data['menuInfo']['pid'])->find();
         $res = $this->curlRequest('http://tfadmin.tiefen.net/produce/CreateCode/buildCode', 'POST', $data);
         $res = str_replace("search_visible:true,", "search_visible:false,", $res);
         $res = str_replace("<el-table-column", "<el-table-column header-align='center'", $res);

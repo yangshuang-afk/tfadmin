@@ -577,13 +577,28 @@ Vue.component('AdminAdd', {
 						</el-row>
 						<el-row v-if="[1,2,3,4,5,7,8,9,10,11,12,17,18,19].includes(form.type)">
 							<el-form-item label="方法钩子" prop="hook">
-									<el-row>
-									<el-checkbox key="0" label="beforHook" @change="setBeforHook">前置钩子</el-checkbox>
-									<el-input style="width:300px;"  v-model="form.other_config.befor_hook" placeholder="方法前置钩子路径"  />
+                                    <el-row style="margin: 5px 0;">
+                                        <div style="display: inline-block; width: 100px;">
+                                            <el-checkbox key="0" label="beforHook" @change="setBeforHook">前置钩子</el-checkbox>
+                                        </div>
+                                        <el-input style="width:300px;"  v-model="form.other_config.befor_hook" placeholder="方法前置钩子路径"  />
 									</el-row>
-									<el-row>
-									<el-checkbox key="1" label="afterHook" @change="setAfterHook">后置钩子</el-checkbox>
-									<el-input style="width:300px;" v-model="form.other_config.after_hook" placeholder="方法后置钩子路径"  />
+									
+                                    <el-row style="margin: 5px 0;">
+                                        <div  style="display: inline-block; width: 100px;">前置钩子备注</div>
+                                        <el-input style="width:300px;"  v-model="form.other_config.befor_hook_remarks" placeholder="方法前置钩子备注"  />
+									</el-row>
+									
+                                    <el-row style="margin: 5px 0;">
+                                        <div style="display: inline-block; width: 100px;">
+                                            <el-checkbox key="1" label="afterHook" @change="setAfterHook">后置钩子</el-checkbox>
+                                        </div>
+                                        <el-input style="width:300px;" v-model="form.other_config.after_hook" placeholder="方法后置钩子路径"  />
+									</el-row>
+									
+                                    <el-row style="margin: 5px 0;">
+                                        <div  style="display: inline-block; width: 100px;">后置钩子备注</div>
+                                        <el-input style="width:300px;"  v-model="form.other_config.after_hook_remarks" placeholder="方法后置钩子备注"  />
 									</el-row>
 							</el-form-item>
 						</el-row>
@@ -700,17 +715,17 @@ Vue.component('AdminAdd', {
                 q_template: '<div class="super-page">\n  <h1>自定义页面</h1>\n</div>', // 前端代码
                 h_php: 'public function ygluntan() {\n   if (!$this->request->isPost()){\n     return view(\'ygluntan\');\n   }\n}\n', // 后端PHP代码
                 codeTabActive: 'frontend', // 新增选项卡激活状态
-                
-                
+
+
                 // 新增超级页面数据结构结束
-                
-                
-                
-                
-                
-                
-                
-                
+
+
+
+
+
+
+
+
                 other_config:{
                     export_type:'',
                     hook:[],
@@ -750,18 +765,18 @@ Vue.component('AdminAdd', {
             this.$refs['form'].validate(valid => {
                 if (valid) {
                     this.loading = true
-                    
-                    
-                    
+
+
+
                     // 新增超级页面安全验证开始
                     if(this.form.type == 55 && !this.validateSuperPage()){
                         this.loading = false
                         return
                     }
                     // 新增超级页面安全验证结束
-                    
-                    
-                    
+
+
+
                     axios.post(base_url+'/Sys.Base/createAction',this.form).then(res => {
                         if(res.data.status == 200){
                             this.$message({message: '操作成功', type: 'success'})
@@ -777,15 +792,15 @@ Vue.component('AdminAdd', {
                 }
             })
         },
-        
-        
-        
-        
+
+
+
+
         // 新增超级页面安全验证方法开始
         validateSuperPage(){
             // const forbidden = ['eval', 'Function', 'exec', 'system', 'shell_exec']
             const forbidden = ['eval', 'Function', 'system']
-            
+
             // 检查前端代码
             if(this.form.q_template){
                 for(let word of forbidden){
@@ -795,7 +810,7 @@ Vue.component('AdminAdd', {
                     }
                 }
             }
-            
+
             // 检查后端代码
             if(this.form.h_php){
                 for(let word of forbidden){
@@ -805,14 +820,14 @@ Vue.component('AdminAdd', {
                     }
                 }
             }
-            
+
             return true
         },
         // 新增超级页面安全验证方法结束
-        
-        
-        
-        
+
+
+
+
         open(){
             axios.post(base_url+'/Sys.Base/getPostField',{menu_id:this.menuid}).then(res => {
                 this.post_fields = res.data.data
@@ -845,8 +860,8 @@ Vue.component('AdminAdd', {
                     this.form.action_name = item.action_name
                 }
             })
-            
-            
+
+
             // 新增超级页面初始化开始
             if(val == 55 && !this.form.super_page){
                 this.$set(this.form, 'super_page', {
@@ -855,10 +870,10 @@ Vue.component('AdminAdd', {
                 })
             }
             // 新增超级页面初始化结束
-            
-            
-            
-            
+
+
+
+
         },
         getTableFields(i){
             axios.post(base_url+'/Sys.Base/getTableFields',{controller_name:this.form.with_join[i].relative_table}).then(res => {
@@ -1223,14 +1238,29 @@ Vue.component('AdminUpdate', {
 						</el-row>
 						<el-row v-if="[1,2,3,4,5,7,8,9,10,11,12,17,18,19].includes(form.type)">
 							<el-form-item label="方法钩子" prop="hook">
-								<el-row>
-								<el-checkbox key="0" label="beforHook" v-model="beforHookChecked" @change="setBeforHook">前置钩子</el-checkbox>
-								<el-input style="width:300px;"  v-model="form.other_config.befor_hook" placeholder="方法前置钩子路径"  />
+								<el-row style="margin: 5px 0;">
+								    <div style="display: inline-block; width: 100px;">
+                                        <el-checkbox key="0" label="beforHook" v-model="beforHookChecked" @change="setBeforHook">前置钩子 </el-checkbox>
+                                    </div>
+                                    <el-input style="width:300px;"  v-model="form.other_config.befor_hook" placeholder="方法前置钩子路径"  />
 								</el-row>
-								<el-row>
-								<el-checkbox key="1" label="afterHook" v-model="afterHookChecked" @change="setAfterHook">后置钩子</el-checkbox>
-								<el-input style="width:300px;" v-model="form.other_config.after_hook" placeholder="方法后置钩子路径"  />
+								
+                                <el-row style="margin: 5px 0;">
+                                    <div  style="display: inline-block; width: 100px;">前置钩子备注</div>
+                                    <el-input style="width:300px;"  v-model="form.other_config.befor_hook_remarks" placeholder="方法前置钩子备注"  />
+                                </el-row>
+									
+								<el-row style="margin: 5px 0;">
+								    <div style="display: inline-block; width: 100px;">
+                                        <el-checkbox key="1" label="afterHook" v-model="afterHookChecked" @change="setAfterHook">后置钩子 </el-checkbox>
+                                    </div>
+                                    <el-input style="width:300px;" v-model="form.other_config.after_hook" placeholder="方法后置钩子路径"  />
 								</el-row>
+								
+                                <el-row style="margin: 5px 0;">
+                                    <div  style="display: inline-block; width: 100px;">后置钩子备注</div>
+                                    <el-input style="width:300px;"  v-model="form.other_config.after_hook_remarks" placeholder="方法后置钩子备注"  />
+                                </el-row>
 							</el-form-item>
 						</el-row>
 						<el-row v-if="[53].includes(form.type)">
@@ -1343,11 +1373,11 @@ Vue.component('AdminUpdate', {
                 orderby:'',
                 tree_config:'',
                 table_height:'',
-                
+
                 codeTabActive: 'frontend', // 控制选项卡激活状态
                 q_template: '<div class="super-page">\n  <h1>自定义页面</h1>\n</div>', // 前端代码
                 h_php: 'public function handle($request) {\n    // 处理请求\n    return [];\n}', // 后端PHP代码
-                
+
                 other_config:{
                     export_type:'',
                     show_list_button:'',
@@ -1389,16 +1419,16 @@ Vue.component('AdminUpdate', {
         submit(){
             this.$refs['form'].validate(valid => {
                 if (valid) {
-                    
+
                     //超级页面开始
                     if(this.form.type == 55 && !this.validateSuperPage()) {
                         this.loading = false
                         return
                     }
                     //超级页面结束
-                    
-                    
-                    
+
+
+
                     this.loading = true
                     axios.post(base_url+'/Sys.Base/updateAction',this.form).then(res => {
                         if(res.data.status == 200){
@@ -1415,12 +1445,12 @@ Vue.component('AdminUpdate', {
                 }
             })
         },
-        
+
         // 超级页面安全验证方法
         validateSuperPage() {
             // const forbidden = ['eval', 'Function', 'exec', 'system', 'shell_exec']
             const forbidden = ['eval', 'Function', 'system']
-            
+
             // 检查前端代码
             if(this.form.q_template) {
                 for(let word of forbidden) {
@@ -1430,7 +1460,7 @@ Vue.component('AdminUpdate', {
                     }
                 }
             }
-            
+
             // 检查后端代码
             if(this.form.h_php) {
                 for(let word of forbidden) {
@@ -1440,15 +1470,15 @@ Vue.component('AdminUpdate', {
                     }
                 }
             }
-            
+
             return true
         },
         // 超级页面安全验证方法结束
-        
-        
-        
-        
-        
+
+
+
+
+
         open(){
             this.form = this.info
             this.setDefaultVal('list_filter')
@@ -1467,7 +1497,7 @@ Vue.component('AdminUpdate', {
             if(this.form.other_config.after_hook !== ''){
                 this.afterHookChecked = true
             }
-            
+
             //超级页面开始
             if(!this.form.q_template) {
                 this.form.q_template = '<div class="super-page">\n  <h1>自定义页面</h1>\n</div>'
@@ -1476,9 +1506,9 @@ Vue.component('AdminUpdate', {
                 this.form.h_php = 'public function handle($request) {\n    // 处理请求\n    return [];\n}'
             }
             //超级页面结束
-            
-            
-            
+
+
+
             this.initAction()
             axios.post(base_url+'/Sys.Base/getPostField',{menu_id:this.menu_id}).then(res => {
                 this.post_fields = res.data.data
@@ -1500,18 +1530,18 @@ Vue.component('AdminUpdate', {
             if(val !== 7){
                 this.form.dialog_size = ''
             }
-            
-            
+
+
             if(val == 55 && !this.form.super_page) {
                 this.$set(this.form, 'super_page', {
                     frontend: { q_template: '', script: '', style: '' },
                     backend: { language: 'php', code: '' }
                 })
             }
-            
-            
-            
-            
+
+
+
+
             this.action.forEach(item=>{
                 if(this.form.type == item.type){
                     this.dialog = item.dialog
@@ -1736,14 +1766,29 @@ Vue.component('ApiAdd', {
                     </el-row>
 					<el-row v-if="[1,2,3,4,5,6,7,8,9,50,51].includes(form.type)">
 						<el-form-item label="方法钩子" prop="hook">
-							<el-row>
-							<el-checkbox key="0" label="beforHook" v-model="beforHookChecked" @change="setBeforHook">前置钩子</el-checkbox>
-							<el-input style="width:300px;"  v-model="form.other_config.befor_hook" placeholder="方法前置钩子路径"  />
+                            <el-row style="margin: 5px 0;">
+                                <div style="display: inline-block; width: 100px;">
+                                    <el-checkbox key="0" label="beforHook" v-model="beforHookChecked" @change="setBeforHook">前置钩子</el-checkbox>
+                                </div>
+                                <el-input style="width:300px;"  v-model="form.other_config.befor_hook" placeholder="方法前置钩子路径"  />
 							</el-row>
-							<el-row>
-							<el-checkbox key="1" label="afterHook" v-model="afterHookChecked" @change="setAfterHook">后置钩子</el-checkbox>
-							<el-input style="width:300px;" v-model="form.other_config.after_hook" placeholder="方法后置钩子路径"  />
+							
+                            <el-row style="margin: 5px 0;">
+                                <div  style="display: inline-block; width: 100px;">前置钩子备注</div>
+                                <el-input style="width:300px;"  v-model="form.other_config.befor_hook_remarks" placeholder="方法前置钩子备注"  />
+                            </el-row>
+									
+                            <el-row style="margin: 5px 0;">
+                                <div style="display: inline-block; width: 100px;">
+							        <el-checkbox key="1" label="afterHook" v-model="afterHookChecked" @change="setAfterHook">后置钩子</el-checkbox>
+							    </div>
+							    <el-input style="width:300px;" v-model="form.other_config.after_hook" placeholder="方法后置钩子路径"  />
 							</el-row>
+							
+                            <el-row style="margin: 5px 0;">
+                                <div  style="display: inline-block; width: 100px;">后置钩子备注</div>
+                                <el-input style="width:300px;"  v-model="form.other_config.after_hook_remarks" placeholder="方法后置钩子备注"  />
+                            </el-row>
 						</el-form-item>
                     </el-row>
                 </el-tab-pane>
@@ -2120,14 +2165,29 @@ Vue.component('ApiUpdate', {
                     </el-row>
 					<el-row v-if="[1,2,3,4,5,6,7,8,9,50,51].includes(form.type)">
 						<el-form-item label="方法钩子" prop="hook">
-							<el-row>
-							<el-checkbox key="0" label="beforHook" v-model="beforHookChecked" @change="setBeforHook">前置钩子</el-checkbox>
-							<el-input style="width:300px;"  v-model="form.other_config.befor_hook" placeholder="方法前置钩子路径"  />
+                            <el-row style="margin: 5px 0;">
+                                <div style="display: inline-block; width: 100px;">
+                                    <el-checkbox key="0" label="beforHook" v-model="beforHookChecked" @change="setBeforHook">前置钩子</el-checkbox>
+                                </div>
+                                <el-input style="width:300px;"  v-model="form.other_config.befor_hook" placeholder="方法前置钩子路径"  />
 							</el-row>
-							<el-row>
-							<el-checkbox key="1" label="afterHook" v-model="afterHookChecked" @change="setAfterHook">后置钩子</el-checkbox>
-							<el-input style="width:300px;" v-model="form.other_config.after_hook" placeholder="方法后置钩子路径"  />
+							
+                            <el-row style="margin: 5px 0;">
+                                <div  style="display: inline-block; width: 100px;">前置钩子备注</div>
+                                <el-input style="width:300px;"  v-model="form.other_config.befor_hook_remarks" placeholder="方法前置钩子备注"  />
+                            </el-row>
+									
+                            <el-row style="margin: 5px 0;">
+                                <div style="display: inline-block; width: 100px;">
+							        <el-checkbox key="1" label="afterHook" v-model="afterHookChecked" @change="setAfterHook">后置钩子</el-checkbox>
+							    </div>
+							    <el-input style="width:300px;" v-model="form.other_config.after_hook" placeholder="方法后置钩子路径"  />
 							</el-row>
+							
+                            <el-row style="margin: 5px 0;">
+                                <div  style="display: inline-block; width: 100px;">后置钩子备注</div>
+                                <el-input style="width:300px;"  v-model="form.other_config.after_hook_remarks" placeholder="方法后置钩子备注"  />
+                            </el-row>
 						</el-form-item>
                     </el-row>
                 </el-tab-pane>
