@@ -567,6 +567,11 @@ Vue.component('AdminAdd', {
 								<el-input type="textarea" v-model="form.sql" clearable placeholder="单选/下拉/多选选项/session/隐藏域, sql数据源"/>
 							</el-form-item>
 						</el-row>
+						<el-row v-if="(list_item || [41].includes(form.type)) && dbtype !== 'mongo'">
+                            <el-form-item label="记已读的session" prop="crop">
+                                <el-input v-model="form.other_config.yidufield" clearable placeholder="填写要记已读的session字段"/>
+                            </el-form-item>
+						</el-row>
 					    <el-row v-if="[2,4].includes(form.type) && dbtype !== 'mongo'">
 							<el-form-item label="联动字段" prop="liandong_field">
 								<el-input v-model="form.other_config.liandong_field" clearable placeholder="二级联动字段名"/>
@@ -780,7 +785,7 @@ Vue.component('AdminAdd', {
                                         </el-col>
                                         <el-col :span="10">
                                             <el-form-item prop="tx_zhi">
-                                                <el-input v-model="item.tx_zhi" clearable placeholder="输入条件值，如 >1 或 session(admin.yuangong_id)"/>
+                                                <el-input v-model="item.tx_zhi" clearable placeholder="输入条件值，如 1 或 “{:session('admin.yuangong_id')}”"/>
                                             </el-form-item>
                                         </el-col>
                                         <el-col :span="5">
@@ -838,7 +843,7 @@ Vue.component('AdminAdd', {
                                         </el-col>
                                         <el-col :span="10">
                                             <el-form-item prop="zhi">
-                                                <el-input v-model="background_config_item.zhi" clearable placeholder="输入条件值，如 >1 或 session(admin.yuangong_id)"/>
+                                                <el-input v-model="background_config_item.zhi" clearable placeholder="输入条件值，如 1 或 “{:session('admin.yuangong_id')}”"/>
                                             </el-form-item>
                                         </el-col>
                                         <el-col :span="5">
@@ -897,7 +902,7 @@ Vue.component('AdminAdd', {
 								</el-col>
 								<el-col :span="18">
 									<el-form-item prop="improve_zhi">
-										<el-input v-model="form.improve_zhi" clearable placeholder="输入条件值，如 1 或 session(admin.yuangong_id)"/>
+										<el-input v-model="form.improve_zhi" clearable placeholder="输入条件值，如 1 或 session('admin.yuangong_id')"/>
 									</el-form-item>
 								</el-col>
 							</el-form-item>
@@ -1015,13 +1020,13 @@ Vue.component('AdminAdd', {
                 belong_table: '',
                 default_value: '',
                 menu_id: this.menuid,
-                
+
                 tx_tiaojian: '', // 新增字段提醒条件类型
                 tx_zhi: '',      // 新增字段提醒条件值
                 tx_color: '',      // 新增字段提醒条件值
                 improve_tiaojian: '',      // 完善条件
                 improve_zhi: '',      // 完善条件校验值
-                
+
                 // 文字变色配置数组，每项包含条件类型、条件值和颜色
                 tx_config: [],
                 // 背景变色配置数组，每项包含条件类型、条件值和颜色
@@ -1069,7 +1074,7 @@ Vue.component('AdminAdd', {
                 ],
                 type: [{required: true, message: '字段类型不能为空', trigger: 'blur'}],
                 login_fields: [{required: true, message: '请配置登录账号密码字段', trigger: 'blur'}],
-                
+
                 'other_config.key_placeholder': [{max: 50, message: '长度不能超过50个字符', trigger: 'blur'}],
                 'other_config.value_placeholder': [{max: 50, message: '长度不能超过50个字符', trigger: 'blur'}]
             },
@@ -1088,14 +1093,14 @@ Vue.component('AdminAdd', {
                     return;
                 }
             }
-            
+
             if (!this.form.tx_config) {
                 this.form.tx_config = [];
             }
             if (!this.form.list_background_config) {
                 this.form.list_background_config = [];
             }
-            
+
             this.$refs['form'].validate(valid => {
                 if (valid) {
                     this.loading = true
@@ -1127,15 +1132,15 @@ Vue.component('AdminAdd', {
             if (this.dbtype !== 'mongo') {
                 this.field.forEach(item => {
                     if (this.form.type == item.type) {
-                        
+
                         if (this.form.type == 21) {
                             this.list_item = true; // 确保选项配置部分显示
                             // 可以设置键值对特定的默认值
                             this.form.other_config.key_placeholder = '请输入键名';
                             this.form.other_config.value_placeholder = '请输入值';
                         }
-                        
-                        
+
+
                         if (this.form.type == 40) {
                             this.form.create_table_field = 0
                             this.form.post_status = 0
@@ -1197,7 +1202,7 @@ Vue.component('AdminAdd', {
                 })
             }
         },
-        
+
         addItem(key) {
             if (!Array.isArray(this.form[key])) {
                 this.$set(this.form, key, []);
@@ -1216,12 +1221,12 @@ Vue.component('AdminAdd', {
                 },
                 'item_config': {}  // 其他配置
             };
-            
+
             const newItem = defaultConfig[key] || {};
             this.form[key].push({...newItem});
             // 使用$set添加新元素
             // this.$set(this.form[key], this.form[key].length, {});
-            
+
             this.$nextTick(() => {
                 this.$forceUpdate();
             });
@@ -1288,17 +1293,17 @@ Vue.component('AdminAdd', {
         closeForm() {
             this.$emit('update:show', false);
             this.loading = false;
-            
+
             this.$nextTick(() => {
                 // 先判断表单实例是否存在再重置
                 if (this.$refs['form']) {
                     this.$refs['form'].resetFields();
                 }
-                
+
                 this.default_rules = '';
                 this.list_item = false;
                 this.activeName = 'first';
-                
+
                 // 重置表单数据，确保所有数组字段正确初始化
                 this.form = {
                     title: '',
@@ -1335,7 +1340,7 @@ Vue.component('AdminAdd', {
                 };
             });
         }
-        
+
     },
 });
 
@@ -1618,6 +1623,11 @@ Vue.component('AdminUpdate', {
 								<el-input type="textarea" v-model="form.sql" clearable placeholder="单选/下拉/多选选项 sql数据源"/>
 							</el-form-item>
 						</el-row>
+						<el-row v-if="(list_item || [41].includes(form.type)) && dbtype !== 'mongo'">
+                            <el-form-item label="记已读的session" prop="crop">
+                                <el-input v-model="form.other_config.yidufield" clearable placeholder="填写要记已读的session字段"/>
+                            </el-form-item>
+						</el-row>
 						<el-row v-if="[2,4].includes(form.type) && dbtype !== 'mongo'">
 							<el-form-item label="联动字段" prop="liandong_field">
 								<el-input v-model="form.other_config.liandong_field" clearable placeholder="二级联动字段名"/>
@@ -1825,7 +1835,7 @@ Vue.component('AdminUpdate', {
                                         </el-col>
                                         <el-col :span="10">
                                             <el-form-item prop="tx_zhi">
-                                                <el-input v-model="item.tx_zhi" clearable placeholder="输入条件值，如 >1 或 session(admin.yuangong_id)"/>
+                                                <el-input v-model="item.tx_zhi" clearable placeholder="输入条件值，如 1 或 “{:session('admin.yuangong_id')}”"/>
                                             </el-form-item>
                                         </el-col>
                                         <el-col :span="5">
@@ -1883,7 +1893,7 @@ Vue.component('AdminUpdate', {
                                         </el-col>
                                         <el-col :span="10">
                                             <el-form-item prop="zhi">
-                                                <el-input v-model="background_config_item.zhi" clearable placeholder="输入条件值，如 >1 或 session(admin.yuangong_id)"/>
+                                                <el-input v-model="background_config_item.zhi" clearable placeholder="输入条件值，如 1 或 “{:session('admin.yuangong_id')}”"/>
                                             </el-form-item>
                                         </el-col>
                                         <el-col :span="5">
@@ -1942,7 +1952,7 @@ Vue.component('AdminUpdate', {
 								</el-col>
 								<el-col :span="18">
 									<el-form-item prop="improve_zhi">
-										<el-input v-model="form.improve_zhi" clearable placeholder="输入条件值，如 1 或 session(admin.yuangong_id)"/>
+										<el-input v-model="form.improve_zhi" clearable placeholder="输入条件值，如 1 或 session('admin.yuangong_id')"/>
 									</el-form-item>
 								</el-col>
 							</el-form-item>
@@ -2062,13 +2072,13 @@ Vue.component('AdminUpdate', {
                 length: '',
                 belong_table: '',
                 default_value: '',
-                
+
                 tx_tiaojian: '', // 新增字段提醒条件类型
                 tx_zhi: '',      // 新增字段提醒条件值
                 tx_color: '',      // 新增字段提醒条件值
                 improve_tiaojian: '',      // 完善条件
                 improve_zhi: '',      // 完善条件校验值
-                
+
                 // 文字变色配置数组，每项包含条件类型、条件值和颜色
                 tx_config: [],
                 // 背景变色配置数组，每项包含条件类型、条件值和颜色
@@ -2133,14 +2143,14 @@ Vue.component('AdminUpdate', {
                     return;
                 }
             }
-            
+
             if (!this.form.tx_config) {
                 this.form.tx_config = [];
             }
             if (!this.form.list_background_config) {
                 this.form.list_background_config = [];
             }
-            
+
             this.$refs['form'].validate(valid => {
                 if (valid) {
                     // 将键值对占位符保存到主表字段
@@ -2165,7 +2175,7 @@ Vue.component('AdminUpdate', {
         open() {
             // 1. 初始化表单数据，深拷贝避免引用问题
             this.form = this.info ? JSON.parse(JSON.stringify(this.info)) : {};
-            
+
             // 2. 处理数组字段的初始化和类型转换
             const processArrayField = (fieldName) => {
                 // 如果字段不存在、为空字符串或空JSON表示，初始化为空数组
@@ -2190,10 +2200,10 @@ Vue.component('AdminUpdate', {
                     this.form[fieldName] = [];
                 }
             };
-            
+
             // 处理所有需要初始化的数组字段
             ['item_config', 'tx_config', 'list_background_config'].forEach(processArrayField);
-            
+
             // 3. 处理other_config对象
             if (!this.form.other_config || this.form.other_config === '[]' || this.form.other_config === '{}') {
                 // 初始化空的other_config
@@ -2217,7 +2227,7 @@ Vue.component('AdminUpdate', {
                     };
                 }
             }
-            
+
             // 确保other_config中的必要字段存在且类型正确
             this.form.other_config = {
                 ...this.form.other_config,
@@ -2230,10 +2240,10 @@ Vue.component('AdminUpdate', {
                 key_placeholder: this.form.other_config.key_placeholder || this.info?.key_placeholder || '',
                 value_placeholder: this.form.other_config.value_placeholder || this.info?.value_placeholder || '',
             };
-            
+
             // 4. 设置列表项状态
             this.list_item = this.field.some(item => item.type === this.form.type && item.item);
-            
+
             // 5. 加载配置列表
             axios.post(base_url + '/Sys.Base/configList', {
                 menu_id: this.menuid || this.menu_id
@@ -2252,7 +2262,7 @@ Vue.component('AdminUpdate', {
             if (this.dbtype !== 'mongo') {
                 this.field.forEach(item => {
                     if (this.form.type == item.type) {
-                        
+
                         if (this.form.type == 21) {
                             this.list_item = true; // 确保选项配置部分显示
                             if (!this.form.other_config.key_placeholder) {
@@ -2262,8 +2272,8 @@ Vue.component('AdminUpdate', {
                                 this.form.other_config.value_placeholder = '请输入值'
                             }
                         }
-                        
-                        
+
+
                         if (this.form.type == 40) {
                             this.form.create_table_field = 0
                             this.form.post_status = 0
@@ -2348,12 +2358,12 @@ Vue.component('AdminUpdate', {
                 },
                 'item_config': {}  // 其他配置
             };
-            
+
             const newItem = defaultConfig[key] || {};
             this.form[key].push({...newItem});
             // 使用$set添加新元素
             // this.$set(this.form[key], this.form[key].length, {});
-            
+
             this.$nextTick(() => {
                 this.$forceUpdate();
             });
@@ -2420,17 +2430,17 @@ Vue.component('AdminUpdate', {
         closeForm() {
             this.$emit('update:show', false);
             this.loading = false;
-            
+
             this.$nextTick(() => {
                 // 先判断表单实例是否存在再重置
                 if (this.$refs['form']) {
                     this.$refs['form'].resetFields();
                 }
-                
+
                 this.default_rules = '';
                 this.list_item = false;
                 this.activeName = 'first';
-                
+
                 // 重置表单数据，确保所有数组字段正确初始化
                 this.form = {
                     title: '',
@@ -2467,7 +2477,7 @@ Vue.component('AdminUpdate', {
                 };
             });
         }
-        
+
     },
 });
 

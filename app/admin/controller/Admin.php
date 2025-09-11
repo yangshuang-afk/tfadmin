@@ -54,12 +54,13 @@ class Admin extends BaseController
 
 
 	//返回当前应用的菜单列表
-	protected function getBaseMenus(){
-		$appname = app('http')->getName();
-		$field = 'menu_id,pid,title,controller_name,status,icon,sortid,url';
+    protected function getBaseMenus()
+    {
+        $appname = app('http')->getName();
+        $field = 'menu_id,pid,title,controller_name,status,icon,sortid,url';
         // 提醒 - 2025-08-29
         $field .= ",prompt,table_name,prompt_session";
-        
+
         $list = db("menu")->field($field)->where(['status' => 1, 'app_id' => 1])->order('sortid asc')->select()->toArray();
         if ($list) {
             foreach ($list as $key => $val) {
@@ -70,8 +71,8 @@ class Admin extends BaseController
                 $menus[$key]['icon'] = $val['icon'] ? $val['icon'] : 'el-icon-menu';
                 $menus[$key]['url'] = $this->getUrl($val, $appname);
                 $menus[$key]['access'] = $val['url'] ? $val['url'] : $appname . '/' . $val['controller_name'];
-                
-                
+
+
                 // 提醒 - 2025-08-29
                 $show = false;
                 $tj = [
@@ -85,41 +86,130 @@ class Admin extends BaseController
                     8 => '<>',    // 不等于
                     // 9和10不需要值，因为是判断空或非空
                 ];
-                
+
                 // 查条件字段
                 if ($val['prompt'] == 1) {
                     $where = [];
-                    if ($val['prompt_session']) {
-                        $where[$val['prompt_session']] = session('admin')[$val['prompt_session']];
-                    }
-                    
+                    $whereRawList = [];
+                    $prompt_query = Db::name($val['table_name']);
+                    // 方法
+                    $menu_actions = Db::name('action')
+                        ->where('menu_id', $val['menu_id'])
+                        ->whereIn('type', [53, 54])
+                        ->select()
+                        ->toArray();
+                    // 字段
                     $menu_fileds = Db::name('field')
                         ->where('menu_id', $val['menu_id'])
                         ->where('tx_config', '<>', '')
                         ->whereNotNull('tx_config')
                         ->select()
                         ->toArray();
-                    
+                    // session值
+                    if ($val['prompt_session']) {
+                        $where[$val['prompt_session']] = session('admin')[$val['prompt_session']];
+                    }
+
+                    // 查方法
+                    if (!empty($menu_actions)) {
+                        // 方法名
+                        $action_names = array_column($menu_actions, 'action_name');
+                        // url处理
+                        $action_urls = array_map(function ($action_name) use ($val) {
+                            return "/admin/{$val['controller_name']}/{$action_name}.html";
+                        }, $action_names);
+
+                        // 循环处理看全部 看同字段
+                        foreach ($menu_actions as $menu_action) {
+                            if ($menu_action['type'] == 53) {
+                                $role_id = session('admin.role_id');
+                                $access = session('admin.access');
+                                $admin_value = session('admin')[$menu_action['sql']];
+                                $field = $menu_action['fields'];
+                                $whereRaw = "";
+                                $action_name = $menu_action['action_name'];
+                                // 关联session的字段
+                                $session_fields = Db::name('field')
+                                    ->where('menu_id', $val['menu_id'])
+                                    ->where('type', 30)
+                                    ->select()
+                                    ->toArray();
+
+                                // 优先处理session字段
+                                if ($session_fields && count($session_fields) > 1) {
+                                    foreach ($session_fields as $session_field) {
+                                        if ($field != $session_field['field']) {
+                                            if (!in_array($role_id, [1]) && empty(array_intersect($access, $action_urls))) {
+                                                $where[$session_field['field']] = session('admin')[$session_field['field']];
+                                            }
+                                            if (!in_array($role_id, [1]) && !empty(array_intersect($access, ["/admin/{$val['controller_name']}/{$action_name}.html"]))) {
+                                                $whereRaw .= " {$session_field['field']} = '" . session('admin')[$session_field['field']] . "' or ";
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // 处理同字段
+                                if (!in_array($role_id, [1]) && !empty(array_intersect($access, ["/admin/{$val['controller_name']}/{$action_name}.html"]))) {
+                                    $whereRaw .= " $field = '$admin_value' or FIND_IN_SET('$admin_value', $field)";
+                                }
+                                if (!in_array($role_id, [1]) && empty(array_intersect($access, $action_urls))) {
+                                    $where[$field] = $admin_value;
+                                }
+
+                                $whereRawList[] = $whereRaw;
+                            }
+                        }
+
+
+                    }
+
+                    $whereRawList = array_filter($whereRawList);
+                    if (!empty($whereRawList)) {
+                        if (count($whereRawList) > 0) {
+                            $whereRawList = implode(' and ', $whereRawList);
+                        } else {
+                            $whereRawList = implode('', $whereRawList);
+                        }
+                        $prompt_query->whereRaw($whereRawList);
+                    }
+
                     // 多循环
                     foreach ($menu_fileds as $menu_filed) {
                         $menu_tx_config = $menu_filed['tx_config'] ? json_decode($menu_filed['tx_config'], true) : [];
+                        
                         if (!empty($menu_tx_config)) {
                             // [{"tx_tiaojian":3,"tx_zhi":"\"匹配交往中\"","tx_color":"#6967ce"}]
                             foreach ($menu_tx_config as $tx_config) {
                                 $condition = $tx_config['tx_tiaojian'];
                                 $value = $tx_config['tx_zhi'];
+
+
+                                // 处理 {:session('key')} 格式，统一转换为 session('key')
+                                // 解析 {:session('key')} 并替换为 $_SESSION 值
+                                $value = preg_replace_callback(
+                                    '/\{:session\(([\'"])(.*?)\1\)\}/i',
+                                    function ($matches) {
+                                        // 假设 session 数据存储在 $_SESSION 或 thinkphp 的 session() 函数
+                                        $sessionKey = $matches[2]; // 例如 'admin.yg_xingming'
+                                        $sessionValue = session($sessionKey); // 获取实际 session 值
+                                        return $sessionValue;
+                                    },
+                                    $value
+                                );
+
                                 if (empty($condition)) {
                                     continue;
                                 }
                                 // 处理不同的条件类型
                                 if ($condition == 9) { // 为空
-                                    $show = Db::name($val['table_name'])
+                                    $show = $prompt_query
                                             ->where($menu_filed['field'], '=', '')
                                             ->orWhereNull($menu_filed['field'])
                                             ->where($where)
                                             ->count() > 0;
                                 } elseif ($condition == 10) { // 不为空
-                                    $show = Db::name($val['table_name'])
+                                    $show = $prompt_query
                                             ->where($menu_filed['field'], '<>', '')
                                             ->whereNotNull($menu_filed['field'])
                                             ->where($where)
@@ -128,26 +218,38 @@ class Admin extends BaseController
                                     // 其他条件使用映射的关系运算符
                                     $operator = $tj[$condition] ?? '=';
                                     if ($operator == 'like' || $operator == 'not like') {
-                                        $value = '%' . $value . '%';
+                                        $value = str_replace('"', '',$value);
+//                                        $value = "%{$value}%";
                                     }
-                                    $show = Db::name($val['table_name'])
-                                            ->where($menu_filed['field'], $operator, $value)
-                                            ->where($where)
-                                            ->count() > 0;
-                                    
+
+                                    if (in_array($operator, ['like', 'not like'])) {
+                                        if ($operator == 'like') {
+                                            $operator = "find_in_set";
+                                        } else {
+                                            $operator = "{$menu_filed['field']} IS NULL OR not find_in_set";
+                                        }
+                                        $show = $prompt_query
+                                                ->whereRaw("{$operator}(?, {$menu_filed['field']})", [$value])
+                                                ->where($where)
+                                                ->count() > 0;
+                                    } else {
+                                        $show = $prompt_query
+                                                ->where($menu_filed['field'], $operator, $value)
+                                                ->where($where)
+                                                ->count() > 0;
+                                    }
                                 }
                             }
                             if ($show) break;
                         }
                     }
                 }
-                
                 $menus[$key]['prompt'] = $show ? 1 : 0;
-                
+
             }
-			return _generateListTree($menus,0,['menu_id','pid']);
-		}
-	}
+            return _generateListTree($menus, 0, ['menu_id', 'pid']);
+        }
+    }
 
 	//获取url
 	private function getUrl($val,$appname){
