@@ -94,7 +94,7 @@ Vue.component('Upload', {
 		</div>
 		<el-progress v-if="progress" :stroke-width="5" :percentage="progressPercent"></el-progress>
 		<ImagesPick :imagesDiaShow.sync="imagesDialogStatus" :siglepic.sync ="siglepic" size="small"></ImagesPick>
-		<VueCrop :cropDiaShow.sync="cropDialogStatus" :imgbase64="imgbase64" :cropFileName="cropFileName" :siglepic.sync="siglepic" :cropsize="cropsize" :rename="rename"></VueCrop>
+		<VueCrop :cropDiaShow.sync="cropDialogStatus" :only_param="only_param" :imgbase64="imgbase64" :cropFileName="cropFileName" :siglepic.sync="siglepic" :cropsize="cropsize" :rename="rename"></VueCrop>
 	</div>
 	`
 	,
@@ -359,6 +359,10 @@ Vue.component('Upload', {
 				rename:{
 					type:String,
 				},
+				only_param:{
+					type: Number,
+					default: null
+				}
 			},
 			watch:{
 				imgbase64(val){
@@ -403,10 +407,12 @@ Vue.component('Upload', {
 					})
 				},
 				upload(file){
+					console.log('only_param', this.only_param)
 					let formdata = new FormData()
 					let ali = new FormData()  //此处非常坑 阿里上传file属性必须要放到最后  所以只能赋值对象
 					formdata.append('file', file)
 					formdata.append('rename', this.rename)
+					formdata.append('only_param', this.only_param)
 					const config = {
 						onUploadProgress: progressEvent => {
 							if (progressEvent.lengthComputable) {
@@ -545,6 +551,10 @@ Vue.component('Upload', {
 		},
 		cropsize:{
 			type:String,
+		},
+		only_param:{
+			type: Number,
+			default: null
 		}
 	},
 	watch: {
@@ -561,13 +571,13 @@ Vue.component('Upload', {
 			this.fileList = this.files
 		},
 		siglepic(newVal,oldVal){
-			if(oldVal && oldVal !== newVal){
+			if(newVal && oldVal && oldVal !== newVal){
 				this.deleteFile(oldVal)
 			}
 			this.$emit('update:image',this.siglepic)
 		},
 		sigleFile(newVal,oldVal){
-			if(oldVal && oldVal !== newVal){
+			if(newVal && oldVal && oldVal !== newVal){
 				this.deleteFile(oldVal)
 			}
 			this.$emit('update:file',this.sigleFile)
@@ -616,11 +626,13 @@ Vue.component('Upload', {
 			}
 		},
 		upload(item){
+			console.log('only_param', this.only_param)
 			let formdata = new FormData()
 			let ali = new FormData()  //此处非常坑 阿里上传file属性必须要放到最后  所以只能赋值对象
 			formdata.append('file', item.file)
 			formdata.append('upload_config_id', this.upload_config_id)
 			formdata.append('rename', this.rename)
+			formdata.append('only_param', this.only_param)
 			const config = {
 				onUploadProgress: progressEvent => {
 					if(progressEvent.lengthComputable) {
@@ -722,12 +734,15 @@ Vue.component('Upload', {
 				type: 'warning'
 			}).then(() => {
 				if(type == 'image'){
+					console.log('this.siglepic',this.siglepic)
+					this.deleteFile(this.siglepic)
 					this.siglepic = ''
 					this.$emit('update:image','')
 				}else if(type == 'images'){
 					this.imageList.splice(index, 1)
 					this.$emit('update:images',this.imageList)
 				}else if(type == 'file'){
+					this.deleteFile(this.sigleFile)
 					this.sigleFile = ''
 					this.$emit('update:file','')
 				}else{
@@ -743,7 +758,10 @@ Vue.component('Upload', {
 			this.showtitle = !this.showtitle
 		},
 		deleteFile(val){
-			axios.post(base_url+'/Base/deleteFile', {filepath:val})
+			console.log('deleteFile-val',val)
+			if (this.only_param) {
+				axios.post(base_url+'/Base/deleteFile', {filepath:val,only_param:this.only_param})
+			}
 		},
 		openImagesPick(){
 			this.imagesDialogStatus = true
@@ -1385,6 +1403,10 @@ Vue.component('WangEditor', {
 		},
 		upload_config_id:{
 			type:Number,
+		},
+		only_param:{
+			type:Number,
+			default: null
 		}
 	},
 	data() {
@@ -1441,8 +1463,9 @@ Vue.component('WangEditor', {
 					let formdata = new FormData()
 					formdata.append('file', resultFiles[0])
 					formdata.append('edit', true)
+					formdata.append('only_param', _this.only_param)
 					formdata.append('upload_config_id', _this.upload_config_id)
-					axios.post(base_url+'/Upload/upload', formdata).then(res => {
+					axios.post(base_url+'/Upload/upload', formdata).then(res => { //
 						insertImgFn(res.data.data)
 					})
 				}
@@ -1462,6 +1485,10 @@ Vue.component('tinymce', {
 		},
 		content: {
 			default:""
+		},
+		only_param:{
+			type:Number,
+			default: null
 		}
 	},
 	data: function() {
@@ -1513,6 +1540,7 @@ Vue.component('tinymce', {
 									var file = item.getAsFile()
 									let formdata = new FormData()
 									formdata.append('file', file)
+									formdata.append('only_param', _this.only_param)
 									formdata.append('edit', true)
 									axios.post(base_url+'/Upload/upload', formdata).then(res => {
 										e.setContent(e.getContent().replace(t.url,res.data.data))
@@ -1865,7 +1893,7 @@ Vue.component('Icon', {
 // });
 //键值对组件带自定义标签
 Vue.component('KeyData', {
-    template: `
+	template: `
         <div class="jzdItem">
             <draggable v-model="jzd" v-bind="{group:'item'}" handle=".jzd-handle">
                 <el-row v-for="(item,i) in jzd" :key="i">
@@ -1891,40 +1919,40 @@ Vue.component('KeyData', {
             </div>
         </div>
     `,
-    props: {
-        item: {
-            type: Array,
-        },
-        keyPlaceholder: {
-            type: String,
-            default: ''
-        },
-        valuePlaceholder: {
-            type: String,
-            default: ''
-        }
-    },
-    watch: {
-        jzd() {
-            this.$emit('update:item', this.jzd)
-        },
-    },
-    data() {
-        return {
-            jzd: this.item
-        }
-    },
-    methods: {
-        addItem() {
-            this.jzd.push({})
-        },
-        deleteItem(index) {
-            this.jzd.splice(index, 1)
-        },
-        clearItem() {
-            this.jzd = []
-        },
-    }
+	props: {
+		item: {
+			type: Array,
+		},
+		keyPlaceholder: {
+			type: String,
+			default: ''
+		},
+		valuePlaceholder: {
+			type: String,
+			default: ''
+		}
+	},
+	watch: {
+		jzd() {
+			this.$emit('update:item', this.jzd)
+		},
+	},
+	data() {
+		return {
+			jzd: this.item
+		}
+	},
+	methods: {
+		addItem() {
+			this.jzd.push({})
+		},
+		deleteItem(index) {
+			this.jzd.splice(index, 1)
+		},
+		clearItem() {
+			this.jzd = []
+		},
+	}
 });
 
 
@@ -1938,7 +1966,7 @@ Vue.component('KeyData', {
 
 //表格工具栏组件
 Vue.component('tableTool', {
-  template: `
+	template: `
     <div>
       <el-button-group>
         <el-tooltip class="item" effect="dark" :content="hsz ? '正常数据' : '回收站'" placement="top">
@@ -1970,105 +1998,105 @@ Vue.component('tableTool', {
       </el-button-group>
     </div>
   `,
-  props: {
-    expand_status: {
-      type: Boolean,
-      default: false,
-    },
-    expand: {
-      type: Boolean,
-      default: false,
-    },
-    hsz_status: {
-      type: Boolean,
-      default: false,
-    },
-    hsz: {
-      type: Boolean,
-      default: false,
-    },
-    search_visible: {
-      type: Boolean,
-      default: false
-    },
-    tableid: {
-      type: String,
-    }
-  },
-  methods: {
-    searchshow() {
-      this.$emit('update:search_visible', !this.search_visible)
-    },
-    toggleHszList() {
-      this.$emit('update:hsz', !this.hsz)
-      this.$emit('toggle_list')
-    },
-    refesh_list() {
-      this.$emit('refesh_list')
-    },
-    toggleRowExpansion() {
-      this.$emit('toggle')
-    },
-    printer() {
-      const html = document.querySelector('#' + this.tableid).innerHTML
-      const div = document.createElement('div')
-      const printDOMID = 'printDOMElement'
-      div.id = printDOMID
-      div.innerHTML = html
-      const ths = div.querySelectorAll('.el-table__header-wrapper th')
-      const rows = div.querySelectorAll('.el-table__body-wrapper table tr');
+	props: {
+		expand_status: {
+			type: Boolean,
+			default: false,
+		},
+		expand: {
+			type: Boolean,
+			default: false,
+		},
+		hsz_status: {
+			type: Boolean,
+			default: false,
+		},
+		hsz: {
+			type: Boolean,
+			default: false,
+		},
+		search_visible: {
+			type: Boolean,
+			default: false
+		},
+		tableid: {
+			type: String,
+		}
+	},
+	methods: {
+		searchshow() {
+			this.$emit('update:search_visible', !this.search_visible)
+		},
+		toggleHszList() {
+			this.$emit('update:hsz', !this.hsz)
+			this.$emit('toggle_list')
+		},
+		refesh_list() {
+			this.$emit('refesh_list')
+		},
+		toggleRowExpansion() {
+			this.$emit('toggle')
+		},
+		printer() {
+			const html = document.querySelector('#' + this.tableid).innerHTML
+			const div = document.createElement('div')
+			const printDOMID = 'printDOMElement'
+			div.id = printDOMID
+			div.innerHTML = html
+			const ths = div.querySelectorAll('.el-table__header-wrapper th')
+			const rows = div.querySelectorAll('.el-table__body-wrapper table tr');
 
-      const ThsTextArry = []
-      for (let i = 0, len = ths.length; i < len; i++) {
-        if (ths[i].innerText !== '' && ths[i].innerText !== '编号' && ths[i].innerText !== '操作') ThsTextArry.push(ths[i].innerText)
-      }
-      const ThsHtmlArry = [];
-      for (let i = 0, len = rows.length; i < len; i++) {
-        const tr = document.createElement('tr');
-        const tds = rows[i].querySelectorAll('td');
-        for (let j = 0, tdLen = tds.length; j < tdLen; j++) {
-          if (j !== 0 && j !== 1 && j !== tdLen - 1) {
-            if (tds[j].innerHTML.includes('img')) {
-              tr.innerHTML += "<td>" + tds[j].innerHTML + "</td>";
-            } else if (tds[j].innerHTML.includes('switch')) {
-              if (tds[j].innerHTML.includes('is-checked')) {
-                tr.innerHTML += "<td>正常</td>";
-              } else {
-                tr.innerHTML += "<td>禁用</td>";
-              }
-            } else {
-              tr.innerHTML += "<td>" + tds[j].innerText + "</td>";
-            }
-          }
-        }
-        ThsHtmlArry.push(tr.outerHTML);
-      }
-      let trStr = ''
-      for (let i = 0, len = ThsHtmlArry.length; i < len; i++) {
-        trStr += ThsHtmlArry[i]
-      }
+			const ThsTextArry = []
+			for (let i = 0, len = ths.length; i < len; i++) {
+				if (ths[i].innerText !== '' && ths[i].innerText !== '编号' && ths[i].innerText !== '操作') ThsTextArry.push(ths[i].innerText)
+			}
+			const ThsHtmlArry = [];
+			for (let i = 0, len = rows.length; i < len; i++) {
+				const tr = document.createElement('tr');
+				const tds = rows[i].querySelectorAll('td');
+				for (let j = 0, tdLen = tds.length; j < tdLen; j++) {
+					if (j !== 0 && j !== 1 && j !== tdLen - 1) {
+						if (tds[j].innerHTML.includes('img')) {
+							tr.innerHTML += "<td>" + tds[j].innerHTML + "</td>";
+						} else if (tds[j].innerHTML.includes('switch')) {
+							if (tds[j].innerHTML.includes('is-checked')) {
+								tr.innerHTML += "<td>正常</td>";
+							} else {
+								tr.innerHTML += "<td>禁用</td>";
+							}
+						} else {
+							tr.innerHTML += "<td>" + tds[j].innerText + "</td>";
+						}
+					}
+				}
+				ThsHtmlArry.push(tr.outerHTML);
+			}
+			let trStr = ''
+			for (let i = 0, len = ThsHtmlArry.length; i < len; i++) {
+				trStr += ThsHtmlArry[i]
+			}
 
-      let newHTML = '<tr>'
-      for (let i = 0, len = ThsTextArry.length; i < len; i++) {
-        newHTML += '<td style="text-align: center; font-weight: bold">' + ThsTextArry[i] + '</td>'
-      }
-      newHTML += '</tr>'
+			let newHTML = '<tr>'
+			for (let i = 0, len = ThsTextArry.length; i < len; i++) {
+				newHTML += '<td style="text-align: center; font-weight: bold">' + ThsTextArry[i] + '</td>'
+			}
+			newHTML += '</tr>'
 
-      let printStr = "<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'></head>";
-      const tabStyle = "<style>table.gridtable {width:100%;font-family: verdana,arial,sans-serif;font-size:11px;color:#606266;border-width: 1px;border-color: #ddd;border-collapse: collapse;}table.gridtable th {border-width: 1px;padding: 8px;border-style: solid;border-color: #ddd;background-color: #dedede;}table.gridtable td {border-width: 1px;padding: 15px 0;border-style: solid;border-color: #ddd;background-color: #ffffff;text-align:center;}img{width:50px; height:50px;}</style><body>";
-      printStr = printStr + tabStyle + "<table class='gridtable'>" + newHTML + trStr + "</body></html>";
+			let printStr = "<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'></head>";
+			const tabStyle = "<style>table.gridtable {width:100%;font-family: verdana,arial,sans-serif;font-size:11px;color:#606266;border-width: 1px;border-color: #ddd;border-collapse: collapse;}table.gridtable th {border-width: 1px;padding: 8px;border-style: solid;border-color: #ddd;background-color: #dedede;}table.gridtable td {border-width: 1px;padding: 15px 0;border-style: solid;border-color: #ddd;background-color: #ffffff;text-align:center;}img{width:50px; height:50px;}</style><body>";
+			printStr = printStr + tabStyle + "<table class='gridtable'>" + newHTML + trStr + "</body></html>";
 
-      let pwin = window.open("_blank");
-      pwin.document.write(printStr);
-      pwin.document.close();
-      pwin.focus();
-      setTimeout(() => {
-        pwin.print();
-        pwin.close();
-      }, 500);
-      div.remove()
-    }
-  },
+			let pwin = window.open("_blank");
+			pwin.document.write(printStr);
+			pwin.document.close();
+			pwin.focus();
+			setTimeout(() => {
+				pwin.print();
+				pwin.close();
+			}, 500);
+			div.remove()
+		}
+	},
 });
 
 //搜索按钮
