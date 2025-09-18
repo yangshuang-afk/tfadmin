@@ -80,12 +80,58 @@ class Base extends Admin {
  	*/
 	function deleteFile(){
 		$filepath =  $this->request->post('filepath', '', 'serach_in');
+        $only_param =  $this->request->post('only_param');
 		if(!$filepath) $this->error('请选择图片');
+        if ($only_param) {
 
+            $fileInfo = Db::name('file')->where('filepath',$filepath)
+                ->where('only_param',$only_param)->find();
+
+            if (!empty($fileInfo)) {
+                if (!empty($fileInfo['use_in'])) {
+                    $use_in = json_decode($fileInfo['use_in'],true);
+                    if (count($use_in) > 0) {
+                        // 清除随机数 和 对应的键值对
+                        Db::name('file')->where('filepath',$filepath)
+                            ->where('only_param',$only_param)->update([
+                                'only_param' => 0
+                            ]);
+                    } else {
+                        // 删除数据 和 文件
+                        Db::name('file')->where('filepath',$filepath)
+                            ->where('only_param',$only_param)->delete();
+                        event('DeleteFile',$fileInfo['filepath']);
+                    }
+                } else {
+                    // 删除数据 和 文件
+                    Db::name('file')->where('filepath',$filepath)
+                        ->where('only_param',$only_param)->delete();
+                    event('DeleteFile',$fileInfo['filepath']);
+                }
+            }
+        } else {
+            $fileList = Db::name('file')->where('filepath','in',$filepath)->select();
+            foreach ($fileList as $fileListItem) {
+                if (!empty($fileListItem)) {
+                    if (!empty($fileListItem['use_in'])) {
+                        $use_in = json_decode($fileListItem['use_in'],true);
+                        if (count($use_in) > 0) {
+                            continue;
+                        } else {
+                            // 删除数据 和 文件
+                            Db::name('file')->where('filepath',$fileListItem['filepath'])->delete();
+                            event('DeleteFile',$fileListItem['filepath']);
+                        }
+                    } else {
+                        // 删除数据 和 文件
+                        Db::name('file')->where('filepath',$fileListItem['filepath'])->delete();
+                        event('DeleteFile',$fileListItem['filepath']);
+                    }
+                }
+            }
+        }
 		//event('DeleteFile',$filepath);	//删除文件物理路径
-
-		FileModel::where('filepath','in',$filepath)->delete();
-
+		//FileModel::where('filepath','in',$filepath)->delete();
 		return json(['status'=>200,'msg'=>'操作成功']);
 	}
 
