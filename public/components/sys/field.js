@@ -388,6 +388,8 @@ Vue.component('AdminAdd', {
 										<el-option key="4" label="月" value="month"></el-option>
 										<el-option key="6" label="时分秒" value="time"></el-option>
 										<el-option key="7" label="多日期" value="dates"></el-option>
+										<el-option key="8" label="月/日/年" value="mdy"></el-option>
+										<el-option key="9" label="月/日/年时分秒" value="mdyhis"></el-option>
 								</el-select>
 							</el-form-item>
 						</el-row>
@@ -1444,6 +1446,8 @@ Vue.component('AdminUpdate', {
 										<el-option key="4" label="月" value="month"></el-option>
 										<el-option key="6" label="时分秒" value="time"></el-option>
 										<el-option key="7" label="多日期" value="dates"></el-option>
+										<el-option key="8" label="月/日/年" value="mdy"></el-option>
+										<el-option key="9" label="月/日/年时分秒" value="mdyhis"></el-option>
 								</el-select>
 							</el-form-item>
 						</el-row>
