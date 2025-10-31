@@ -598,6 +598,7 @@ Vue.component('AdminAdd', {
 											<el-option key="3" label="居中" :value="2"></el-option>
 											<el-option key="4" label="居左" :value="3"></el-option>
 											<el-option key="5" label="居右" :value="4"></el-option>
+											<el-option key="6" label="换行显示" :value="5"></el-option>
 										</el-option-group>
 									</el-select>
 								 </el-form-item>
@@ -684,6 +685,7 @@ Vue.component('AdminAdd', {
 								</el-form-item>
 							</el-col>
 						</el-row>
+						
 					</div>
 				</div>
 				<!-- 右侧 - 拓展信息 -->
@@ -1656,6 +1658,7 @@ Vue.component('AdminUpdate', {
 											<el-option key="3" label="居中" :value="2"></el-option>
 											<el-option key="4" label="居左" :value="3"></el-option>
 											<el-option key="5" label="居右" :value="4"></el-option>
+											<el-option key="6" label="换行显示" :value="5"></el-option>
 										</el-option-group>
 									</el-select>
 								 </el-form-item>
@@ -1738,6 +1741,7 @@ Vue.component('AdminUpdate', {
 								</el-form-item>
 							</el-col>
 						</el-row>
+						
 					</div>
 				</div>
 				<!-- 右侧 - 拓展信息 -->
