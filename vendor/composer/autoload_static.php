@@ -10,11 +10,11 @@ class ComposerStaticInitcec300be880099a46963987e9af3fdf2
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
+        '9b552a3cc426e3287cc811caefa3cf53' => __DIR__ . '/..' . '/topthink/think-helper/src/helper.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
-        '9b552a3cc426e3287cc811caefa3cf53' => __DIR__ . '/..' . '/topthink/think-helper/src/helper.php',
-        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '35fab96057f1bf5e7aba31a8a6d5fdde' => __DIR__ . '/..' . '/topthink/think-orm/stubs/load_stubs.php',
+        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         'a1105708a18b76903365ca1c4aa61b02' => __DIR__ . '/..' . '/symfony/translation/Resources/functions.php',
         '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         'c5521cebe610a9bf42c44b3a5163adfd' => __DIR__ . '/..' . '/overtrue/socialite/src/Contracts/FactoryInterface.php',
@@ -33,6 +33,7 @@ class ComposerStaticInitcec300be880099a46963987e9af3fdf2
     public static $prefixLengthsPsr4 = array (
         't' => 
         array (
+            'think\\worker\\' => 13,
             'think\\view\\driver\\' => 18,
             'think\\captcha\\' => 14,
             'think\\app\\' => 10,
@@ -52,6 +53,7 @@ class ComposerStaticInitcec300be880099a46963987e9af3fdf2
         ),
         'W' => 
         array (
+            'Workerman\\' => 10,
             'WePay\\' => 6,
             'WePayV3\\' => 8,
             'WeMini\\' => 7,
@@ -121,6 +123,7 @@ class ComposerStaticInitcec300be880099a46963987e9af3fdf2
             'GuzzleHttp\\Command\\Guzzle\\' => 26,
             'GuzzleHttp\\Command\\' => 19,
             'GuzzleHttp\\' => 11,
+            'GatewayWorker\\' => 14,
         ),
         'E' => 
         array (
@@ -141,6 +144,10 @@ class ComposerStaticInitcec300be880099a46963987e9af3fdf2
     );
 
     public static $prefixDirsPsr4 = array (
+        'think\\worker\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/topthink/think-worker/src',
+        ),
         'think\\view\\driver\\' => 
         array (
             0 => __DIR__ . '/..' . '/topthink/think-view/src',
@@ -174,6 +181,10 @@ class ComposerStaticInitcec300be880099a46963987e9af3fdf2
         'ZipStream\\' => 
         array (
             0 => __DIR__ . '/..' . '/maennchen/zipstream-php/src',
+        ),
+        'Workerman\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/workerman/workerman',
         ),
         'WePay\\' => 
         array (
@@ -368,6 +379,10 @@ class ComposerStaticInitcec300be880099a46963987e9af3fdf2
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
         ),
+        'GatewayWorker\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/workerman/gateway-worker/src',
+        ),
         'Endroid\\QrCode\\' => 
         array (
             0 => __DIR__ . '/..' . '/endroid/qr-code/src',
@@ -422,6 +437,7 @@ class ComposerStaticInitcec300be880099a46963987e9af3fdf2
     public static $classMap = array (
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'FPDF' => __DIR__ . '/..' . '/setasign/fpdf/fpdf.php',
         'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
         'Stringable' => __DIR__ . '/..' . '/myclabs/php-enum/stubs/Stringable.php',
         'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',

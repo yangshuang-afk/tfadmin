@@ -451,6 +451,15 @@ private static $installed = array (
       ),
       'reference' => '120b605dfeb996808c31b6477290a714d356e822',
     ),
+    'setasign/fpdf' => 
+    array (
+      'pretty_version' => '1.8.6',
+      'version' => '1.8.6.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '0838e0ee4925716fcbbc50ad9e1799b5edfae0a0',
+    ),
     'setasign/fpdi' => 
     array (
       'pretty_version' => 'v2.6.0',
@@ -723,6 +732,33 @@ private static $installed = array (
       array (
       ),
       'reference' => 'd2a076011c96d2edd8016703a827fb54b2683c62',
+    ),
+    'topthink/think-worker' => 
+    array (
+      'pretty_version' => 'v4.0.0',
+      'version' => '4.0.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '2bd716582c912075e38036f896a2b45e64bf858d',
+    ),
+    'workerman/gateway-worker' => 
+    array (
+      'pretty_version' => 'v3.0.22',
+      'version' => '3.0.22.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'a615036c482d11f68b693998575e804752ef9068',
+    ),
+    'workerman/workerman' => 
+    array (
+      'pretty_version' => 'v3.5.34',
+      'version' => '3.5.34.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'fe4fc5ecc44d0410a22214d9e8679e2fc3795f5a',
     ),
     'zoujingli/wechat-developer' => 
     array (

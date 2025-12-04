@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'think\\worker\\' => array($vendorDir . '/topthink/think-worker/src'),
     'think\\view\\driver\\' => array($vendorDir . '/topthink/think-view/src'),
     'think\\captcha\\' => array($vendorDir . '/topthink/think-captcha/src'),
     'think\\app\\' => array($vendorDir . '/topthink/think-multi-app/src'),
@@ -13,6 +14,7 @@ return array(
     'setasign\\Fpdi\\' => array($vendorDir . '/setasign/fpdi/src'),
     'app\\' => array($baseDir . '/app'),
     'ZipStream\\' => array($vendorDir . '/maennchen/zipstream-php/src'),
+    'Workerman\\' => array($vendorDir . '/workerman/workerman'),
     'WePay\\' => array($vendorDir . '/zoujingli/wechat-developer/WePay'),
     'WePayV3\\' => array($vendorDir . '/zoujingli/wechat-developer/WePayV3'),
     'WeMini\\' => array($vendorDir . '/zoujingli/wechat-developer/WeMini'),
@@ -61,6 +63,7 @@ return array(
     'GuzzleHttp\\Command\\Guzzle\\' => array($vendorDir . '/guzzlehttp/guzzle-services/src'),
     'GuzzleHttp\\Command\\' => array($vendorDir . '/guzzlehttp/command/src'),
     'GuzzleHttp\\' => array($vendorDir . '/guzzlehttp/guzzle/src'),
+    'GatewayWorker\\' => array($vendorDir . '/workerman/gateway-worker/src'),
     'Endroid\\QrCode\\' => array($vendorDir . '/endroid/qr-code/src'),
     'EasyWeChat\\' => array($vendorDir . '/overtrue/wechat/src'),
     'EasyWeChatComposer\\' => array($vendorDir . '/easywechat-composer/easywechat-composer/src'),

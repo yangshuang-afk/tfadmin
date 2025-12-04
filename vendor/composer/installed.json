@@ -2959,6 +2959,61 @@
             "install-path": "../ralouphie/getallheaders"
         },
         {
+            "name": "setasign/fpdf",
+            "version": "1.8.6",
+            "version_normalized": "1.8.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Setasign/FPDF.git",
+                "reference": "0838e0ee4925716fcbbc50ad9e1799b5edfae0a0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Setasign/FPDF/zipball/0838e0ee4925716fcbbc50ad9e1799b5edfae0a0",
+                "reference": "0838e0ee4925716fcbbc50ad9e1799b5edfae0a0",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "ext-gd": "*",
+                "ext-zlib": "*"
+            },
+            "time": "2023-06-26T14:44:25+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "classmap": [
+                    "fpdf.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Olivier Plathey",
+                    "email": "oliver@fpdf.org",
+                    "homepage": "http://fpdf.org/"
+                }
+            ],
+            "description": "FPDF is a PHP class which allows to generate PDF files with pure PHP. F from FPDF stands for Free: you may use it for any kind of usage and modify it to suit your needs.",
+            "homepage": "http://www.fpdf.org",
+            "keywords": [
+                "fpdf",
+                "pdf"
+            ],
+            "support": {
+                "source": "https://github.com/Setasign/FPDF/tree/1.8.6"
+            },
+            "install-path": "../setasign/fpdf"
+        },
+        {
             "name": "setasign/fpdi",
             "version": "v2.6.0",
             "version_normalized": "2.6.0.0",
@@ -4874,6 +4929,199 @@
                 "source": "https://github.com/top-think/think-view/tree/v2.0.0"
             },
             "install-path": "../topthink/think-view"
+        },
+        {
+            "name": "topthink/think-worker",
+            "version": "v4.0.0",
+            "version_normalized": "4.0.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/top-think/think-worker.git",
+                "reference": "2bd716582c912075e38036f896a2b45e64bf858d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/top-think/think-worker/zipball/2bd716582c912075e38036f896a2b45e64bf858d",
+                "reference": "2bd716582c912075e38036f896a2b45e64bf858d",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "ext-fileinfo": "*",
+                "topthink/framework": "^8.0",
+                "workerman/gateway-worker": "^3.0.0",
+                "workerman/workerman": "^3.5.23"
+            },
+            "time": "2023-07-20T08:50:45+00:00",
+            "type": "library",
+            "extra": {
+                "think": {
+                    "config": {
+                        "worker": "src/config/worker.php",
+                        "worker_server": "src/config/server.php",
+                        "gateway_worker": "src/config/gateway.php"
+                    },
+                    "services": [
+                        "think\\worker\\Service"
+                    ]
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "think\\worker\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "liu21st",
+                    "email": "liu21st@gmail.com"
+                }
+            ],
+            "description": "workerman extend for thinkphp6.0",
+            "support": {
+                "issues": "https://github.com/top-think/think-worker/issues",
+                "source": "https://github.com/top-think/think-worker/tree/v4.0.0"
+            },
+            "install-path": "../topthink/think-worker"
+        },
+        {
+            "name": "workerman/gateway-worker",
+            "version": "v3.0.22",
+            "version_normalized": "3.0.22.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/walkor/GatewayWorker.git",
+                "reference": "a615036c482d11f68b693998575e804752ef9068"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/walkor/GatewayWorker/zipball/a615036c482d11f68b693998575e804752ef9068",
+                "reference": "a615036c482d11f68b693998575e804752ef9068",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "workerman/workerman": ">=3.5.0"
+            },
+            "time": "2021-12-23T13:13:09+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "GatewayWorker\\": "./src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "homepage": "http://www.workerman.net",
+            "keywords": [
+                "communication",
+                "distributed"
+            ],
+            "support": {
+                "issues": "https://github.com/walkor/GatewayWorker/issues",
+                "source": "https://github.com/walkor/GatewayWorker/tree/v3.0.22"
+            },
+            "funding": [
+                {
+                    "url": "https://opencollective.com/walkor",
+                    "type": "open_collective"
+                },
+                {
+                    "url": "https://www.patreon.com/walkor",
+                    "type": "patreon"
+                }
+            ],
+            "install-path": "../workerman/gateway-worker"
+        },
+        {
+            "name": "workerman/workerman",
+            "version": "v3.5.34",
+            "version_normalized": "3.5.34.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/walkor/workerman.git",
+                "reference": "fe4fc5ecc44d0410a22214d9e8679e2fc3795f5a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/walkor/workerman/zipball/fe4fc5ecc44d0410a22214d9e8679e2fc3795f5a",
+                "reference": "fe4fc5ecc44d0410a22214d9e8679e2fc3795f5a",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "suggest": {
+                "ext-event": "For better performance. "
+            },
+            "time": "2022-12-16T02:47:08+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Workerman\\": "./"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "walkor",
+                    "email": "walkor@workerman.net",
+                    "homepage": "http://www.workerman.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "An asynchronous event driven PHP framework for easily building fast, scalable network applications.",
+            "homepage": "http://www.workerman.net",
+            "keywords": [
+                "asynchronous",
+                "event-loop"
+            ],
+            "support": {
+                "email": "walkor@workerman.net",
+                "forum": "http://wenda.workerman.net/",
+                "issues": "https://github.com/walkor/workerman/issues",
+                "source": "https://github.com/walkor/workerman",
+                "wiki": "http://doc.workerman.net/"
+            },
+            "funding": [
+                {
+                    "url": "https://opencollective.com/workerman",
+                    "type": "open_collective"
+                },
+                {
+                    "url": "https://www.patreon.com/walkor",
+                    "type": "patreon"
+                }
+            ],
+            "install-path": "../workerman/workerman"
         },
         {
             "name": "zoujingli/wechat-developer",
