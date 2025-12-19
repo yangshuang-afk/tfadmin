@@ -16,15 +16,17 @@ class Base extends Admin
 {
     const VERSION = '20240825';
     
-    public function initialize()
-    {
+    private string $url = 'http://tfadmin.tiefen.net';
+    private string $groupTableSuffix = "_tf_approval_group";
+    private string $flowTableSuffix = "_tf_approval_flow";
+    
+    public function initialize() {
         parent::initialize();
         config(['view_path' => app_path()], 'view');
     }
     
     //应用列表
-    public function applicationList()
-    {
+    public function applicationList() {
         if (!$this->request->isPost()) {
             return view('controller/Sys/view/application');
         } else {
@@ -39,8 +41,7 @@ class Base extends Admin
     }
     
     //创建应用
-    public function createApplication()
-    {
+    public function createApplication() {
         $data = $this->request->post();
         try {
             $res = Application::create($data);
@@ -54,8 +55,7 @@ class Base extends Admin
     }
     
     //修改应用
-    public function updateApplication()
-    {
+    public function updateApplication() {
         $data = $this->request->post();
         try {
             Application::update($data);
@@ -66,8 +66,7 @@ class Base extends Admin
     }
     
     //获取应用
-    public function getApplicationInfo()
-    {
+    public function getApplicationInfo() {
         $data = $this->request->post('app_id');
         try {
             $res = Application::find($data);
@@ -80,8 +79,7 @@ class Base extends Admin
     /*
      * @Description  秘钥管理
      */
-    public function secrect()
-    {
+    public function secrect() {
         if (!$this->request->isPost()) {
             return view('controller/Sys/view/secrect');
         } else {
@@ -98,12 +96,10 @@ class Base extends Admin
         }
     }
     
-    
     /*
      * @Description  修改信息之前查询信息的 勿要删除
      */
-    function getSecrectInfo()
-    {
+    function getSecrectInfo() {
         $res = db('secrect')->column('data', 'name');
         $data['status'] = 200;
         $data['data'] = $res;
@@ -111,8 +107,7 @@ class Base extends Admin
     }
     
     //获取主键ID
-    public function getPk()
-    {
+    public function getPk() {
         $data = $this->request->post('tablename');
         try {
             $res = Db::name($data)->getPk();
@@ -123,8 +118,7 @@ class Base extends Admin
     }
     
     //生成应用
-    public function buildApplication()
-    {
+    public function buildApplication() {
         $data = $this->request->post('app_id');
         $type = $this->request->post('type');
         
@@ -168,7 +162,7 @@ class Base extends Admin
         $info['sign'] = md5(md5(json_encode($info, JSON_UNESCAPED_UNICODE) . $secrect['secrect']));
         
         $info['domain'] = $_SERVER['HTTP_HOST'];
-        $res = $this->curlRequest('http://tfadmin.tiefen.net/produce/createApp/buildCode', 'POST', $info);
+        $res = $this->curlRequest($this->url . '/produce/createApp/buildCode', 'POST', $info);
         
         $res = json_decode($res, true);
         
@@ -211,8 +205,7 @@ class Base extends Admin
     }
     
     //删除应用
-    public function deleteApplication()
-    {
+    public function deleteApplication() {
         $data = $this->request->post();
         try {
             Application::destroy($data);
@@ -222,8 +215,7 @@ class Base extends Admin
         return json(['status' => 200]);
     }
     
-    private function getTpl($appid, $menu)
-    {
+    private function getTpl($appid, $menu) {
         $info = Application::find($appid);
         switch ($info['app_type']) {
             case 1:
@@ -243,8 +235,7 @@ class Base extends Admin
     }
     
     //菜单列表
-    function menu()
-    {
+    function menu() {
         if (!$this->request->isPost()) {
             $appid = $this->request->get('appid', 1, 'intval');
             $tpl = $this->getTpl($appid, 'menu');
@@ -272,8 +263,7 @@ class Base extends Admin
     }
     
     //创建菜单
-    public function createMenu()
-    {
+    public function createMenu() {
         $data = $this->request->post();
         $data['controller_name'] = $this->setControllerName($data['controller_name']);
         $res = Menu::create($data);
@@ -305,8 +295,7 @@ class Base extends Admin
     }
     
     //更新菜单
-    public function updateMenu()
-    {
+    public function updateMenu() {
         $data = $this->request->post();
         $data['controller_name'] = $this->setControllerName($data['controller_name']);
         
@@ -332,8 +321,7 @@ class Base extends Admin
     }
     
     //方法列表直接修改操作
-    public function updateMenuExt()
-    {
+    public function updateMenuExt() {
         $data = $this->request->post();
         try {
             $res = Menu::update($data);
@@ -345,8 +333,7 @@ class Base extends Admin
     
     
     //获取菜单信息
-    public function getMenuInfo()
-    {
+    public function getMenuInfo() {
         $data = $this->request->post('menu_id');
         try {
             $res = menu::find($data);
@@ -357,8 +344,7 @@ class Base extends Admin
     }
     
     //删除菜单
-    public function deleteMenu()
-    {
+    public function deleteMenu() {
         $data = $this->request->post();
         try {
             $res = Menu::destroy($data);
@@ -372,10 +358,8 @@ class Base extends Admin
         return json(['status' => 200]);
     }
     
-    
     //复制菜单
-    public function copyMenu()
-    {
+    public function copyMenu() {
         $data = $this->request->post();
         if (empty($data['appid']) || empty($data['menu_id'])) {
             $this->error('参数错误');
@@ -437,8 +421,7 @@ class Base extends Admin
     }
     
     //菜单字段列表
-    public function fieldList()
-    {
+    public function fieldList() {
         if (!$this->request->isPost()) {
             $appid = $this->request->get('appid', 1, 'intval');
             $menu_id = $this->request->get('menu_id', '', 'intval');
@@ -463,7 +446,13 @@ class Base extends Admin
             $menu_id = $this->request->post('menu_id', '', 'intval');
             $appid = $this->request->post('appid', '', 'intval');
             
-            $res = Field::where(['menu_id' => $menu_id])->order('sortid asc')->paginate(['list_rows' => $limit, 'page' => $page])->toArray();
+            $res = Field::where([
+                'menu_id' => $menu_id,
+                'field_show' => 1
+            ])
+                ->order('sortid asc')
+                ->paginate(['list_rows' => $limit, 'page' => $page])
+                ->toArray();
             $data['status'] = 200;
             $data['data'] = $res;
             $data['typeField'] = Config::fieldList();
@@ -481,8 +470,7 @@ class Base extends Admin
     }
     
     //创建字段
-    public function createField()
-    {
+    public function createField() {
         $data = $this->request->post();
         
         $this->validate($data, \app\admin\controller\Sys\validate\Field::class);
@@ -546,13 +534,11 @@ class Base extends Admin
         return json(['status' => 200]);
     }
     
-    
     /**
      * 批量创建字段（包含MySQL表结构修改）
      * @return \think\response\Json
      */
-    public function batchCreateField()
-    {
+    public function batchCreateField() {
         $fields = $this->request->post('fields/a', []);
         $menuId = $this->request->param('menu_id');
         $tableName = $this->request->param('table_name'); // 直接从请求获取表名
@@ -596,8 +582,7 @@ class Base extends Admin
     /**
      * 修改数据表字段结构
      */
-    protected function alterTableField($tableName, $field)
-    {
+    protected function alterTableField($tableName, $field) {
         // 检查表是否存在
         if (!Db::query("SHOW TABLES LIKE '{$tableName}'")) {
             throw new \Exception("数据表{$tableName}不存在");
@@ -641,8 +626,7 @@ class Base extends Admin
     }
     
     //更新字段
-    public function updateField()
-    {
+    public function updateField() {
         $data = $this->request->post();
         if (isset($data['other_config']['shuxing']) && in_array('tabs', $data['other_config']['shuxing'])) {
             $info = Field::where('menu_id', $data['menu_id'])->where('other_config', 'like', '%\"tabs%')->where('id', '<>', $data['id'])->findOrEmpty();
@@ -718,8 +702,7 @@ class Base extends Admin
     }
     
     //方法列表直接修改操作
-    public function updateFieldExt()
-    {
+    public function updateFieldExt() {
         $data = $this->request->post();
         try {
             $res = Field::update($data);
@@ -731,8 +714,7 @@ class Base extends Admin
     
     
     //字段同步到其他应用
-    public function copyField()
-    {
+    public function copyField() {
         $appid = $this->request->post('appid');
         $field = $this->request->post('field_id');
         $menu_id = $this->request->post('menu_id');
@@ -778,8 +760,7 @@ class Base extends Admin
     }
     
     //获取字段信息
-    public function getFieldInfo()
-    {
+    public function getFieldInfo() {
         $data = $this->request->post();
         try {
             $res = Field::where($data)->find()->toArray();
@@ -800,8 +781,7 @@ class Base extends Admin
     }
     
     //删除字段
-    public function deleteField()
-    {
+    public function deleteField() {
         $data = $this->request->post();
         $menuInfo = Menu::find($data['menu_id']);
         $pk = Db::connect($menuInfo['connect'])->name($menuInfo['table_name'])->getPk();
@@ -823,8 +803,7 @@ class Base extends Admin
     }
     
     //方法列表
-    public function actionList()
-    {
+    public function actionList() {
         if (!$this->request->isPost()) {
             $appid = $this->request->get('appid', 1, 'intval');
             $menu_id = $this->request->get('menu_id', '', 'intval');
@@ -838,7 +817,13 @@ class Base extends Admin
             $menu_id = $this->request->post('menu_id', '', 'intval');
             $appid = $this->request->post('app_id');
             
-            $res = Action::where(['menu_id' => $menu_id])->order('sortid asc')->paginate(['list_rows' => $limit, 'page' => $page]);
+            $res = Action::where([
+                'menu_id' => $menu_id,
+                'action_show' => 1
+            ])
+                ->order('sortid asc')
+                ->paginate(['list_rows' => $limit, 'page' => $page]);
+            
             $data['data'] = $res;
             $data['status'] = 200;
             $data['actionList'] = Config::actionList();
@@ -849,13 +834,15 @@ class Base extends Admin
     }
     
     //获取提交字段
-    public function getPostField()
-    {
+    public function getPostField() {
         $menu_id = $this->request->post('menu_id');
-        
         $menuInfo = Menu::find($menu_id);
-        
         $list = [];
+        // 审批流相关数据
+        $flowMenu_id = 0;
+        $groupFields = [];
+        $flowTableList = [];
+        
         $fieldlist = Field::field('type,field,title,post_status')->where('menu_id', $menu_id)->order('sortid asc')->select()->toArray();
         foreach ($fieldlist as $k => $v) {
             if ($v['post_status'] == 1) {
@@ -867,7 +854,11 @@ class Base extends Admin
         
         $model_fields = array_merge([['field' => $pk, 'title' => '编号']], $list);
         
-        $tableList = Menu::where('table_name', '<>', '')->where('app_id', $menuInfo['app_id'])->field('controller_name')->select()->toArray();
+        $tableList = Menu::where('table_name', '<>', '')
+            ->where('app_id', $menuInfo['app_id'])
+            ->field('controller_name')
+            ->select()
+            ->toArray();
         
         $with_join = [];
         $actionList = Action::where('menu_id', $menu_id)->select();
@@ -880,6 +871,26 @@ class Base extends Admin
                     }
                 }
             }
+            
+            if ($v['type'] == 57) {
+                $v_other_config = json_decode($v['other_config'], true);
+                $flowMenu_id = $v_other_config['flow_table'];
+            }
+        }
+        
+        // 存在审批流 查字段，查流
+        $flowMenu_all = Db::name('field')->where('type', 42)->column("menu_id");
+        $flowTableList = Menu::whereIn('menu_id', $flowMenu_all)
+            ->where('app_id', $menuInfo['app_id'])
+            ->select()
+            ->toArray();
+        
+        if ($flowMenu_id) {
+            $field_sql = Db::name('field')->where(['menu_id' => $flowMenu_id, 'type' => 2])->order('id desc')->value('sql');
+            $groupFields = $this->query($field_sql, 'mysql');
+        } else if (!empty($flowMenu_all[0])) {
+            $field_sql = Db::name('field')->where(['menu_id' => $flowMenu_all[0], 'type' => 2])->order('id desc')->value('sql');
+            if ($field_sql) $groupFields = $this->query($field_sql, 'mysql');
         }
         
         $newWith = [];
@@ -898,12 +909,24 @@ class Base extends Admin
         $dbtype = config('database.connections.' . $connect . '.type');
         
         $tab_fields = array_merge($list, $newWith);
-        return json(['status' => 200, 'dbtype' => $dbtype, 'data' => $list, 'jump_field' => $fieldlist, 'model_fields' => $model_fields, 'search_field' => $fieldlist, 'tab_fields' => $tab_fields, 'tableList' => $tableList, 'sms_list' => Config::sms_list()]);
+        return json([
+            'status' => 200,
+            'dbtype' => $dbtype,
+            'data' => $list,
+            'jump_field' => $fieldlist,
+            'model_fields' => $model_fields,
+            'search_field' => $fieldlist,
+            'tab_fields' => $tab_fields,
+            'tableList' => $tableList,
+            'sms_list' => Config::sms_list(),
+            
+            'flowTableList' => $flowTableList,
+            'groupFields' => $groupFields,
+        ]);
     }
     
     //创建方法
-    public function createAction()
-    {
+    public function createAction() {
         $data = $this->request->post();
         
         $this->validate($data, \app\admin\controller\Sys\validate\Action::class);
@@ -921,6 +944,36 @@ class Base extends Admin
             $data['h_php'] = $data['h_php'] ?? '';
         }
         
+        /**
+         * 审批事件验证
+         */
+        if ($data['type'] == 57) {
+            if (!isset($data['other_config']['flow_join'])
+                || empty($data['other_config']['flow_join'])) {
+                throw new ValidateException("请选择关联字段");
+            }
+            if (!isset($data['other_config']['flow_table'])
+                || empty($data['other_config']['flow_table'])) {
+                throw new ValidateException("请选择审核关联表");
+            }
+            if (!isset($data['other_config']['flow_filed'])
+                || empty($data['other_config']['flow_filed'])) {
+                throw new ValidateException("请选择对应字段");
+            }
+            if (!isset($data['other_config']['flow_group_field'])
+                || empty($data['other_config']['flow_group_field'])) {
+                throw new ValidateException("请选择关联流程组");
+            }
+        }
+        
+        // 审批流
+        if ($data['type'] == 60) {
+            if (!isset($data['other_config']['flow_group'])
+                || empty($data['other_config']['flow_group'])) {
+                throw new ValidateException("请选择关联字段");
+            }
+        }
+        
         $data['list_filter'] = getItemData($data['list_filter']);
         $data['tab_config'] = getItemData($data['tab_config']);
         $data['with_join'] = getItemData($data['with_join']);
@@ -934,7 +987,7 @@ class Base extends Admin
         }
         
         if (in_array($data['type'], [2, 3, 19, 21])) {
-            $data['dialog_size'] = '1000px';
+            $data['dialog_size'] = '85%';
         }
         
         if (in_array($data['type'], [3, 4])) {
@@ -942,7 +995,9 @@ class Base extends Admin
         }
         
         try {
-            $count = Action::where('menu_id', $data['menu_id'])->where('action_name', $data['action_name'])->count();
+            $count = Action::where('menu_id', $data['menu_id'])
+                ->where('action_name', $data['action_name'])
+                ->count();
             if ($count > 0) {
                 throw new ValidateException ('方法名已经存在');
             }
@@ -952,7 +1007,9 @@ class Base extends Admin
                 Action::update(['id' => $res->id, 'sortid' => $res->id]);
                 
                 if ($data['type'] == 20) {
-                    $menuInfo = db("menu")->where('menu_id', $data['menu_id'])->find();
+                    $menuInfo = db("menu")
+                        ->where('menu_id', $data['menu_id'])
+                        ->find();
                     $connect = $menuInfo['connect'] ? $menuInfo['connect'] : config('database.default');
                     
                     $fieldlist = Db::connect($menuInfo['connect'])->query('show full columns from ' . config('database.connections.' . $menuInfo['connect'] . '.prefix') . $menuInfo['table_name']);
@@ -965,6 +1022,22 @@ class Base extends Admin
                         Db::connect($connect)->execute($sql);
                     }
                 }
+                
+                /**
+                 * 审批事件
+                 */
+                if ($data['type'] == 57) {
+                    $data['id'] = $res->id;
+                    $this->createFlowEvenTable($data);
+                }
+                
+                /**
+                 * 审批流
+                 */
+                if ($data['type'] == 60) {
+                    $data['id'] = $res->id;
+                    $this->createFlowDataTable($data);
+                }
             }
             
             
@@ -975,8 +1048,7 @@ class Base extends Admin
     }
     
     //快速创建方法
-    public function quckCreateAction()
-    {
+    public function quckCreateAction() {
         $data = $this->request->post('actions');
         $menu_id = $this->request->post('menu_id');
         foreach ($data as $key => $val) {
@@ -995,8 +1067,7 @@ class Base extends Admin
     }
     
     //更新方法
-    public function updateAction()
-    {
+    public function updateAction() {
         $data = $this->request->post();
         $this->validate($data, \app\admin\controller\Sys\validate\Action::class);
         
@@ -1020,6 +1091,36 @@ class Base extends Admin
                 if (in_array($data['tree_config'], $filterField)) {
                     unset($data['list_filter'][0]);
                 }
+            }
+        }
+        
+        /**
+         * 审批事件验证
+         */
+        if ($data['type'] == 57) {
+            if (!isset($data['other_config']['flow_join'])
+                || empty($data['other_config']['flow_join'])) {
+                throw new ValidateException("请选择关联字段");
+            }
+            if (!isset($data['other_config']['flow_table'])
+                || empty($data['other_config']['flow_table'])) {
+                throw new ValidateException("请选择审核关联表");
+            }
+            if (!isset($data['other_config']['flow_filed'])
+                || empty($data['other_config']['flow_filed'])) {
+                throw new ValidateException("请选择对应字段");
+            }
+            if (!isset($data['other_config']['flow_group_field'])
+                || empty($data['other_config']['flow_group_field'])) {
+                throw new ValidateException("请选择关联流程组");
+            }
+        }
+        
+        // 审批流
+        if ($data['type'] == 60) {
+            if (!isset($data['other_config']['flow_group'])
+                || empty($data['other_config']['flow_group'])) {
+                throw new ValidateException("请选择关联字段");
             }
         }
         
@@ -1049,8 +1150,7 @@ class Base extends Admin
     }
     
     //方法列表直接修改操作
-    public function updateActionExt()
-    {
+    public function updateActionExt() {
         $data = $this->request->post();
         
         try {
@@ -1087,8 +1187,7 @@ class Base extends Admin
     }
     
     //获取方法信息
-    public function getActionInfo()
-    {
+    public function getActionInfo() {
         $data = $this->request->post();
         try {
             $res = Action::where($data)->find()->toArray();
@@ -1151,35 +1250,55 @@ class Base extends Admin
         return json(['status' => 200, 'data' => $res]);
     }
     
-    
     //删除方法
-    public function deleteAction()
-    {
+    public function deleteAction() {
         $data = $this->request->post();
-        
         $list = Action::where($data)->field('action_name')->select()->toArray();
-        
+        $info = db("action")->where($data)->select()->toArray();
         $rootPath = app()->getRootPath();
-        
         $menu = Menu::find($data['menu_id']);
         $application = Application::find($menu['app_id']);
+        $subtable = null;
         
+        /**
+         * 删除关联审核流
+         */
+        $flow = Action::where($data)->find();
+        if (in_array($flow['type'], [57, 60])) {
+            $flow_list = Action::where("action_pid", $flow['id'])
+                ->field('action_name')
+                ->select()
+                ->toArray();
+            if ($flow_list) $list = array_merge($list, $flow_list);
+            $flow_actions = Action::where("action_pid", $flow['id'])
+                ->select()
+                ->toArray();
+            if ($flow_actions) $info = array_merge($info, $flow_actions);
+        }
         
-        $actions = Action::where($data)->select()->toArray();
+        // 先收集要删除的文件，但不实际删除
+        $filesToDelete = [];
         
         foreach ($list as $key => $v) {
             if ($menu['controller_name'] && $v['action_name']) {
-                @unlink($rootPath . '/public/components/' . $application['app_dir'] . '/' . strtolower($menu['controller_name']) . '/' . $v['action_name'] . '.js');
+                $filePath = $rootPath . '/public/components/' . $application['app_dir'] . '/' . strtolower($menu['controller_name']) . '/' . $v['action_name'] . '.js';
+                if (file_exists($filePath)) {
+                    $filesToDelete[] = $filePath;
+                }
             }
             
-            if ($actions[$key]['type'] == 55) {
-                @unlink($rootPath . "app/" . $application['app_dir'] . "/view/" . getViewName($menu['controller_name']) . "/" . $v['action_name'] . ".html");
+            if ($info[$key]['type'] == 55) {
+                $filePath = $rootPath . "app/" . $application['app_dir'] . "/view/" . getViewName($menu['controller_name']) . "/" . $v['action_name'] . ".html";
+                if (file_exists($filePath)) {
+                    $filesToDelete[] = $filePath;
+                }
             }
         }
         
-        
-        $info = db("action")->where($data)->select()->toArray();
         try {
+            // 开始事务
+            Db::startTrans();
+            
             foreach ($info as $v) {
                 $res = Action::where('id', $v['id'])->delete();
                 if ($res && $v['type'] == 20) {
@@ -1191,15 +1310,222 @@ class Base extends Admin
                     }
                 }
             }
+            
+            /**
+             * 删除关联审核流
+             */
+            if ($flow['type'] == 57) {
+                $connect = $menu['connect'] ? $menu['connect'] : config('database.default');
+                $prefix = config('database.connections.' . $connect . '.prefix');
+                
+                // 子表
+                $subtable = Menu::where([
+                    'pid' => $menu['menu_id'],
+                    'flow_subtable' => 1
+                ])
+                    ->order('menu_id desc')
+                    ->find();
+                
+                // 收集子表相关文件
+                if ($subtable) {
+                    $subtableFiles = [
+                        $rootPath . "app/" . $application['app_dir'] . "/controller/" . $subtable['controller_name'] . ".php",
+                        $rootPath . "app/" . $application['app_dir'] . "/model/" . $subtable['controller_name'] . ".php",
+                        $rootPath . "app/" . $application['app_dir'] . "/hook/" . $subtable['controller_name'] . ".php",
+                        $rootPath . "app/" . $application['app_dir'] . "/validate/" . $subtable['controller_name'] . ".php"
+                    ];
+                    
+                    foreach ($subtableFiles as $file) {
+                        if (file_exists($file)) {
+                            $filesToDelete[] = $file;
+                        }
+                    }
+                    
+                    // 删除子表相关数据
+                    Db::connect($connect)->name('menu')->where('menu_id', $subtable['menu_id'])->delete();
+                    Db::connect($connect)->name('field')->where('menu_id', $subtable['menu_id'])->delete();
+                    Db::connect($connect)->name('action')->where('menu_id', $subtable['menu_id'])->delete();
+                }
+                
+                // 要删除的审批字段列表（与创建时保持一致）
+                $mainTableName = $menu['table_name'];
+                $approvalFields = [
+                    "{$mainTableName}_apply_user_id_tfadmin",
+                    "{$mainTableName}_apply_now_tfadmin",
+                    "{$mainTableName}_apply_next_tfadmin",
+                    "{$mainTableName}_apply_user_tfadmin",
+                    "{$mainTableName}_apply_progress_tfadmin",
+                    "{$mainTableName}_status_tfadmin",
+                    "{$mainTableName}_remark_tfadmin"
+                ];
+                
+                // 删除主表中的审批字段
+                foreach ($approvalFields as $fieldName) {
+                    // 检查字段是否存在
+                    $checkSql = "SHOW COLUMNS FROM `{$prefix}{$mainTableName}` LIKE '{$fieldName}'";
+                    $result = Db::connect($connect)->query($checkSql);
+                    
+                    // 如果字段存在，则删除
+                    if (!empty($result)) {
+                        $dropColumnSql = "ALTER TABLE `{$prefix}{$mainTableName}` DROP COLUMN `{$fieldName}`";
+                        Db::connect($connect)->execute($dropColumnSql);
+                    }
+                }
+                
+                if ($subtable) {
+                    $dropSql = "DROP TABLE IF EXISTS `" . $prefix . $subtable['table_name'] . "`";
+                    Db::connect($connect)->execute($dropSql);
+                }
+            }
+            
+            if ($flow['type'] == 60) {
+                $connect = $menu['connect'] ? $menu['connect'] : config('database.default');
+                $prefix = config('database.connections.' . $connect . '.prefix');
+                
+                // 子表
+                $subtables = Menu::where([
+                    'pid' => $menu['menu_id'],
+                    'flow_subtable' => 1
+                ])
+                    ->order('menu_id desc')
+                    ->select()
+                    ->toArray();
+                
+                foreach ($subtables as $subtable) {
+                    if ($subtable) {
+                        $subtableFiles = [
+                            $rootPath . "app/" . $application['app_dir'] . "/controller/" . $subtable['controller_name'] . ".php",
+                            $rootPath . "app/" . $application['app_dir'] . "/model/" . $subtable['controller_name'] . ".php",
+                            $rootPath . "app/" . $application['app_dir'] . "/hook/" . $subtable['controller_name'] . ".php",
+                            $rootPath . "app/" . $application['app_dir'] . "/validate/" . $subtable['controller_name'] . ".php"
+                        ];
+                        
+                        foreach ($subtableFiles as $file) {
+                            if (file_exists($file)) {
+                                $filesToDelete[] = $file;
+                            }
+                        }
+                        
+                        // 删除子表相关数据
+                        Db::connect($connect)->name('menu')->where('menu_id', $subtable['menu_id'])->delete();
+                        Db::connect($connect)->name('field')->where('menu_id', $subtable['menu_id'])->delete();
+                        Db::connect($connect)->name('action')->where('menu_id', $subtable['menu_id'])->delete();
+                        
+                        $dropSql = "DROP TABLE IF EXISTS `" . $prefix . $subtable['table_name'] . "`";
+                        Db::connect($connect)->execute($dropSql);
+                    }
+                }
+                
+                // 删除主表中的审批字段（与57类型相同）
+                $mainTableName = $menu['table_name'];
+                $approvalFields = [
+                    "{$mainTableName}_apply_user_id_tfadmin",
+                    "{$mainTableName}_apply_now_tfadmin",
+                    "{$mainTableName}_apply_next_tfadmin",
+                    "{$mainTableName}_apply_user_tfadmin",
+                    "{$mainTableName}_apply_progress_tfadmin",
+                    "{$mainTableName}_status_tfadmin",
+                    "{$mainTableName}_remark_tfadmin"
+                ];
+                
+                foreach ($approvalFields as $fieldName) {
+                    $checkSql = "SHOW COLUMNS FROM `{$prefix}{$mainTableName}` LIKE '{$fieldName}'";
+                    $result = Db::connect($connect)->query($checkSql);
+                    
+                    if (!empty($result)) {
+                        $dropColumnSql = "ALTER TABLE `{$prefix}{$mainTableName}` DROP COLUMN `{$fieldName}`";
+                        Db::connect($connect)->execute($dropColumnSql);
+                    }
+                }
+            }
+            
+            // 提交事务
+            Db::commit();
+            
+            // 事务成功后删除文件
+            foreach ($filesToDelete as $file) {
+                @unlink($file);
+            }
+            
+            // 事务成功后删除文件夹
+            if ($flow['type'] == 57 && isset($subtable) && $subtable) {
+                $viewFolder = $rootPath . "app/" . $application['app_dir'] . "/view/" . getViewName($subtable['controller_name']);
+                $componentFolder = $rootPath . '/public/components/' . $application['app_dir'] . '/' . strtolower($subtable['controller_name']);
+                
+                $this->deleteFolder($viewFolder);
+                $this->deleteFolder($componentFolder);
+            }
+            
+            if ($flow['type'] == 60 && isset($subtables)) {
+                foreach ($subtables as $subtable) {
+                    if ($subtable) {
+                        $viewFolder = $rootPath . "app/" . $application['app_dir'] . "/view/" . getViewName($subtable['controller_name']);
+                        $componentFolder = $rootPath . '/public/components/' . $application['app_dir'] . '/' . strtolower($subtable['controller_name']);
+                        
+                        $this->deleteFolder($viewFolder);
+                        $this->deleteFolder($componentFolder);
+                    }
+                }
+            }
+            
         } catch (\Exception $e) {
+            // 回滚事务
+            Db::rollback();
             abort(501, $e->getMessage());
         }
+        
         return json(['status' => 200]);
     }
     
+    
+    //根据流程表名获取字段列表
+    public function getFlowTableFields() {
+        $menu_id = $this->request->post('menu_id');
+        if (!$menu_id) {
+            $this->error('请选择关联的流程表');
+        }
+        
+        $menuInfo = Menu::where('menu_id', $menu_id)->find();
+        
+        $connect = $menuInfo['connect'] ? $menuInfo['connect'] : config('database.default');
+        $dbtype = config('database.connections.' . $connect . '.type');
+        if ($dbtype == 'mongo') {
+            $list = db("field")->field("field as Field,title as Comment")->where('menu_id', $menuInfo['menu_id'])->order('sortid asc')->select();
+        } else {
+            $list = Db::connect($menuInfo['connect'])->query('show full columns from ' . config('database.connections.' . $menuInfo['connect'] . '.prefix') . $menuInfo['table_name']);
+        }
+        
+        // 获取类型为33的关联字段
+        $field = Db::name('field')->where(['menu_id' => $menu_id, 'type' => 33])->select()->toArray();
+        
+        // 从field中提取所有field字段值
+        $fieldNames = array_column($field, 'field');
+        
+        // 从list中筛选出在fieldNames中存在的字段
+        $filteredList = [];
+        foreach ($list as $item) {
+            if (in_array($item['Field'], $fieldNames)) {
+                $filteredList[] = $item;
+            }
+        }
+        return json(['status' => 200, 'filedList' => $filteredList]);
+    }
+    
+    //根据流程表名获取流程组
+    public function getFlowTableGroup() {
+        $menu_id = $this->request->post('menu_id');
+        if (!$menu_id) {
+            $this->error('请选择关联的流程表');
+        }
+        // 获取类型为2的关联字段
+        $field_sql = Db::name('field')->where(['menu_id' => $menu_id, 'type' => 2])->order('id desc')->value('sql');
+        $group = $this->query($field_sql, 'mysql');
+        
+        return json(['status' => 200, 'group' => $group]);
+    }
+    
     //拖动排序
-    public function updateFieldSort()
-    {
+    public function updateFieldSort() {
         $postField = 'currentId,preId,nextId,currentSortId,preSortId,nextSortId,menu_id';
         $data = $this->request->only(explode(',', $postField), 'post', null);
         
@@ -1253,8 +1579,7 @@ class Base extends Admin
     }
     
     //拖动排序
-    public function updateActionSort()
-    {
+    public function updateActionSort() {
         $postField = 'currentId,preId,nextId,currentSortId,preSortId,nextSortId,menu_id';
         $data = $this->request->only(explode(',', $postField), 'post', null);
         
@@ -1308,8 +1633,7 @@ class Base extends Admin
     }
     
     //字段选项配置，验证规则配置
-    public function configList()
-    {
+    public function configList() {
         $menu_id = $this->request->post('menu_id');
         
         $menuInfo = Menu::find($menu_id);
@@ -1332,8 +1656,7 @@ class Base extends Admin
     
     
     //数据库table列表
-    public function getTables()
-    {
+    public function getTables() {
         $connects = [];
         foreach (config('database.connections') as $k => $v) {
             $connects[] = $k;
@@ -1346,8 +1669,7 @@ class Base extends Admin
     }
     
     //用过菜单id获取所有数据表
-    public function getTablesByMenuId()
-    {
+    public function getTablesByMenuId() {
         $menu_id = $this->request->post('menu_id');
         if (!$menu_id) {
             $this->error('菜单ID不能为空');
@@ -1358,8 +1680,7 @@ class Base extends Admin
     }
     
     //数据库table列表
-    private function getTableList($connect)
-    {
+    private function getTableList($connect) {
         $list = Db::connect($connect)->query('show tables');
         foreach ($list as $k => $v) {
             $tableList[] = str_replace(config('database.connections.' . $connect . '.prefix'), '', $v['Tables_in_' . config('database.connections.' . $connect . '.database')]);
@@ -1374,8 +1695,7 @@ class Base extends Admin
     }
     
     //根据表名获取字段列表
-    public function getTableFields()
-    {
+    public function getTableFields() {
         $controller_name = $this->request->post('controller_name');
         if (!$controller_name) {
             $this->error('数据表不能为空');
@@ -1396,17 +1716,20 @@ class Base extends Admin
     
     
     //获取菜单列表
-    private function getMenu($app_id)
-    {
+    private function getMenu($app_id) {
         $field = 'menu_id,pid,title,controller_name,create_code,create_table,table_name,status,sortid';
-        $list = Menu::field($field)->where(['app_id' => $app_id])->order('sortid asc')->select()->toArray();
+        $list = Menu::field($field)
+            ->where(['app_id' => $app_id])
+            ->where('menu_show', 1)
+            ->order('sortid asc')
+            ->select()
+            ->toArray();
         return _generateListTree($list, 0, ['menu_id', 'pid']);
     }
     
     
     //获取上传配置列表
-    public function getUploadList()
-    {
+    public function getUploadList() {
         $appid = $this->request->post('app_id');
         $app_type = Application::where('app_id', $appid)->value('app_type');
         $list = Db::name('upload_config')->field('id,title')->select()->toArray();
@@ -1415,8 +1738,7 @@ class Base extends Admin
     
     
     //生成
-    public function create()
-    {
+    public function create() {
         $menu_id = $this->request->post('menu_id');
         $type = $this->request->post('type');
         if ($this->createCode($menu_id, $type)) {
@@ -1425,8 +1747,7 @@ class Base extends Admin
     }
     
     //生成
-    private function createCode($menu_id, $type)
-    {
+    private function createCode($menu_id, $type, $tf_flow_group = []) {
         $menuInfo = Menu::find($menu_id)->toArray();
         
         if (!$menuInfo['create_code']) {
@@ -1445,6 +1766,7 @@ class Base extends Admin
                 throw new ValidateException('请先生成应用', 422);
             }
         }
+        $application = $this->changeApplication($application);
         
         $pk = Db::connect($menuInfo['connect'])->name($menuInfo['table_name'])->getPk();
         
@@ -1470,13 +1792,36 @@ class Base extends Admin
         
         $data['secrect'] = $secrect;
         $data['timestmp'] = time();
+        // 有没有审批事件
+        $action_flow = Action::where(['menu_id' => $menu_id, 'type' => 57])->find();
+        $data['has_flow'] = !empty($action_flow);
+        if (!empty($action_flow)) {
+            $action_flow['other_config'] = json_decode($action_flow['other_config'], true);
+            $data['flow_action'] = $action_flow;
+            $data['flow_menu'] = Menu::where(['menu_id' => $action_flow['other_config']['flow_table']])
+                ->order('menu_id desc')
+                ->find();
+            $data['flow_field'] = Field::where('menu_id', $data['flow_menu']['menu_id'])->select()->toArray();
+            $data['fieldList'] = $this->addFlowField($data['fieldList'], $menuInfo, $menu_id, $application, $data['dbpre']);
+            
+            
+            $data['group_field'] = Db::name('field')
+                ->where(['menu_id' => $data['flow_menu']['menu_id'], 'type' => 2])
+                ->whereNotNull('sql')
+                ->order('id desc')
+                ->value('field');
+            
+            
+        }
+        $data['tf_flow_group'] = $tf_flow_group;
+        
         
         $data['sign'] = md5(md5(json_encode($data, JSON_UNESCAPED_UNICODE) . $secrect['secrect']));
         
         $data['domain'] = $_SERVER['HTTP_HOST'];
         $data['base_config'] = Db::name('base_config')->column('data', 'name');
-        $data['menuInfoPid'] = Db::name('menu')->where('menu_id',$data['menuInfo']['pid'])->find();
-        $res = $this->curlRequest('http://tfadmin.tiefen.net/produce/CreateCode/buildCode', 'POST', $data);
+        $data['menuInfoPid'] = Db::name('menu')->where('menu_id', $data['menuInfo']['pid'])->find();
+        $res = $this->curlRequest($this->url . '/produce/CreateCode/buildCode', 'POST', $data);
         $res = str_replace("search_visible:true,", "search_visible:false,", $res);
         $res = str_replace("<el-table-column", "<el-table-column header-align='center'", $res);
         $ret = $res;
@@ -1514,8 +1859,7 @@ class Base extends Admin
         
         $res['jscomponent'][2]['content'] = str_replace("ismobile()?'90px':'16%'", "ismobile()?'90px':'88px'", $res['jscomponent'][2]['content']);
         $res['jscomponent'][3]['content'] = str_replace("ismobile()?'90px':'16%'", "ismobile()?'90px':'88px'", $res['jscomponent'][3]['content']);
-
-//        if ($type == 1) {
+        
         if ($res['status'] == 411) {
             throw new ValidateException($res['msg']);
         }
@@ -1523,7 +1867,6 @@ class Base extends Admin
         if (!is_array($res['model'])) {
             halt($ret);
         }
-//        }
         
         $rootPath = app()->getRootPath();
         
@@ -1563,8 +1906,7 @@ class Base extends Admin
     }
     
     //根据表生成
-    public function createByTable()
-    {
+    public function createByTable() {
         $data = $this->request->post();
         
         $connect = $data['connect'];
@@ -1647,8 +1989,7 @@ class Base extends Admin
     }
     
     //获取关联表信息
-    private function getExtend($actionList)
-    {
+    private function getExtend($actionList) {
         $with_join = [];
         foreach ($actionList as $v) {
             if ($v['with_join'] && in_array($v['type'], [2, 3, 5, 11])) {
@@ -1665,8 +2006,7 @@ class Base extends Admin
     }
     
     
-    private function getExtendFields($val)
-    {
+    private function getExtendFields($val) {
         $menuInfo = Menu::field('menu_id,table_name')->where('controller_name', $val['relative_table'])->find();
         $fieldList = Field::where('menu_id', $menuInfo['menu_id'])->order('sortid asc')->select()->toArray();
         foreach ($fieldList as $k => $v) {
@@ -1681,8 +2021,7 @@ class Base extends Admin
     
     
     //检测cms模型字段
-    public function checkCmsField()
-    {
+    public function checkCmsField() {
         $field = $this->request->post('field');
         $list = Db::query('show full columns from ' . config('database.connections.mysql.prefix') . 'content');
         foreach ($list as $v) {
@@ -1696,8 +2035,7 @@ class Base extends Admin
     }
     
     //获取控制器名称
-    public function setControllerName($controller_name)
-    {
+    public function setControllerName($controller_name) {
         if (strpos($controller_name, '/') > 0) {
             $arr = explode('/', $controller_name);
             $controller_name = ucfirst($arr[0]) . '/' . ucfirst($arr[1]);
@@ -1709,8 +2047,7 @@ class Base extends Admin
     }
     
     //获取应用名 以及数据表名称
-    public function getAppInfo()
-    {
+    public function getAppInfo() {
         $controller_name = $this->request->post('controller_name');
         $data['table_name'] = $this->getTableName($controller_name);
         $data['pk'] = $data['table_name'] ? $data['table_name'] . '_id' : '';
@@ -1721,8 +2058,7 @@ class Base extends Admin
     
     
     //获取应用名 以及数据表名称
-    public function getAppType()
-    {
+    public function getAppType() {
         $appid = $this->request->post('app_id');
         $data['status'] = 200;
         $data['data'] = Application::where('app_id', $appid)->value('app_type');
@@ -1730,8 +2066,7 @@ class Base extends Admin
     }
     
     //获取应用名 以及数据表名称
-    public function getDbType()
-    {
+    public function getDbType() {
         $dbname = $this->request->post('dbname');
         $dbtype = config('database.connections.' . $dbname . '.type');
         $data['status'] = 200;
@@ -1739,8 +2074,7 @@ class Base extends Admin
         return json($data);
     }
     
-    private function getTableName($controller_name)
-    {
+    private function getTableName($controller_name) {
         if ($controller_name && strpos($controller_name, '/') > 0) {
             $controller_name = explode('/', $controller_name)[1];
         }
@@ -1749,14 +2083,12 @@ class Base extends Admin
     
     
     //获取秘钥信息
-    private function getSecrect()
-    {
+    private function getSecrect() {
         $info = Db::name('secrect')->select()->column('data', 'name');
         return $info;
     }
     
-    public static function getFieldStatus($tablename, $field, $connect)
-    {
+    public static function getFieldStatus($tablename, $field, $connect) {
         $list = Db::connect($connect)->query('show columns from ' . $tablename);
         foreach ($list as $v) {
             $arr[] = $v['Field'];
@@ -1767,8 +2099,7 @@ class Base extends Admin
     }
     
     //获取默认钩子方法路径
-    public function getHookPath()
-    {
+    public function getHookPath() {
         $menu_id = $this->request->post('menu_id');
         $action_name = $this->request->post('actionName');
         $type = $this->request->post('type');
@@ -1788,8 +2119,7 @@ class Base extends Admin
     }
     
     //curl请求方法
-    private function go_curl($url, $type, $data = false, &$err_msg = null, $timeout = 20, $cert_info = array())
-    {
+    private function go_curl($url, $type, $data = false, &$err_msg = null, $timeout = 20, $cert_info = array()) {
         $type = strtoupper($type);
         if ($type == 'GET' && is_array($data)) {
             $data = http_build_query($data);
@@ -1842,8 +2172,7 @@ class Base extends Admin
     
     
     //多级控制器 获取控制其名称
-    function getRouteName($controller_name)
-    {
+    function getRouteName($controller_name) {
         if ($controller_name && strpos($controller_name, '/') > 0) {
             $controller_name = str_replace('/', '_', $controller_name);
         }
@@ -1852,8 +2181,7 @@ class Base extends Admin
     
     
     // 更新备注内容杨爽
-    public function updateActionRemark()
-    {
+    public function updateActionRemark() {
         $id = $this->request->post('id/d');
         $remark = $this->request->post('remark/s', '', 'trim');
         $remark_desc = $this->request->post('$remark_desc/s', '', 'trim');
@@ -1876,8 +2204,7 @@ class Base extends Admin
     }
     
     // 获取备注内容杨爽
-    public function getActionRemark()
-    {
+    public function getActionRemark() {
         $id = $this->request->post('id/d');
         
         if (!$id) {
@@ -1901,8 +2228,7 @@ class Base extends Admin
     /**
      * 获取备注版本记录
      */
-    public function getRemarkVersions()
-    {
+    public function getRemarkVersions() {
         $actionId = $this->request->post('actionId/d', 0);
         
         try {
@@ -1933,8 +2259,7 @@ class Base extends Admin
     /**
      * 保存备注版本
      */
-    public function saveRemarkVersion()
-    {
+    public function saveRemarkVersion() {
         $data = $this->request->post();
         
         Db::transaction(function () use ($data) {
@@ -1962,8 +2287,7 @@ class Base extends Admin
     /**
      * 更新完整备注信息（含描述和代码）
      */
-    public function updateFullRemark()
-    {
+    public function updateFullRemark() {
         $data = $this->request->post();
         
         Db::name('action')
@@ -1976,11 +2300,10 @@ class Base extends Admin
         return json(['status' => 200]);
     }
     
-    public static function curlRequest($url, $method = 'GET', $data = [], $headers = [])
-    {
+    public static function curlRequest($url, $method = 'GET', $data = [], $headers = []) {
         $ch = curl_init();
         // 在headers中添加
-//        $headers[] = 'Transfer-Encoding: chunked';
+        //        $headers[] = 'Transfer-Encoding: chunked';
         $headers[] = 'Content-Type: application/json';
         // 设置请求的URL
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -1989,7 +2312,7 @@ class Base extends Admin
         if ($method === 'POST') {
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-//            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+            //            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         } elseif ($method === 'GET' && !empty($data)) {
             // 如果是GET请求且带有参数，则将参数附加到URL上
             $urlWithParams = $url . (strpos($url, '?') === false ? '?' : '&') . http_build_query($data);
@@ -2027,5 +2350,2294 @@ class Base extends Admin
             return $response;
         }
     }
+    
+    
+    /**************************************************************************/
+    
+    /**
+     * 创建审批流子表和相关配置
+     */
+    private function createFlowEvenTable($data, $create_action = "add") {
+        // 开启事务
+        Db::startTrans();
+        try {
+            $menu_other_config = json_decode($data['other_config'], true);
+            $flow_table_id = $menu_other_config['flow_table'];
+            $flow_table = db("menu")->where('menu_id', $flow_table_id)->find();
+            $menuInfo = db("menu")->where('menu_id', $data['menu_id'])->find();
+            $connect = $menuInfo['connect'] ? $menuInfo['connect'] : config('database.default');
+            $prefix = config('database.connections.' . $connect . '.prefix');
+            $application = Application::where('app_id', $menuInfo['app_id'])->find()->toArray();
+            $application = $this->changeApplication($application);
+            
+            if (config('database.connections.' . $connect . '.type') <> 'mysql') {
+                Db::rollback();
+                return false;
+            }
+            
+            $approvalRecords_table = strtolower(trim($menuInfo['table_name'])) . "_subtable";
+            $approvalRecords_pk = $approvalRecords_table . "_id";
+            $table_name = $approvalRecords_table;
+            $pk = strtolower(trim($approvalRecords_pk));
+            
+            // 1. 创建子表
+            $this->createSubtable($connect, $prefix, $table_name, $pk, $flow_table, $menuInfo, $data, $menu_other_config);
+            
+            // 2. 插入菜单记录
+            $controllerName = str_replace(' ', '', ucwords(str_replace('_', ' ', $table_name)));
+            $newMenuId = $this->insertMenuRecord($connect, $data, $menuInfo, $controllerName, $pk, $table_name, $menu_other_config);
+            
+            // 3. 插入字段数据
+            $this->insertFieldData($connect, $newMenuId, $prefix, $pk, $data, $menuInfo, $flow_table, $menu_other_config, $application);
+            
+            // 4. 插入方法数据
+            $this->insertActionData($connect, $newMenuId, $data, $menu_other_config);
+            
+            // 5. 审批记录,审核数据
+            $this->insertApprovalActions($connect, $data, $menuInfo, $controllerName, $pk, $application);
+            // 6. 代码生成
+            if (!$this->createCode($newMenuId, 2)) {
+                // 回滚事务
+                Db::rollback();
+                throw new ValidateException("审批流创建失败");
+            }
+            // 提交事务
+            Db::commit();
+            return true;
+        } catch (\Exception $e) {
+            // 回滚事务
+            Db::rollback();
+            throw new \Exception('审批流创建失败：' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * 5. 插入审批流特殊动作
+     */
+    private function insertApprovalActions($connect, $data, $menuInfo, $controllerName, $pk, $application = []) {
+        $mainTableName = $menuInfo['table_name'];
+        $menuInfoPk = $menuInfo['pk'];
+        // 删除已存在的相关动作
+        Action::where('action_pid', $data['id'])->delete();
+        
+        // 审批记录动作
+        $approvalRecordAction = [
+            'menu_id' => $data['menu_id'],  // 主表菜单ID
+            'name' => '审批记录',
+            'action_name' => 'dialogUrlRecord',
+            'type' => 59,
+            'icon' => 'fas fa-clone',
+            'pagesize' => '20',
+            'group_button_status' => 1,
+            'list_button_status' => 0,
+            'button_color' => 'warning',
+            'fields' => $menuInfo['pk'],
+            'sortid' => $data['id'],
+            'orderby' => '',
+            'tree_config' => '',
+            'jump' => "/admin/{$controllerName}/index",  // 注意：这里需要动态生成子表路径
+            'server_create_status' => 1,
+            'vue_create_status' => 1,
+            'cache_time' => null,
+            'api_auth' => null,
+            'img_auth' => null,
+            'sms_auth' => null,
+            'list_filter' => '',
+            'tab_config' => '',
+            'sql' => '',
+            'dialog_size' => '85%',
+            'status_val' => '',
+            'validate' => null,
+            'select_type' => 1,
+            'table_height' => '',
+            'left_tree_sql' => null,
+            'with_join' => '',
+            'other_config' => json_encode([
+                'export_type' => '',
+                'hook' => [],
+                'excel' => '',
+                'left_tree_show' => '',
+                'tree_show' => 1,
+                'after_hook' => '',
+                'befor_hook' => '',
+                'printer_status' => 2,
+                'list_button_style' => 1,
+                'guige' => [],
+                'detail_search_field' => []
+            ]),
+            'dialog_type' => '2',
+            'version' => null,
+            'remark' => null,
+            'remark_desc' => null,
+            'q_template' => '',
+            'h_php' => '',
+            'action_pid' => $data['id'],
+            'action_show' => 0,
+        ];
+        
+        // 审核数据动作
+        $auditDataAction = [
+            'menu_id' => $data['menu_id'],  // 主表菜单ID
+            'name' => '审核数据',
+            'action_name' => 'batupdateRecord',
+            'type' => 58,
+            'icon' => 'fas fa-chess',
+            'pagesize' => '20',
+            'group_button_status' => 0,
+            'list_button_status' => 1,
+            'button_color' => 'primary',
+            'fields' => "{$mainTableName}_status_tfadmin,{$mainTableName}_remark_tfadmin",
+            'sortid' => $data['id'] + 1,
+            'orderby' => '',
+            'tree_config' => '',
+            'jump' => '',
+            'server_create_status' => 1,
+            'vue_create_status' => 1,
+            'cache_time' => null,
+            'api_auth' => null,
+            'img_auth' => null,
+            'sms_auth' => null,
+            'list_filter' => '',
+            'tab_config' => '',
+            'sql' => '',
+            'dialog_size' => '85%',
+            'status_val' => '',
+            'validate' => null,
+            'select_type' => 1,
+            'table_height' => '',
+            'left_tree_sql' => null,
+            'with_join' => '',
+            'other_config' => json_encode([
+                'export_type' => '',
+                'hook' => [],
+                'excel' => '',
+                'left_tree_show' => '',
+                'tree_show' => 1,
+                'after_hook' => "app/{$application['app_dir']}/hook/{$menuInfo['controller_name']}@batupdateRecord",
+                'befor_hook' => "app/{$application['app_dir']}/hook/{$menuInfo['controller_name']}@batupdateRecord",
+                'printer_status' => 2,
+                'list_button_style' => 1,
+                'guige' => [],
+                'detail_search_field' => [],
+                'show_list_button' => "{$menuInfoPk} && (scope.row.{$menuInfo['table_name']}_status_tfadmin == 1 || scope.row.{$menuInfo['table_name']}_status_tfadmin == 2) && scope.row.{$menuInfo['table_name']}_apply_next_tfadmin && Object.keys(scope.row.{$menuInfo['table_name']}_apply_next_tfadmin)[0] == '{:session(\"{$application['app_dir']}.{$application['pk']}\")}'",
+            ]),
+            'dialog_type' => null,
+            'version' => null,
+            'remark' => null,
+            'remark_desc' => null,
+            'q_template' => '',
+            'h_php' => '',
+            'action_pid' => $data['id'],
+            'action_show' => 0,
+        ];
+        
+        $updates = Action::where(['menu_id' => $data['menu_id'], 'type' => 3])->select()->toArray();
+        foreach ($updates as $update_item) {
+            $other_config = empty($update_item) ? [] : json_decode($update_item['other_config'], true);
+            $other_config['show_list_button'] = "{$menuInfo['table_name']}_status_tfadmin != 1";
+            Action::where('id', $update_item['id'])->update(['other_config' => json_encode($other_config)]);
+        }
+        // 插入动作
+        Action::create($auditDataAction);
+        Action::create($approvalRecordAction);
+    }
+    
+    /**
+     * 1. 创建子表
+     */
+    private function createSubtable($connect, $prefix, $table_name, $pk, $flow_table, $menuInfo, $data, $menu_other_config) {
+        // 检查并删除已存在的表
+        $dropSql = "DROP TABLE IF EXISTS `" . $prefix . $table_name . "`";
+        Db::connect($connect)->execute($dropSql);
+        
+        // 创建新表
+        $createSql = "CREATE TABLE `" . $prefix . $table_name . "` ( ";
+        $createSql .= "
+    `{$pk}` int NOT NULL AUTO_INCREMENT,
+    `{$menu_other_config['flow_filed']}` int DEFAULT NULL COMMENT '" . addslashes($flow_table['title']) . "',
+    `user_id` int DEFAULT NULL COMMENT '审核人员',
+    `{$menuInfo['pk']}` int DEFAULT NULL COMMENT '" . addslashes($data['title']) . "',
+    `{$menuInfo['table_name']}_status_tfadmin` smallint DEFAULT 2 COMMENT '审核状态 , 通过-1 ; 驳回-0 ; 待审核-2 ;',
+    `{$menuInfo['table_name']}_remark_tfadmin` text COMMENT '审核备注',
+    `create_at` int DEFAULT NULL COMMENT '审核日期',
+    PRIMARY KEY (`{$pk}`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='" . addslashes($data['title']) . "审核记录子表';";
+        
+        Db::connect($connect)->execute($createSql);
+        
+        // ============ 向主表添加审批字段 ============
+        $mainTableName = $menuInfo['table_name'];
+        
+        // 要添加的审批字段
+        $approvalFields = [
+            [
+                'name' => "{$mainTableName}_apply_user_id_tfadmin",
+                'type' => "text",
+                'comment' => '审批人员',
+                'default' => "DEFAULT NULL"
+            ],
+            [
+                'name' => "{$mainTableName}_apply_now_tfadmin",
+                'type' => "int",
+                'comment' => '上次审核',
+                'default' => "DEFAULT NULL"
+            ],
+            [
+                'name' => "{$mainTableName}_apply_next_tfadmin",
+                'type' => "int",
+                'comment' => '当前审核',
+                'default' => "DEFAULT NULL"
+            ],
+            [
+                'name' => "{$mainTableName}_apply_user_tfadmin",
+                'type' => "int",
+                'comment' => '当前录入',
+                'default' => "DEFAULT NULL"
+            ],
+            [
+                'name' => "{$mainTableName}_apply_progress_tfadmin",
+                'type' => "smallint",
+                'comment' => '审核进度',
+                'default' => "DEFAULT 0"
+            ],
+            [
+                'name' => "{$mainTableName}_status_tfadmin",
+                'type' => "smallint",
+                'comment' => '审核状态 0->驳回 1->通过 2->待审核',
+                'default' => "DEFAULT 2"
+            ],
+            [
+                'name' => "{$mainTableName}_remark_tfadmin",
+                'type' => "text",
+                'comment' => '审核备注',
+                'default' => "DEFAULT NULL"
+            ],
+        ];
+        
+        // 检查并添加字段
+        foreach ($approvalFields as $field) {
+            $fieldName = $field['name'];
+            
+            // 检查字段是否已存在
+            $checkSql = "SHOW COLUMNS FROM `{$prefix}{$mainTableName}` LIKE '{$fieldName}'";
+            $result = Db::connect($connect)->query($checkSql);
+            
+            // 如果字段不存在，则添加
+            if (empty($result)) {
+                $addColumnSql = "ALTER TABLE `{$prefix}{$mainTableName}`
+                        ADD COLUMN `{$fieldName}` {$field['type']} {$field['default']} COMMENT '{$field['comment']}'";
+                Db::connect($connect)->execute($addColumnSql);
+            }
+        }
+    }
+    
+    /**
+     * 2. 插入菜单记录
+     */
+    private function insertMenuRecord($connect, $data, $menuInfo, $controllerName, $pk, $table_name, $menu_other_config) {
+        // 检查是否已存在相同 controller_name 的记录
+        $existingMenu = Db::connect($connect)->name('menu')->where('controller_name', $controllerName)->find();
+        if ($existingMenu) {
+            // 如果已存在，先删除旧记录和相关字段
+            Db::connect($connect)->name('menu')->where('menu_id', $existingMenu['menu_id'])->delete();
+            Db::connect($connect)->name('field')->where('menu_id', $existingMenu['menu_id'])->delete();
+            Db::connect($connect)->name('action')->where('menu_id', $existingMenu['menu_id'])->delete();
+        }
+        
+        // 插入菜单记录
+        $menuData = [
+            'pid' => $data['menu_id'],
+            'controller_name' => $controllerName,
+            'title' => '审核记录',
+            'pk' => $pk,
+            'table_name' => $table_name,
+            'create_code' => 1,
+            'status' => 0,
+            'sortid' => $data['menu_id'],
+            'create_table' => 1,
+            'url' => '',
+            'icon' => null,
+            'tab_config' => null,
+            'app_id' => $menuInfo['app_id'],
+            'is_post' => 0,
+            'upload_config_id' => 0,
+            'connect' => $connect,
+            'page_type' => 1,
+            'home_show' => 0,
+            'menu_pic' => '',
+            'notice' => '',
+            'prompt' => 0,
+            'prompt_session' => '',
+            'flow_subtable' => 1,
+            'menu_show' => 0,
+        ];
+        
+        // 使用参数化查询插入菜单记录
+        $newMenuId = Db::connect($connect)->name('menu')->insertGetId($menuData);
+        
+        if (!$newMenuId) {
+            throw new \Exception('插入菜单记录失败');
+        }
+        
+        return $newMenuId;
+    }
+    
+    /**
+     * 3. 插入字段数据
+     */
+    private function insertFieldData($connect, $newMenuId, $prefix, $pk, $data, $menuInfo, $flow_table, $menu_other_config, $application) {
+        // 定义固定的字段配置模板
+        $fixedFieldConfigs = $this->getFixedFieldConfigs($prefix, $pk, $menuInfo, $application);
+        
+        // 定义动态字段配置
+        $dynamicFieldConfigs = $this->getDynamicFieldConfigs($prefix, $data, $menuInfo, $flow_table, $menu_other_config);
+        
+        // 合并所有字段配置
+        $allFieldConfigs = array_merge($fixedFieldConfigs, $dynamicFieldConfigs);
+        
+        // 批量插入字段数据
+        $fieldInsertData = [];
+        foreach ($allFieldConfigs as $field) {
+            // 确保 title 不为空
+            $title = trim($field['title']);
+            if (empty($title)) {
+                $title = '未命名字段';
+            }
+            
+            $fieldInsertData[] = [
+                'menu_id' => $newMenuId,
+                'title' => $title,
+                'field' => $field['field'],
+                'type' => $field['type'],
+                'list_show' => $field['list_show'] ?? null,
+                'search_type' => $field['search_type'] ?? null,
+                'post_status' => $field['post_status'] ?? null,
+                'create_table_field' => $field['create_table_field'] ?? null,
+                'validate' => null,
+                'rule' => null,
+                'sortid' => $field['sortid'],
+                'sql' => $field['sql'] ?? '',
+                'default_value' => $field['default_value'] ?? '',
+                'datatype' => $field['datatype'] ?? '',
+                'length' => $field['length'] ?? '',
+                'indexdata' => $field['indexdata'] ?? null,
+                'show_condition' => $field['show_condition'] ?? null,
+                'item_config' => $field['item_config'] ?? '',
+                'width' => $field['width'] ?? '',
+                'datetime_config' => $field['datetime_config'] ?? '',
+                'other_config' => $field['other_config'] ?? '',
+                'belong_table' => $field['belong_table'] ?? '',
+                'icon' => $field['icon'] ?? null,
+                'key_placeholder' => $field['key_placeholder'] ?? '',
+                'value_placeholder' => $field['value_placeholder'] ?? '值占位文本',
+                'tx_tiaojian' => 0,
+                'tx_zhi' => '',
+                'tx_color' => '',
+                'improve_tiaojian' => 0,
+                'improve_zhi' => '',
+                'improve_color' => null,
+                'list_background_config' => '[]',
+                'tx_config' => '[]'
+            ];
+        }
+        
+        // 使用批量插入
+        $result = Db::connect($connect)->name('field')->insertAll($fieldInsertData);
+        
+        if (!$result) {
+            throw new \Exception('插入字段记录失败');
+        }
+    }
+    
+    /**
+     * 获取固定字段配置
+     */
+    private function getFixedFieldConfigs($prefix, $pk, $menuInfo, $application) {
+        $username = explode('|', $application['login_fields'])[0];
+        return [
+            // 编号字段
+            [
+                'title' => '编号',
+                'field' => $pk,
+                'type' => 1,
+                'list_show' => 2,
+                'search_type' => null,
+                'post_status' => null,
+                'create_table_field' => 1,
+                'sortid' => 1,
+                'sql' => null,
+                'default_value' => null,
+                'datatype' => 'int',
+                'length' => '11',
+                'indexdata' => null,
+                'show_condition' => null,
+                'item_config' => null,
+                'width' => '70',
+                'datetime_config' => null,
+                'other_config' => null,
+                'belong_table' => null,
+                'icon' => null,
+                'key_placeholder' => null,
+                'value_placeholder' => '值占位文本'
+            ],
+            // 审核人员字段
+            [
+                'title' => '审核人员',
+                'field' => 'user_id',
+                'type' => 2,
+                'list_show' => 2,
+                'search_type' => 1,
+                'post_status' => 1,
+                'create_table_field' => 1,
+                'sortid' => 4,
+                'sql' => "select {$application['pk']},{$username} from {$prefix}{$application['login_table']}",
+                'default_value' => '',
+                'datatype' => 'int',
+                'length' => '11',
+                'indexdata' => null,
+                'show_condition' => null,
+                'item_config' => '',
+                'width' => null,
+                'datetime_config' => null,
+                'other_config' => json_encode([
+                    'shuxing' => ['tooltip', 'fanzhuan'],
+                    'guige' => [],
+                    'address_type' => 1,
+                    'placeholder' => '',
+                    'liandong_field' => ''
+                ]),
+                'belong_table' => '',
+                'icon' => null,
+                'key_placeholder' => '',
+                'value_placeholder' => ''
+            ],
+            // 审核状态字段
+            [
+                'title' => '审核状态',
+                'field' => "{$menuInfo['table_name']}_status_tfadmin",
+                'type' => 4,
+                'list_show' => 2,
+                'search_type' => 1,
+                'post_status' => 1,
+                'create_table_field' => 1,
+                'sortid' => 5,
+                'sql' => '',
+                'default_value' => '',
+                'datatype' => 'smallint',
+                'length' => '6',
+                'indexdata' => null,
+                'show_condition' => null,
+                'item_config' => json_encode([
+                    ['key' => '通过', 'val' => '1', 'label_color' => 'primary'],
+                    ['key' => '驳回', 'val' => '0', 'label_color' => 'danger']
+                ]),
+                'width' => null,
+                'datetime_config' => null,
+                'other_config' => json_encode([
+                    'shuxing' => ['tooltip'],
+                    'guige' => [],
+                    'address_type' => 1,
+                    'placeholder' => '',
+                    'liandong_field' => ''
+                ]),
+                'belong_table' => '',
+                'icon' => null,
+                'key_placeholder' => '',
+                'value_placeholder' => ''
+            ],
+            // 审核备注字段
+            [
+                'title' => '审核备注',
+                'field' => "{$menuInfo['table_name']}_remark_tfadmin",
+                'type' => 8,
+                'list_show' => 2,
+                'search_type' => 0,
+                'post_status' => 1,
+                'create_table_field' => 1,
+                'sortid' => 6,
+                'sql' => '',
+                'default_value' => '',
+                'datatype' => 'text',
+                'length' => '0',
+                'indexdata' => null,
+                'show_condition' => null,
+                'item_config' => '',
+                'width' => null,
+                'datetime_config' => null,
+                'other_config' => json_encode([
+                    'shuxing' => ['tooltip'],
+                    'guige' => [],
+                    'address_type' => 1,
+                    'placeholder' => '',
+                    'liandong_field' => ''
+                ]),
+                'belong_table' => '',
+                'icon' => null,
+                'key_placeholder' => '',
+                'value_placeholder' => ''
+            ],
+            // 审核日期字段
+            [
+                'title' => '审核日期',
+                'field' => 'create_at',
+                'type' => 11,
+                'list_show' => 2,
+                'search_type' => 0,
+                'post_status' => 1,
+                'create_table_field' => 1,
+                'sortid' => 7,
+                'sql' => '',
+                'default_value' => '',
+                'datatype' => 'int',
+                'length' => '11',
+                'indexdata' => null,
+                'show_condition' => null,
+                'item_config' => '',
+                'width' => null,
+                'datetime_config' => 'datetime',
+                'other_config' => json_encode([
+                    'shuxing' => ['tooltip'],
+                    'guige' => [],
+                    'address_type' => 1,
+                    'placeholder' => '',
+                    'liandong_field' => ''
+                ]),
+                'belong_table' => '',
+                'icon' => null,
+                'key_placeholder' => '',
+                'value_placeholder' => ''
+            ]
+        ];
+    }
+    
+    /**
+     * 获取动态字段配置
+     */
+    private function getDynamicFieldConfigs($prefix, $data, $menuInfo, $flow_table, $menu_other_config) {
+        return [
+            // 主表关联字段
+            [
+                'title' => $menuInfo['title'] ?: '主表信息',
+                'field' => $menuInfo['pk'],
+                'type' => 2,
+                'list_show' => 2,
+                'search_type' => 1,
+                'post_status' => 1,
+                'create_table_field' => 1,
+                'sortid' => 2,
+                'sql' => "select {$menuInfo['pk']},{$menuInfo['pk']} from {$prefix}{$menuInfo['table_name']}",
+                'default_value' => '',
+                'datatype' => 'int',
+                'length' => '11',
+                'indexdata' => null,
+                'show_condition' => null,
+                'item_config' => '',
+                'width' => null,
+                'datetime_config' => null,
+                'other_config' => json_encode([
+                    'shuxing' => ['tooltip'],
+                    'guige' => [],
+                    'address_type' => 1,
+                    'placeholder' => '',
+                    'liandong_field' => ''
+                ]),
+                'belong_table' => '',
+                'icon' => null,
+                'key_placeholder' => '',
+                'value_placeholder' => ''
+            ],
+            // 流程表关联字段
+            [
+                'title' => $flow_table['title'] ?: '流程表',
+                'field' => $flow_table['pk'],
+                'type' => 2,
+                'list_show' => 0,
+                'search_type' => 0,
+                'post_status' => 1,
+                'create_table_field' => 1,
+                'sortid' => 3,
+                'sql' => "",
+                'default_value' => '',
+                'datatype' => 'int',
+                'length' => '11',
+                'indexdata' => null,
+                'show_condition' => null,
+                'item_config' => '',
+                'width' => null,
+                'datetime_config' => null,
+                'other_config' => json_encode([
+                    'shuxing' => ['tooltip'],
+                    'guige' => [],
+                    'address_type' => 1,
+                    'placeholder' => '',
+                    'liandong_field' => ''
+                ]),
+                'belong_table' => '',
+                'icon' => null,
+                'key_placeholder' => '',
+                'value_placeholder' => ''
+            ]
+        ];
+    }
+    
+    /**
+     * 4. 插入动作数据
+     */
+    private function insertActionData($connect, $newMenuId, $data, $menu_other_config) {
+        // 固定动作配置模板
+        $actionConfigs = [
+            // 数据列表
+            [
+                'menu_id' => $newMenuId,
+                'name' => '数据列表',
+                'action_name' => 'index',
+                'type' => 1,
+                'icon' => null,
+                'pagesize' => '20',
+                'group_button_status' => 0,
+                'list_button_status' => null,
+                'button_color' => null,
+                'fields' => null,
+                'sortid' => 1,
+                'orderby' => null,
+                'tree_config' => null,
+                'jump' => null,
+                'server_create_status' => 1,
+                'vue_create_status' => 1,
+                'cache_time' => null,
+                'api_auth' => null,
+                'img_auth' => null,
+                'sms_auth' => null,
+                'list_filter' => null,
+                'tab_config' => null,
+                'sql' => null,
+                'dialog_size' => null,
+                'status_val' => null,
+                'validate' => null,
+                'select_type' => 1,
+                'table_height' => null,
+                'left_tree_sql' => null,
+                'with_join' => null,
+                'other_config' => null,
+                'dialog_type' => null,
+                'version' => null,
+                'remark' => null,
+                'remark_desc' => null,
+                'q_template' => null,
+                'h_php' => null
+            ],
+            // 查看详情
+            [
+                'menu_id' => $newMenuId,
+                'name' => '查看详情',
+                'action_name' => 'detail',
+                'type' => 5,
+                'icon' => 'el-icon-view',
+                'pagesize' => '',
+                'group_button_status' => 1,
+                'list_button_status' => null,
+                'button_color' => 'info',
+                'fields' => null,
+                'sortid' => 6,
+                'orderby' => null,
+                'tree_config' => null,
+                'jump' => null,
+                'server_create_status' => 1,
+                'vue_create_status' => 1,
+                'cache_time' => null,
+                'api_auth' => null,
+                'img_auth' => null,
+                'sms_auth' => null,
+                'list_filter' => null,
+                'tab_config' => null,
+                'sql' => null,
+                'dialog_size' => '85%',
+                'status_val' => null,
+                'validate' => null,
+                'select_type' => 1,
+                'table_height' => null,
+                'left_tree_sql' => null,
+                'with_join' => null,
+                'other_config' => null,
+                'dialog_type' => null,
+                'version' => null,
+                'remark' => null,
+                'remark_desc' => null,
+                'q_template' => null,
+                'h_php' => null
+            ]
+        ];
+        
+        // 批量插入动作数据
+        $result = Db::connect($connect)->name('action')->insertAll($actionConfigs);
+        
+        if (!$result) {
+            throw new \Exception('插入动作记录失败');
+        }
+    }
+    
+    /**
+     * @param $dir
+     * @return bool
+     * @desc      删除文件夹及文件夹内文件
+     * @author    JiaWei
+     * @email     975162853@qq.com
+     * @date      2025/12/11
+     * @time      14:18
+     */
+    function deleteFolder($dir) {
+        if (!is_dir($dir)) {
+            return false;
+        }
+        
+        // 获取目录下所有文件和子目录
+        $files = array_diff(scandir($dir), array('.', '..'));
+        
+        foreach ($files as $file) {
+            $path = $dir . '/' . $file;
+            
+            if (is_dir($path)) {
+                // 递归删除子目录
+                $this->deleteFolder($path);
+            } else {
+                // 删除文件
+                unlink($path);
+            }
+        }
+        
+        // 删除空目录
+        return rmdir($dir);
+    }
+    
+    /**
+     * @param array $fieldList
+     * @param       $menuInfo
+     * @param       $menu_id
+     * @return array
+     * @desc      隐藏字段处理
+     * @author    JiaWei
+     * @email     975162853@qq.com
+     * @date      2025/12/12
+     * @time      09:58
+     */
+    private function addFlowField(array $fieldList, $menuInfo, $menu_id, $application, $prefix) {
+        $username = explode('|', $application['login_fields'])[0];
+        // 审核状态字段
+        $fieldList[] = [
+            "id" => 77777, // 需要设置一个唯一的ID
+            "menu_id" => $menu_id,
+            "title" => "审批状态",
+            "field" => "{$menuInfo['table_name']}_status_tfadmin", // 根据表名动态生成
+            "type" => 4,
+            "list_show" => 2,
+            "search_type" => 1,
+            "post_status" => 0, // 不能直接修改
+            "flow_status" => 1, // 不能直接修改
+            "create_table_field" => 1,
+            "validate" => "notempty",
+            "rule" => null,
+            "sortid" => 9993,
+            "sql" => "",
+            "default_value" => "2", // 默认值设为2
+            "datatype" => "smallint",
+            "length" => "6",
+            "indexdata" => null,
+            "show_condition" => null,
+            "item_config" => json_encode([
+                ["key" => "驳回", "val" => "0", "label_color" => "danger"],
+                ["key" => "通过", "val" => "1", "label_color" => "primary"],
+                // ["key" => "待审核", "val" => "2", "label_color" => "warning"]
+            ]),
+            "width" => null,
+            "datetime_config" => null,
+            "other_config" => json_encode([
+                "address_type" => "1",
+                "now_time" => false,
+                "placeholder" => "",
+                "rand_config" => "",
+                "filetype" => "",
+                "liandong_field" => "",
+                "shuxing" => ["tooltip"],
+                "jdt" => "changtiao",
+                "remote_research_field" => "",
+                "rename_status" => "",
+                "default_tabs_value" => "",
+                "application_id" => "",
+                "crop" => "",
+                "time_search_tempate" => true,
+                "guige" => [[]],
+                "maxrows" => 4,
+                "inputRemark" => "系统自动管理的审批状态",
+                "list_feild" => "",
+                "rangetime_type" => "date",
+                "previewImage" => 0,
+                "search_all" => 0
+            ]),
+            "belong_table" => "",
+            "icon" => null,
+            "key_placeholder" => "",
+            "value_placeholder" => "",
+            "tx_tiaojian" => 0,
+            "tx_zhi" => "",
+            "tx_color" => "",
+            "improve_tiaojian" => 0,
+            "improve_zhi" => "",
+            "improve_color" => null,
+            "list_background_config" => "[]",
+            "tx_config" => "[]"
+        ];
+        
+        // 审核备注字段
+        $fieldList[] = [
+            "id" => 66666, // 需要设置一个唯一的ID
+            "menu_id" => $menu_id,
+            "title" => "审批备注",
+            "field" => "{$menuInfo['table_name']}_remark_tfadmin", // 根据表名动态生成
+            "type" => 8,
+            "list_show" => 2,
+            "search_type" => 2,
+            "post_status" => 0, // 不能直接修改
+            "flow_status" => 1, // 不能直接修改
+            "create_table_field" => 1,
+            "validate" => "",
+            "rule" => null,
+            "sortid" => 9994,
+            "sql" => "",
+            "default_value" => "",
+            "datatype" => "tinytext",
+            "length" => "0",
+            "indexdata" => null,
+            "show_condition" => null,
+            "item_config" => "",
+            "width" => null,
+            "datetime_config" => null,
+            "other_config" => json_encode([
+                "address_type" => "1",
+                "now_time" => false,
+                "placeholder" => "系统自动记录的审批备注",
+                "rand_config" => "",
+                "filetype" => "",
+                "liandong_field" => "",
+                "shuxing" => ["tooltip"],
+                "jdt" => "changtiao",
+                "remote_research_field" => "",
+                "rename_status" => "",
+                "default_tabs_value" => "",
+                "application_id" => "",
+                "crop" => "",
+                "time_search_tempate" => true,
+                "guige" => [[]],
+                "maxrows" => 4,
+                "inputRemark" => "系统自动记录的审批备注",
+                "list_feild" => "",
+                "rangetime_type" => "date",
+                "previewImage" => 0,
+                "search_all" => 0
+            ]),
+            "belong_table" => "",
+            "icon" => null,
+            "key_placeholder" => "",
+            "value_placeholder" => "",
+            "tx_tiaojian" => 0,
+            "tx_zhi" => "",
+            "tx_color" => "",
+            "improve_tiaojian" => 0,
+            "improve_zhi" => "",
+            "improve_color" => null,
+            "list_background_config" => "[]",
+            "tx_config" => "[]"
+        ];
+        // 当前审核人字段
+        $fieldList[] = [
+            "id" => 88888, // 需要设置一个唯一的ID
+            "menu_id" => $menu_id,
+            "title" => "上次审核",
+            "field" => "{$menuInfo['table_name']}_apply_now_tfadmin", // 根据表名动态生成
+            "type" => 2,
+            "list_show" => 2,
+            "search_type" => 1,
+            "post_status" => 0, // 不能直接修改
+            "create_table_field" => 1,
+            "validate" => "",
+            "rule" => null,
+            "sortid" => 9991,
+            "sql" => "select {$application['pk']},{$username} from {$prefix}{$application['login_table']}",
+            "default_value" => "",
+            "datatype" => "int",
+            "length" => "11",
+            "indexdata" => null,
+            "show_condition" => null,
+            "item_config" => "",
+            "width" => null,
+            "datetime_config" => null,
+            "other_config" => json_encode([
+                "address_type" => "1",
+                "now_time" => false,
+                "placeholder" => "",
+                "rand_config" => "",
+                "filetype" => "",
+                "liandong_field" => "",
+                "shuxing" => ["tooltip", "fanzhuan"],
+                "jdt" => "changtiao",
+                "remote_research_field" => "",
+                "rename_status" => "",
+                "default_tabs_value" => "",
+                "application_id" => "",
+                "crop" => "",
+                "time_search_tempate" => true,
+                "guige" => [[]],
+                "maxrows" => 4,
+                "inputRemark" => "",
+                "list_feild" => "",
+                "rangetime_type" => "date",
+                "previewImage" => 0,
+                "search_all" => 0
+            ]),
+            "belong_table" => "",
+            "icon" => null,
+            "key_placeholder" => "",
+            "value_placeholder" => "",
+            "tx_tiaojian" => 0,
+            "tx_zhi" => "",
+            "tx_color" => "",
+            "improve_tiaojian" => 0,
+            "improve_zhi" => "",
+            "improve_color" => null,
+            "list_background_config" => "[]",
+            "tx_config" => "[]"
+        ];
+        
+        // 下一个审核人字段
+        $fieldList[] = [
+            "id" => 99999, // 需要设置一个唯一的ID
+            "menu_id" => $menu_id,
+            "title" => "当前审核",
+            "field" => "{$menuInfo['table_name']}_apply_next_tfadmin", // 根据表名动态生成
+            "type" => 2,
+            "list_show" => 2,
+            "search_type" => 1,
+            "post_status" => 0, // 不能直接修改
+            "create_table_field" => 1,
+            "validate" => "",
+            "rule" => null,
+            "sortid" => 9992,
+            "sql" => "select {$application['pk']},{$username} from {$prefix}{$application['login_table']}",
+            "default_value" => "",
+            "datatype" => "int",
+            "length" => "11",
+            "indexdata" => null,
+            "show_condition" => null,
+            "item_config" => "",
+            "width" => null,
+            "datetime_config" => null,
+            "other_config" => json_encode([
+                "address_type" => "1",
+                "now_time" => false,
+                "placeholder" => "",
+                "rand_config" => "",
+                "filetype" => "",
+                "liandong_field" => "",
+                "shuxing" => ["tooltip", "fanzhuan"],
+                "jdt" => "changtiao",
+                "remote_research_field" => "",
+                "rename_status" => "",
+                "default_tabs_value" => "",
+                "application_id" => "",
+                "crop" => "",
+                "time_search_tempate" => true,
+                "guige" => [[]],
+                "maxrows" => 4,
+                "inputRemark" => "",
+                "list_feild" => "",
+                "rangetime_type" => "date",
+                "previewImage" => 0,
+                "search_all" => 0
+            ]),
+            "belong_table" => "",
+            "icon" => null,
+            "key_placeholder" => "",
+            "value_placeholder" => "",
+            "tx_tiaojian" => 0,
+            "tx_zhi" => "",
+            "tx_color" => "",
+            "improve_tiaojian" => 0,
+            "improve_zhi" => "",
+            "improve_color" => null,
+            "list_background_config" => "[]",
+            "tx_config" => "[]"
+        ];
+        return $fieldList;
+    }
+    
+    /**
+     * 创建审批流数据表（审批组和审批流）
+     */
+    private function createFlowDataTable($data, $create_action = "add") {
+        
+        // 开启事务
+        Db::startTrans();
+        try {
+            $menu_other_config = json_decode($data['other_config'], true);
+            $flow_group_field = $menu_other_config['flow_group'];
+            $menuInfo = db("menu")->where('menu_id', $data['menu_id'])->find();
+            $connect = $menuInfo['connect'] ? $menuInfo['connect'] : config('database.default');
+            $prefix = config('database.connections.' . $connect . '.prefix');
+            $application = Application::where('app_id', $menuInfo['app_id'])->find()->toArray();
+            $application = $this->changeApplication($application);
+            
+            if (config('database.connections.' . $connect . '.type') <> 'mysql') {
+                Db::rollback();
+                return false;
+            }
+            
+            // 1. 创建审批组表和审批流表
+            $create_res = $this->createApprovalTables($connect, $prefix, $menuInfo, $data, $flow_group_field);
+            
+            // 2. 插入审批组菜单记录
+            $groupMenuId = $this->insertGroupMenuRecord($connect, $data, $menuInfo);
+            
+            // 3. 插入审批流菜单记录
+            $flowMenuId = $this->insertFlowMenuRecord($connect, $data, $menuInfo);
+            
+            // 4. 插入审批组字段数据
+            $this->insertGroupFieldData($connect, $groupMenuId, $prefix, $menuInfo);
+            
+            // 5. 插入审批流字段数据
+            $this->insertFlowFieldData($connect, $flowMenuId, $prefix, $menuInfo, $groupMenuId, $flow_group_field, $application);
+            
+            // 6. 插入审批组动作数据
+            $this->insertGroupActionData($connect, $groupMenuId);
+            
+            // 7. 插入审批流动数据
+            $this->insertFlowActionData($connect, $flowMenuId, $menuInfo);
+            
+            // 8. 在主表中添加审批流相关动作
+            $this->insertMainTableFlowActions($connect, $data, $menuInfo, $groupMenuId, $application);
+            
+            // 9. 代码生成
+            if (
+                !$this->createCode($groupMenuId, 2)
+                || !$this->createCode($flowMenuId, 2, [
+                    'flow_group_field' => $flow_group_field,
+                    'group_table_id' => $create_res['group_table'] . "_id"
+                ])
+            ) {
+                // 回滚事务
+                Db::rollback();
+                throw new ValidateException("审批流数据表创建失败");
+            }
+            
+            // 提交事务
+            Db::commit();
+            return true;
+        } catch (\Exception $e) {
+            // 回滚事务
+            Db::rollback();
+            throw new \Exception('审批流数据表创建失败：' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * 8. 在主表中添加审批流相关动作
+     */
+    private function insertMainTableFlowActions($connect, $data, $menuInfo, $groupMenuId, $application) {
+        $tableName = strtolower(trim($menuInfo['table_name']));
+        $app_dir = $application['app_dir'];
+        
+        // 获取生成的审批组和审批流表名
+        $groupTableName = $tableName . $this->groupTableSuffix;
+        $flowTableName = $tableName . $this->flowTableSuffix;
+        
+        // 生成控制器名称
+        $groupControllerName = str_replace(' ', '', ucwords(str_replace('_', ' ', $groupTableName)));
+        $flowControllerName = str_replace(' ', '', ucwords(str_replace('_', ' ', $flowTableName)));
+        
+        // 动作配置
+        $flowActions = [
+            // 添加流动动作
+            [
+                'menu_id' => $data['menu_id'], // 主表菜单ID
+                'name' => '添加审批流',
+                'action_name' => 'dialogUrlTfAddFlow',
+                'type' => 16,
+                'icon' => 'fas fa-pallet',
+                'pagesize' => '20',
+                'group_button_status' => 1,
+                'list_button_status' => null,
+                'button_color' => 'warning',
+                'fields' => '',
+                'sortid' => $data['id'] + 100, // 使用data的id作为基础，加上偏移量
+                'orderby' => '',
+                'tree_config' => '',
+                'jump' => "/{$app_dir}/{$groupControllerName}/index",
+                'server_create_status' => 1,
+                'vue_create_status' => 1,
+                'cache_time' => null,
+                'api_auth' => null,
+                'img_auth' => null,
+                'sms_auth' => null,
+                'list_filter' => '',
+                'tab_config' => '',
+                'sql' => '',
+                'dialog_size' => '85%',
+                'status_val' => '',
+                'validate' => null,
+                'select_type' => 1,
+                'table_height' => '',
+                'left_tree_sql' => null,
+                'with_join' => '',
+                'other_config' => json_encode([
+                    'export_type' => '',
+                    'hook' => [],
+                    'excel' => '',
+                    'left_tree_show' => '',
+                    'tree_show' => 1,
+                    'after_hook' => '',
+                    'befor_hook' => '',
+                    'printer_status' => 2,
+                    'list_button_style' => 1,
+                    'guige' => [],
+                    'detail_search_field' => []
+                ]),
+                'dialog_type' => '1',
+                'version' => null,
+                'remark' => null,
+                'remark_desc' => null,
+                'q_template' => '<div class="super-page">
+  <h1>自定义页面</h1>
+</div>',
+                'h_php' => 'public function ygluntan() {
+   if (!$this->request->isPost()){
+     return view(\'ygluntan\');
+   }
+}',
+                'action_pid' => $data['id'], // 使用data的id作为action_pid
+                'action_show' => 0
+            ],
+            // 设置流动动作
+            [
+                'menu_id' => $data['menu_id'], // 主表菜单ID
+                'name' => '设置审批流',
+                'action_name' => 'dialogUrlTfSeetingFlow',
+                'type' => 16,
+                'icon' => 'fas fa-network-wired',
+                'pagesize' => '20',
+                'group_button_status' => 0,
+                'list_button_status' => 1,
+                'button_color' => 'amethyst',
+                'fields' => $menuInfo['pk'], // 使用主表主键字段
+                'sortid' => $data['id'] + 101, // 使用data的id作为基础，加上偏移量
+                'orderby' => '',
+                'tree_config' => '',
+                'jump' => "/{$app_dir}/{$flowControllerName}/index",
+                'server_create_status' => 1,
+                'vue_create_status' => 1,
+                'cache_time' => null,
+                'api_auth' => null,
+                'img_auth' => null,
+                'sms_auth' => null,
+                'list_filter' => '',
+                'tab_config' => '',
+                'sql' => '',
+                'dialog_size' => '85%',
+                'status_val' => '',
+                'validate' => null,
+                'select_type' => 1,
+                'table_height' => '',
+                'left_tree_sql' => null,
+                'with_join' => '',
+                'other_config' => json_encode([
+                    'export_type' => '',
+                    'hook' => [],
+                    'excel' => '',
+                    'left_tree_show' => '',
+                    'tree_show' => 1,
+                    'after_hook' => '',
+                    'befor_hook' => '',
+                    'printer_status' => 2,
+                    'list_button_style' => 1,
+                    'guige' => [],
+                    'detail_search_field' => []
+                ]),
+                'dialog_type' => '1',
+                'version' => null,
+                'remark' => null,
+                'remark_desc' => null,
+                'q_template' => '<div class="super-page">
+  <h1>自定义页面</h1>
+</div>',
+                'h_php' => 'public function ygluntan() {
+   if (!$this->request->isPost()){
+     return view(\'ygluntan\');
+   }
+}',
+                'action_pid' => $data['id'], // 使用data的id作为action_pid
+                'action_show' => 0
+            ]
+        ];
+        
+        // 插入动作
+        $result = Db::connect($connect)->name('action')->insertAll($flowActions);
+        
+        if (!$result) {
+            throw new \Exception('插入主表审批流动记录失败');
+        }
+    }
+    
+    /**
+     * 1. 创建审批组表和审批流表
+     */
+    private function createApprovalTables($connect, $prefix, $menuInfo, $data, $flow_group_field) {
+        $tableName = strtolower(trim($menuInfo['table_name']));
+        $pk = $flow_group_field;
+        
+        // 1.1 创建审批组表
+        $groupTableName = $tableName . $this->groupTableSuffix;
+        $groupPk = $groupTableName . "_id";
+        
+        $dropGroupSql = "DROP TABLE IF EXISTS `" . $prefix . $groupTableName . "`";
+        Db::connect($connect)->execute($dropGroupSql);
+        
+        $createGroupSql = "CREATE TABLE `" . $prefix . $groupTableName . "` (
+        `{$groupPk}` int NOT NULL AUTO_INCREMENT COMMENT '编号',
+        `{$groupTableName}_name` varchar(250) DEFAULT NULL COMMENT '审批流名称',
+        PRIMARY KEY (`{$groupPk}`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='" . addslashes($menuInfo['title']) . "-审批组';";
+        
+        Db::connect($connect)->execute($createGroupSql);
+        
+        // 1.2 创建审批流表
+        $flowTableName = $tableName . $this->flowTableSuffix;
+        $flowPk = $flowTableName . "_id";
+        
+        $dropFlowSql = "DROP TABLE IF EXISTS `" . $prefix . $flowTableName . "`";
+        Db::connect($connect)->execute($dropFlowSql);
+        
+        $createFlowSql = "CREATE TABLE `" . $prefix . $flowTableName . "` (
+        `{$flowPk}` int NOT NULL AUTO_INCREMENT COMMENT '编号',
+        `{$pk}` varchar(250) DEFAULT NULL COMMENT '关联字段-" . addslashes($menuInfo['title']) . "',
+        `{$groupTableName}_id` int DEFAULT NULL COMMENT '审批流名称',
+        `{$flowTableName}` longtext COMMENT '审批流设置',
+        PRIMARY KEY (`{$flowPk}`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='" . addslashes($menuInfo['title']) . "-审批流';";
+        
+        Db::connect($connect)->execute($createFlowSql);
+        
+        return [
+            'group_table' => $groupTableName,
+            'group_pk' => $groupPk,
+            'flow_table' => $flowTableName,
+            'flow_pk' => $flowPk
+        ];
+    }
+    
+    /**
+     * 2. 插入审批组菜单记录
+     */
+    private function insertGroupMenuRecord($connect, $data, $menuInfo) {
+        $tableName = strtolower(trim($menuInfo['table_name']));
+        $groupTableName = $tableName . $this->groupTableSuffix;
+        $groupPk = $groupTableName . "_id";
+        $controllerName = str_replace(' ', '', ucwords(str_replace('_', ' ', $groupTableName)));
+        
+        // 检查是否已存在相同 controller_name 的记录
+        $existingMenu = Db::connect($connect)->name('menu')->where('controller_name', $controllerName)->find();
+        if ($existingMenu) {
+            Db::connect($connect)->name('menu')->where('menu_id', $existingMenu['menu_id'])->delete();
+            Db::connect($connect)->name('field')->where('menu_id', $existingMenu['menu_id'])->delete();
+            Db::connect($connect)->name('action')->where('menu_id', $existingMenu['menu_id'])->delete();
+        }
+        
+        // 插入菜单记录
+        $menuData = [
+            'pid' => $data['menu_id'],
+            'controller_name' => $controllerName,
+            'title' => $menuInfo['title'] . '审批组',
+            'pk' => $groupPk,
+            'table_name' => $groupTableName,
+            'create_code' => 1,
+            'status' => 0,
+            'sortid' => $data['menu_id'],
+            'create_table' => 1,
+            'url' => '',
+            'icon' => null,
+            'tab_config' => null,
+            'app_id' => $menuInfo['app_id'],
+            'is_post' => 0,
+            'upload_config_id' => 0,
+            'connect' => $connect,
+            'page_type' => 1,
+            'home_show' => 0,
+            'menu_pic' => '',
+            'notice' => '',
+            'prompt' => 0,
+            'prompt_session' => '',
+            'flow_subtable' => 1,
+            'menu_show' => 0,
+        ];
+        
+        $newMenuId = Db::connect($connect)->name('menu')->insertGetId($menuData);
+        
+        if (!$newMenuId) {
+            throw new \Exception('插入审批组菜单记录失败');
+        }
+        
+        return $newMenuId;
+    }
+    
+    /**
+     * 3. 插入审批流菜单记录
+     */
+    private function insertFlowMenuRecord($connect, $data, $menuInfo) {
+        $tableName = strtolower(trim($menuInfo['table_name']));
+        $flowTableName = $tableName . $this->flowTableSuffix;
+        $flowPk = $flowTableName . "_id";
+        $controllerName = str_replace(' ', '', ucwords(str_replace('_', ' ', $flowTableName)));
+        
+        // 检查是否已存在相同 controller_name 的记录
+        $existingMenu = Db::connect($connect)->name('menu')->where('controller_name', $controllerName)->find();
+        if ($existingMenu) {
+            Db::connect($connect)->name('menu')->where('menu_id', $existingMenu['menu_id'])->delete();
+            Db::connect($connect)->name('field')->where('menu_id', $existingMenu['menu_id'])->delete();
+            Db::connect($connect)->name('action')->where('menu_id', $existingMenu['menu_id'])->delete();
+        }
+        
+        // 插入菜单记录
+        $menuData = [
+            'pid' => $data['menu_id'],
+            'controller_name' => $controllerName,
+            'title' => $menuInfo['title'] . '审批流',
+            'pk' => $flowPk,
+            'table_name' => $flowTableName,
+            'create_code' => 1,
+            'status' => 0,
+            'sortid' => $data['menu_id'] + 1,
+            'create_table' => 1,
+            'url' => '',
+            'icon' => null,
+            'tab_config' => null,
+            'app_id' => $menuInfo['app_id'],
+            'is_post' => 0,
+            'upload_config_id' => 0,
+            'connect' => $connect,
+            'page_type' => 1,
+            'home_show' => 0,
+            'menu_pic' => '',
+            'notice' => '',
+            'prompt' => 0,
+            'prompt_session' => '',
+            'flow_subtable' => 1,
+            'menu_show' => 0,
+        ];
+        
+        $newMenuId = Db::connect($connect)->name('menu')->insertGetId($menuData);
+        
+        if (!$newMenuId) {
+            throw new \Exception('插入审批流菜单记录失败');
+        }
+        
+        return $newMenuId;
+    }
+    
+    /**
+     * 4. 插入审批组字段数据 - 根据实际数据修正
+     */
+    private function insertGroupFieldData($connect, $groupMenuId, $prefix, $menuInfo) {
+        $tableName = strtolower(trim($menuInfo['table_name']));
+        $groupTableName = $tableName . $this->groupTableSuffix;
+        $groupPk = $groupTableName . "_id";
+        
+        $fieldConfigs = [
+            // 编号字段
+            [
+                'menu_id' => $groupMenuId,
+                'title' => '编号',
+                'field' => $groupPk,
+                'type' => 1,
+                'list_show' => 2,
+                'search_type' => null,
+                'post_status' => null,
+                'create_table_field' => 1,
+                'validate' => null,
+                'rule' => null,
+                'sortid' => 1,
+                'sql' => null,
+                'default_value' => null,
+                'datatype' => 'int',
+                'length' => '11',
+                'indexdata' => null,
+                'show_condition' => null,
+                'item_config' => null,
+                'width' => '70',
+                'datetime_config' => null,
+                'other_config' => null,
+                'belong_table' => '',
+                'icon' => null,
+                'key_placeholder' => '',
+                'value_placeholder' => '值占位文本',
+                'tx_tiaojian' => 0,
+                'tx_zhi' => '',
+                'tx_color' => '',
+                'improve_tiaojian' => 0,
+                'improve_zhi' => '',
+                'improve_color' => null,
+                'list_background_config' => '[]',
+                'tx_config' => '[]',
+                'field_show' => 1
+            ],
+            // 流程组名字段
+            [
+                'menu_id' => $groupMenuId,
+                'title' => '审批流名称',
+                'field' => $groupTableName . '_name',
+                'type' => 1,
+                'list_show' => 2,
+                'search_type' => 2,
+                'post_status' => 1,
+                'create_table_field' => 1,
+                'validate' => ',notempty',
+                'rule' => null,
+                'sortid' => 2,
+                'sql' => null,
+                'default_value' => '',
+                'datatype' => 'varchar',
+                'length' => '250',
+                'indexdata' => null,
+                'show_condition' => null,
+                'item_config' => '',
+                'width' => null,
+                'datetime_config' => null,
+                'other_config' => json_encode([
+                    'shuxing' => ['required'],
+                    'guige' => [],
+                    'address_type' => 1,
+                    'placeholder' => '请输入审批流名称',
+                    'liandong_field' => ''
+                ]),
+                'belong_table' => '',
+                'icon' => null,
+                'key_placeholder' => '',
+                'value_placeholder' => '值占位文本',
+                'tx_tiaojian' => 0,
+                'tx_zhi' => '',
+                'tx_color' => '',
+                'improve_tiaojian' => 0,
+                'improve_zhi' => '',
+                'improve_color' => null,
+                'list_background_config' => '[]',
+                'tx_config' => '[]',
+                'field_show' => 1
+            ]
+        ];
+        
+        $result = Db::connect($connect)->name('field')->insertAll($fieldConfigs);
+        
+        if (!$result) {
+            throw new \Exception('插入审批组字段记录失败');
+        }
+    }
+    
+    /**
+     * 5. 插入审批流字段数据 - 根据实际数据修正
+     */
+    private function insertFlowFieldData($connect, $flowMenuId, $prefix, $menuInfo, $groupMenuId, $flow_group_field, $application) {
+        $username = explode('|', $application['login_fields'])[0];
+        $tableName = strtolower(trim($menuInfo['table_name']));
+        $flowTableName = $tableName . $this->flowTableSuffix;
+        $flowPk = $flowTableName . "_id";
+        $groupTableName = $tableName . $this->groupTableSuffix;
+        $groupPk = $groupTableName . "_id";
+        $mainPk = $flow_group_field;
+        
+        $fieldConfigs = [
+            // 编号字段
+            [
+                'menu_id' => $flowMenuId,
+                'title' => '编号',
+                'field' => $flowPk,
+                'type' => 1,
+                'list_show' => 2,
+                'search_type' => null,
+                'post_status' => null,
+                'create_table_field' => 1,
+                'validate' => null,
+                'rule' => null,
+                'sortid' => 1,
+                'sql' => null,
+                'default_value' => null,
+                'datatype' => 'int',
+                'length' => '11',
+                'indexdata' => null,
+                'show_condition' => null,
+                'item_config' => null,
+                'width' => '70',
+                'datetime_config' => null,
+                'other_config' => null,
+                'belong_table' => '',
+                'icon' => null,
+                'key_placeholder' => '',
+                'value_placeholder' => '值占位文本',
+                'tx_tiaojian' => 0,
+                'tx_zhi' => '',
+                'tx_color' => '',
+                'improve_tiaojian' => 0,
+                'improve_zhi' => '',
+                'improve_color' => null,
+                'list_background_config' => '[]',
+                'tx_config' => '[]',
+                'field_show' => 1
+            ],
+            // 关联信息字段
+            [
+                'menu_id' => $flowMenuId,
+                'title' => '关联信息',
+                'field' => $mainPk,
+                'type' => 33,
+                'list_show' => 0,
+                'search_type' => 1,
+                'post_status' => 1,
+                'create_table_field' => 1,
+                'validate' => '',
+                'rule' => null,
+                'sortid' => 2,
+                'sql' => '',
+                'default_value' => '',
+                'datatype' => 'varchar',
+                'length' => '250',
+                'indexdata' => null,
+                'show_condition' => null,
+                'item_config' => '',
+                'width' => null,
+                'datetime_config' => null,
+                'other_config' => json_encode([
+                    'shuxing' => ['required'],
+                    'guige' => [],
+                    'address_type' => 1,
+                    'placeholder' => '请选择' . $menuInfo['title'],
+                    'liandong_field' => ''
+                ]),
+                'belong_table' => '',
+                'icon' => null,
+                'key_placeholder' => '',
+                'value_placeholder' => '值占位文本',
+                'tx_tiaojian' => 0,
+                'tx_zhi' => '',
+                'tx_color' => '',
+                'improve_tiaojian' => 0,
+                'improve_zhi' => '',
+                'improve_color' => null,
+                'list_background_config' => '[]',
+                'tx_config' => '[]',
+                'field_show' => 1
+            ],
+            // 审批组字段
+            [
+                'menu_id' => $flowMenuId,
+                'title' => '审批流名称',
+                'field' => $groupTableName . '_id',
+                'type' => 2,
+                'list_show' => 2,
+                'search_type' => 1,
+                'post_status' => 1,
+                'create_table_field' => 1,
+                'validate' => ',notempty',
+                'rule' => null,
+                'sortid' => 3,
+                'sql' => "select {$groupPk},{$groupTableName}_name from {$prefix}{$groupTableName}",
+                'default_value' => '',
+                'datatype' => 'int',
+                'length' => '11',
+                'indexdata' => null,
+                'show_condition' => null,
+                'item_config' => '',
+                'width' => null,
+                'datetime_config' => null,
+                'other_config' => json_encode([
+                    'shuxing' => ['required', 'fanzhuan'],
+                    'guige' => [],
+                    'address_type' => 1,
+                    'placeholder' => '请选择审批流',
+                    'liandong_field' => ''
+                ]),
+                'belong_table' => '',
+                'icon' => null,
+                'key_placeholder' => '',
+                'value_placeholder' => '值占位文本',
+                'tx_tiaojian' => 0,
+                'tx_zhi' => '',
+                'tx_color' => '',
+                'improve_tiaojian' => 0,
+                'improve_zhi' => '',
+                'improve_color' => null,
+                'list_background_config' => '[]',
+                'tx_config' => '[]',
+                'field_show' => 1
+            ],
+            // 审批流字段
+            [
+                'menu_id' => $flowMenuId,
+                'title' => '审批流设置',
+                'field' => $flowTableName,
+                'type' => 42,
+                'list_show' => 2,
+                'search_type' => 3,
+                'post_status' => 1,
+                'create_table_field' => 1,
+                'validate' => ',notempty',
+                'rule' => null,
+                'sortid' => 4,
+                'sql' => "select {$application['pk']},{$username} from {$prefix}{$application['login_table']}",
+                'default_value' => '',
+                'datatype' => 'longtext',
+                'length' => '0',
+                'indexdata' => null,
+                'show_condition' => null,
+                'item_config' => '',
+                'width' => null,
+                'datetime_config' => null,
+                'other_config' => json_encode([
+                    'shuxing' => [],
+                    'guige' => [],
+                    'address_type' => 1,
+                    'placeholder' => '请设置审批流程',
+                    'liandong_field' => ''
+                ]),
+                'belong_table' => '',
+                'icon' => null,
+                'key_placeholder' => '',
+                'value_placeholder' => '值占位文本',
+                'tx_tiaojian' => 0,
+                'tx_zhi' => '',
+                'tx_color' => '',
+                'improve_tiaojian' => 0,
+                'improve_zhi' => '',
+                'improve_color' => null,
+                'list_background_config' => '[]',
+                'tx_config' => '[]',
+                'field_show' => 1
+            ]
+        ];
+        
+        $result = Db::connect($connect)->name('field')->insertAll($fieldConfigs);
+        
+        if (!$result) {
+            throw new \Exception('插入审批流字段记录失败');
+        }
+    }
+    
+    /**
+     * 6. 插入审批组动作数据
+     */
+    private function insertGroupActionData($connect, $groupMenuId) {
+        $actionConfigs = [
+            // 数据列表
+            [
+                'menu_id' => $groupMenuId,
+                'name' => '数据列表',
+                'action_name' => 'index',
+                'type' => 1,
+                'icon' => null,
+                'pagesize' => '20',
+                'group_button_status' => 0,
+                'list_button_status' => null,
+                'button_color' => null,
+                'fields' => null,
+                'sortid' => 1,
+                'orderby' => null,
+                'tree_config' => null,
+                'jump' => null,
+                'server_create_status' => 1,
+                'vue_create_status' => 1,
+                'cache_time' => null,
+                'api_auth' => null,
+                'img_auth' => null,
+                'sms_auth' => null,
+                'list_filter' => null,
+                'tab_config' => null,
+                'sql' => null,
+                'dialog_size' => null,
+                'status_val' => null,
+                'validate' => null,
+                'select_type' => 1,
+                'table_height' => null,
+                'left_tree_sql' => null,
+                'with_join' => null,
+                'other_config' => null,
+                'dialog_type' => null,
+                'version' => null,
+                'remark' => null,
+                'remark_desc' => null,
+                'q_template' => null,
+                'h_php' => null,
+                'action_pid' => null,
+                'action_show' => 1
+            ],
+            // 修改排序开关 - 根据实际数据添加
+            [
+                'menu_id' => $groupMenuId,
+                'name' => '修改排序开关',
+                'action_name' => 'updateExt',
+                'type' => 12,
+                'icon' => null,
+                'pagesize' => '',
+                'group_button_status' => 0,
+                'list_button_status' => null,
+                'button_color' => null,
+                'fields' => null,
+                'sortid' => 2,
+                'orderby' => null,
+                'tree_config' => null,
+                'jump' => null,
+                'server_create_status' => 1,
+                'vue_create_status' => 1,
+                'cache_time' => null,
+                'api_auth' => null,
+                'img_auth' => null,
+                'sms_auth' => null,
+                'list_filter' => null,
+                'tab_config' => null,
+                'sql' => null,
+                'dialog_size' => null,
+                'status_val' => null,
+                'validate' => null,
+                'select_type' => 1,
+                'table_height' => null,
+                'left_tree_sql' => null,
+                'with_join' => null,
+                'other_config' => null,
+                'dialog_type' => null,
+                'version' => null,
+                'remark' => null,
+                'remark_desc' => null,
+                'q_template' => null,
+                'h_php' => null,
+                'action_pid' => null,
+                'action_show' => 1
+            ],
+            // 添加数据 - 修正对话框大小为85%
+            [
+                'menu_id' => $groupMenuId,
+                'name' => '添加数据',
+                'action_name' => 'add',
+                'type' => 2,
+                'icon' => 'el-icon-plus',
+                'pagesize' => '',
+                'group_button_status' => 1,
+                'list_button_status' => null,
+                'button_color' => 'success',
+                'fields' => null,
+                'sortid' => 3,
+                'orderby' => null,
+                'tree_config' => null,
+                'jump' => null,
+                'server_create_status' => 1,
+                'vue_create_status' => 1,
+                'cache_time' => null,
+                'api_auth' => null,
+                'img_auth' => null,
+                'sms_auth' => null,
+                'list_filter' => null,
+                'tab_config' => null,
+                'sql' => null,
+                'dialog_size' => '85%',
+                'status_val' => null,
+                'validate' => null,
+                'select_type' => 1,
+                'table_height' => null,
+                'left_tree_sql' => null,
+                'with_join' => null,
+                'other_config' => null,
+                'dialog_type' => null,
+                'version' => null,
+                'remark' => null,
+                'remark_desc' => null,
+                'q_template' => null,
+                'h_php' => null,
+                'action_pid' => null,
+                'action_show' => 1
+            ],
+            // 修改数据 - 修正对话框大小为85%，list_button_status为1
+            [
+                'menu_id' => $groupMenuId,
+                'name' => '修改数据',
+                'action_name' => 'update',
+                'type' => 3,
+                'icon' => 'el-icon-edit',
+                'pagesize' => '',
+                'group_button_status' => 1,
+                'list_button_status' => 1,
+                'button_color' => 'primary',
+                'fields' => null,
+                'sortid' => 4,
+                'orderby' => null,
+                'tree_config' => null,
+                'jump' => null,
+                'server_create_status' => 1,
+                'vue_create_status' => 1,
+                'cache_time' => null,
+                'api_auth' => null,
+                'img_auth' => null,
+                'sms_auth' => null,
+                'list_filter' => null,
+                'tab_config' => null,
+                'sql' => null,
+                'dialog_size' => '85%',
+                'status_val' => null,
+                'validate' => null,
+                'select_type' => 1,
+                'table_height' => null,
+                'left_tree_sql' => null,
+                'with_join' => null,
+                'other_config' => null,
+                'dialog_type' => null,
+                'version' => null,
+                'remark' => null,
+                'remark_desc' => null,
+                'q_template' => null,
+                'h_php' => null,
+                'action_pid' => null,
+                'action_show' => 1
+            ],
+            // 删除数据
+            [
+                'menu_id' => $groupMenuId,
+                'name' => '删除数据',
+                'action_name' => 'delete',
+                'type' => 4,
+                'icon' => 'el-icon-delete',
+                'pagesize' => '',
+                'group_button_status' => 1,
+                'list_button_status' => 1,
+                'button_color' => 'danger',
+                'fields' => null,
+                'sortid' => 5,
+                'orderby' => null,
+                'tree_config' => null,
+                'jump' => null,
+                'server_create_status' => 1,
+                'vue_create_status' => 1,
+                'cache_time' => null,
+                'api_auth' => null,
+                'img_auth' => null,
+                'sms_auth' => null,
+                'list_filter' => null,
+                'tab_config' => null,
+                'sql' => null,
+                'dialog_size' => null,
+                'status_val' => null,
+                'validate' => null,
+                'select_type' => 1,
+                'table_height' => null,
+                'left_tree_sql' => null,
+                'with_join' => null,
+                'other_config' => null,
+                'dialog_type' => null,
+                'version' => null,
+                'remark' => null,
+                'remark_desc' => null,
+                'q_template' => null,
+                'h_php' => null,
+                'action_pid' => null,
+                'action_show' => 1
+            ],
+            // 查看详情 - 修正对话框大小为85%
+            [
+                'menu_id' => $groupMenuId,
+                'name' => '查看详情',
+                'action_name' => 'detail',
+                'type' => 5,
+                'icon' => 'el-icon-view',
+                'pagesize' => '',
+                'group_button_status' => 1,
+                'list_button_status' => null,
+                'button_color' => 'info',
+                'fields' => null,
+                'sortid' => 6,
+                'orderby' => null,
+                'tree_config' => null,
+                'jump' => null,
+                'server_create_status' => 1,
+                'vue_create_status' => 1,
+                'cache_time' => null,
+                'api_auth' => null,
+                'img_auth' => null,
+                'sms_auth' => null,
+                'list_filter' => null,
+                'tab_config' => null,
+                'sql' => null,
+                'dialog_size' => '85%',
+                'status_val' => null,
+                'validate' => null,
+                'select_type' => 1,
+                'table_height' => null,
+                'left_tree_sql' => null,
+                'with_join' => null,
+                'other_config' => null,
+                'dialog_type' => null,
+                'version' => null,
+                'remark' => null,
+                'remark_desc' => null,
+                'q_template' => null,
+                'h_php' => null,
+                'action_pid' => null,
+                'action_show' => 1
+            ]
+        ];
+        
+        $result = Db::connect($connect)->name('action')->insertAll($actionConfigs);
+        
+        if (!$result) {
+            throw new \Exception('插入审批组动作记录失败');
+        }
+    }
+    
+    /**
+     * 7. 插入审批流动数据
+     */
+    private function insertFlowActionData($connect, $flowMenuId, $menuInfo) {
+        $tableName = strtolower(trim($menuInfo['table_name']));
+        $actionConfigs = [
+            // 数据列表
+            [
+                'menu_id' => $flowMenuId,
+                'name' => '数据列表',
+                'action_name' => 'index',
+                'type' => 1,
+                'icon' => null,
+                'pagesize' => '20',
+                'group_button_status' => 0,
+                'list_button_status' => null,
+                'button_color' => null,
+                'fields' => null,
+                'sortid' => 1,
+                'orderby' => null,
+                'tree_config' => null,
+                'jump' => null,
+                'server_create_status' => 1,
+                'vue_create_status' => 1,
+                'cache_time' => null,
+                'api_auth' => null,
+                'img_auth' => null,
+                'sms_auth' => null,
+                'list_filter' => null,
+                'tab_config' => null,
+                'sql' => null,
+                'dialog_size' => null,
+                'status_val' => null,
+                'validate' => null,
+                'select_type' => 1,
+                'table_height' => null,
+                'left_tree_sql' => null,
+                'with_join' => null,
+                'other_config' => null,
+                'dialog_type' => null,
+                'version' => null,
+                'remark' => null,
+                'remark_desc' => null,
+                'q_template' => null,
+                'h_php' => null,
+                'action_pid' => null,
+                'action_show' => 1
+            ],
+            // 修改排序开关 - 根据实际数据添加
+            [
+                'menu_id' => $flowMenuId,
+                'name' => '修改排序开关',
+                'action_name' => 'updateExt',
+                'type' => 12,
+                'icon' => null,
+                'pagesize' => '',
+                'group_button_status' => 0,
+                'list_button_status' => null,
+                'button_color' => null,
+                'fields' => null,
+                'sortid' => 2,
+                'orderby' => null,
+                'tree_config' => null,
+                'jump' => null,
+                'server_create_status' => 1,
+                'vue_create_status' => 1,
+                'cache_time' => null,
+                'api_auth' => null,
+                'img_auth' => null,
+                'sms_auth' => null,
+                'list_filter' => null,
+                'tab_config' => null,
+                'sql' => null,
+                'dialog_size' => null,
+                'status_val' => null,
+                'validate' => null,
+                'select_type' => 1,
+                'table_height' => null,
+                'left_tree_sql' => null,
+                'with_join' => null,
+                'other_config' => null,
+                'dialog_type' => null,
+                'version' => null,
+                'remark' => null,
+                'remark_desc' => null,
+                'q_template' => null,
+                'h_php' => null,
+                'action_pid' => null,
+                'action_show' => 1
+            ],
+            // 添加数据 - 修正对话框大小为85%
+            [
+                'menu_id' => $flowMenuId,
+                'name' => '添加数据',
+                'action_name' => 'add',
+                'type' => 2,
+                'icon' => 'el-icon-plus',
+                'pagesize' => '',
+                'group_button_status' => 1,
+                'list_button_status' => null,
+                'button_color' => 'success',
+                'fields' => null,
+                'sortid' => 3,
+                'orderby' => null,
+                'tree_config' => null,
+                'jump' => null,
+                'server_create_status' => 1,
+                'vue_create_status' => 1,
+                'cache_time' => null,
+                'api_auth' => null,
+                'img_auth' => null,
+                'sms_auth' => null,
+                'list_filter' => null,
+                'tab_config' => null,
+                'sql' => null,
+                'dialog_size' => '85%',
+                'status_val' => null,
+                'validate' => null,
+                'select_type' => 1,
+                'table_height' => null,
+                'left_tree_sql' => null,
+                'with_join' => null,
+                'other_config' => json_encode([
+                    'export_type' => '',
+                    'hook' => [],
+                    'excel' => '',
+                    'left_tree_show' => '',
+                    'tree_show' => 1,
+                    'after_hook' => '',
+                    'befor_hook' => '',
+                    'printer_status' => 2,
+                    'list_button_style' => 1,
+                    'guige' => [],
+                    'detail_search_field' => [],
+                    'custom_form' => 1,
+                    'custom_form_config' => json_encode([
+                        'type' => 'approval_flow',
+                        'config' => [
+                            'main_table' => $menuInfo['table_name'],
+                            'main_pk' => $menuInfo['pk'],
+                            'group_table' => $tableName . $this->groupTableSuffix,
+                        ]
+                    ])
+                ]),
+                'dialog_type' => null,
+                'version' => null,
+                'remark' => null,
+                'remark_desc' => null,
+                'q_template' => null,
+                'h_php' => null,
+                'action_pid' => null,
+                'action_show' => 1
+            ],
+            // 修改数据 - 修正对话框大小为85%，list_button_status为1
+            [
+                'menu_id' => $flowMenuId,
+                'name' => '修改数据',
+                'action_name' => 'update',
+                'type' => 3,
+                'icon' => 'el-icon-edit',
+                'pagesize' => '',
+                'group_button_status' => 1,
+                'list_button_status' => 1,
+                'button_color' => 'primary',
+                'fields' => null,
+                'sortid' => 4,
+                'orderby' => null,
+                'tree_config' => null,
+                'jump' => null,
+                'server_create_status' => 1,
+                'vue_create_status' => 1,
+                'cache_time' => null,
+                'api_auth' => null,
+                'img_auth' => null,
+                'sms_auth' => null,
+                'list_filter' => null,
+                'tab_config' => null,
+                'sql' => null,
+                'dialog_size' => '85%',
+                'status_val' => null,
+                'validate' => null,
+                'select_type' => 1,
+                'table_height' => null,
+                'left_tree_sql' => null,
+                'with_join' => null,
+                'other_config' => json_encode([
+                    'export_type' => '',
+                    'hook' => [],
+                    'excel' => '',
+                    'left_tree_show' => '',
+                    'tree_show' => 1,
+                    'after_hook' => '',
+                    'befor_hook' => '',
+                    'printer_status' => 2,
+                    'list_button_style' => 1,
+                    'guige' => [],
+                    'detail_search_field' => [],
+                    'custom_form' => 1,
+                    'custom_form_config' => json_encode([
+                        'type' => 'approval_flow',
+                        'config' => [
+                            'main_table' => $menuInfo['table_name'],
+                            'main_pk' => $menuInfo['pk'],
+                            'group_table' => $tableName . $this->groupTableSuffix,
+                        ]
+                    ])
+                ]),
+                'dialog_type' => null,
+                'version' => null,
+                'remark' => null,
+                'remark_desc' => null,
+                'q_template' => null,
+                'h_php' => null,
+                'action_pid' => null,
+                'action_show' => 1
+            ],
+            // 删除数据
+            [
+                'menu_id' => $flowMenuId,
+                'name' => '删除数据',
+                'action_name' => 'delete',
+                'type' => 4,
+                'icon' => 'el-icon-delete',
+                'pagesize' => '',
+                'group_button_status' => 1,
+                'list_button_status' => 1,
+                'button_color' => 'danger',
+                'fields' => null,
+                'sortid' => 5,
+                'orderby' => null,
+                'tree_config' => null,
+                'jump' => null,
+                'server_create_status' => 1,
+                'vue_create_status' => 1,
+                'cache_time' => null,
+                'api_auth' => null,
+                'img_auth' => null,
+                'sms_auth' => null,
+                'list_filter' => null,
+                'tab_config' => null,
+                'sql' => null,
+                'dialog_size' => null,
+                'status_val' => null,
+                'validate' => null,
+                'select_type' => 1,
+                'table_height' => null,
+                'left_tree_sql' => null,
+                'with_join' => null,
+                'other_config' => null,
+                'dialog_type' => null,
+                'version' => null,
+                'remark' => null,
+                'remark_desc' => null,
+                'q_template' => null,
+                'h_php' => null,
+                'action_pid' => null,
+                'action_show' => 1
+            ],
+            // 查看详情 - 修正对话框大小为85%
+            [
+                'menu_id' => $flowMenuId,
+                'name' => '查看详情',
+                'action_name' => 'detail',
+                'type' => 5,
+                'icon' => 'el-icon-view',
+                'pagesize' => '',
+                'group_button_status' => 1,
+                'list_button_status' => null,
+                'button_color' => 'info',
+                'fields' => null,
+                'sortid' => 6,
+                'orderby' => null,
+                'tree_config' => null,
+                'jump' => null,
+                'server_create_status' => 1,
+                'vue_create_status' => 1,
+                'cache_time' => null,
+                'api_auth' => null,
+                'img_auth' => null,
+                'sms_auth' => null,
+                'list_filter' => null,
+                'tab_config' => null,
+                'sql' => null,
+                'dialog_size' => '85%',
+                'status_val' => null,
+                'validate' => null,
+                'select_type' => 1,
+                'table_height' => null,
+                'left_tree_sql' => null,
+                'with_join' => null,
+                'other_config' => json_encode([
+                    'export_type' => '',
+                    'hook' => [],
+                    'excel' => '',
+                    'left_tree_show' => '',
+                    'tree_show' => 1,
+                    'after_hook' => '',
+                    'befor_hook' => '',
+                    'printer_status' => 2,
+                    'list_button_style' => 1,
+                    'guige' => [],
+                    'detail_search_field' => [],
+                    'custom_form' => 1,
+                    'custom_form_config' => json_encode([
+                        'type' => 'approval_flow',
+                        'config' => [
+                            'main_table' => $menuInfo['table_name'],
+                            'main_pk' => $menuInfo['pk'],
+                            'group_table' => $tableName . $this->groupTableSuffix,
+                        ]
+                    ])
+                ]),
+                'dialog_type' => null,
+                'version' => null,
+                'remark' => null,
+                'remark_desc' => null,
+                'q_template' => null,
+                'h_php' => null,
+                'action_pid' => null,
+                'action_show' => 1
+            ]
+        ];
+        
+        $result = Db::connect($connect)->name('action')->insertAll($actionConfigs);
+        
+        if (!$result) {
+            throw new \Exception('插入审批流动记录失败');
+        }
+    }
+    
+    /**
+     * @param $application
+     * @return mixed
+     * @desc      修复admin参数
+     * @author    JiaWei
+     * @email     975162853@qq.com
+     * @date      2025/12/19
+     * @time      11:30
+     */
+    private function changeApplication($application) {
+        if ($application['app_dir'] == 'admin') {
+            $application['pk'] = 'user_id';
+            $application['login_table'] = 'admin_user';
+            $application['login_fields'] = 'name|pwd';
+        }
+        return $application;
+    }
+    /**************************************************************************/
 }
 

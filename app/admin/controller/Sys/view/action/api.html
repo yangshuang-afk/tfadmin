@@ -1,23 +1,25 @@
 {extend name='view/common/container'}
 {block name="content"}
 <div style="margin:0 15px 15px 15px;">
-	<el-card shadow="never" style="min-height:650px;">
-		<div style="border-bottom:1px solid #ebeef5; padding-bottom:15px; font-size:14px;" class="clearfix">
-			<span>{{app_name}}-{{menu_title}} 方法列表 (支持拖动排序)</span>
-			<el-button size="small" @click="backup" type="primary" icon="el-icon-back" style="float:right; margin-left:10px;">返回菜单</el-button>
-			<el-button size="small" @click="backupAction" type="primary" icon="el-icon-back" style="float:right">前往字段</el-button>
-		</div>
-		<el-row style="margin-bottom:10px; margin-top:11px;">
-			<el-col :span="21">
-				<el-button type="success" size="mini" icon="el-icon-plus" @click="dialog.addDialogStatus = true">新增</el-button>
-				<el-button type="danger" size="mini"  icon="el-icon-delete" :disabled="multiple" @click="deleteAction(ids)">删除</el-button>
-				<el-button type="info" size="mini"  icon="el-icon-edit-outline"  @click="create">生成代码</el-button>
-				<el-button type="warning" size="mini"  icon="el-icon-edit-outline"  @click="createApi(ids)">生成apipost接口文档</el-button>
-			</el-col>
-			<el-col :span="3" style="text-align:right">
-				<table-tool :expand_status="false" @refesh_list="loadlist" ></table-tool>
-			</el-col>
-		</el-row>
+	<el-card shadow="never" style="min-height:650px;" class="table-scroll-area">
+        <div class="sticky-buttons">
+            <div style="border-bottom:1px solid #ebeef5; padding-bottom:15px; font-size:14px;" class="clearfix">
+                <span>{{app_name}}-{{menu_title}} 方法列表 (支持拖动排序)</span>
+                <el-button size="small" @click="backup" type="primary" icon="el-icon-back" style="float:right; margin-left:10px;">返回菜单</el-button>
+                <el-button size="small" @click="backupAction" type="primary" icon="el-icon-back" style="float:right">前往字段</el-button>
+            </div>
+            <el-row style="margin-bottom:10px; margin-top:11px;">
+                <el-col :span="21">
+                    <el-button type="success" size="mini" icon="el-icon-plus" @click="dialog.addDialogStatus = true">新增</el-button>
+                    <el-button type="danger" size="mini"  icon="el-icon-delete" :disabled="multiple" @click="deleteAction(ids)">删除</el-button>
+                    <el-button type="info" size="mini"  icon="el-icon-edit-outline"  @click="create">生成代码</el-button>
+                    <el-button type="warning" size="mini"  icon="el-icon-edit-outline"  @click="createApi(ids)">生成apipost接口文档</el-button>
+                </el-col>
+                <el-col :span="3" style="text-align:right">
+                    <table-tool :expand_status="false" @refesh_list="loadlist" ></table-tool>
+                </el-col>
+            </el-row>
+        </div>
 		<!--表格数据开始-->
 		<el-row>
 			<el-table row-key="id" :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :row-class-name="rowClass" v-loading="loading" ref="multipleTable" border class="eltable" :data="list" @selection-change="selection"  @row-click="handleRowClick" style="width: 100%"  >
@@ -267,7 +269,85 @@ new Vue({
 	mounted() {
 		this.loadlist()
 		this.rowDrop()
-	},
+        
+        
+        // JS 回退：在极端布局/祖先 transform 情况下，sticky 可能失效，使用轻量回退将按钮设置为 fixed
+        this.$nextTick(() => {
+            const scroller = this.$el.querySelector('.table-scroll-area');
+            const sticky = this.$refs.stickyButtons;
+            if (!scroller || !sticky) return;
+            
+            // 保存原始样式，以便恢复
+            const original = {
+                position: sticky.style.position || '',
+                top: sticky.style.top || '',
+                left: sticky.style.left || '',
+                width: sticky.style.width || '',
+                zIndex: sticky.style.zIndex || ''
+            };
+            
+            const handleScroll = () => {
+                // 当 scroller 的 scrollTop 超过某个阈值时，认为需要“粘住”
+                // 阈值这里取 1，表示一旦发生滚动就粘住；若你想更精确可改成 sticky.offsetTop
+                if (scroller.scrollTop > 0) {
+                    // 如果浏览器支持 sticky 并且实际已经生效，保持 CSS sticky（仅加 class）
+                    const computedPosition = window.getComputedStyle(sticky).position;
+                    if (computedPosition === 'sticky' || computedPosition === '-webkit-sticky') {
+                        sticky.classList.add('stuck');
+                        // 不修改 position 样式，交由 CSS sticky 处理
+                    } else {
+                        // 回退：把按钮设置为 fixed，并与 scroller 对齐
+                        const rect = scroller.getBoundingClientRect();
+                        sticky.style.position = 'fixed';
+                        sticky.style.top = (50) + 'px'; // 固定到视口 50px
+                        sticky.style.left = rect.left + 'px';
+                        sticky.style.width = rect.width + 'px';
+                        sticky.style.zIndex = 9999;
+                        sticky.classList.add('js-fixed');
+                    }
+                } else {
+                    // 恢复原始样式
+                    sticky.classList.remove('stuck');
+                    sticky.classList.remove('js-fixed');
+                    sticky.style.position = original.position;
+                    sticky.style.top = original.top;
+                    sticky.style.left = original.left;
+                    sticky.style.width = original.width;
+                    sticky.style.zIndex = original.zIndex;
+                }
+            };
+            
+            // 绑定滚动事件
+            scroller.addEventListener('scroll', handleScroll, {passive: true});
+            // 初始化一次
+            handleScroll();
+            
+            // 存到元素，方便 beforeDestroy 时移除
+            scroller._stickyHandler = handleScroll;
+        });
+        
+    },
 })
 </script>
+
+
+
+<style>
+    /* 固定表头按钮 */
+    .table-scroll-area {
+        max-height: calc(100vh - 155px); /* 根据实际页面头部/菜单高度调整这个数值 */
+        overflow-y: auto;
+        position: relative; /* sticky 的参照容器 */
+    }
+    
+    .sticky-buttons {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0px;            /* 固定在页面顶部下方 50px */
+        z-index: 200;         /* 确保在表格上方，不被遮挡 */
+        background: #fff;     /* 避免透明看见后面的内容 */
+        padding: 0 0px 10px 0;
+    }
+    /* 固定表头按钮 */
+</style>
 {/block}

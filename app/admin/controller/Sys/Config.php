@@ -4,10 +4,9 @@ namespace app\admin\controller\Sys;
 
 class Config
 {
-
+    
     //字段列表
-    public static function fieldList()
-    {
+    public static function fieldList() {
         $list = [
             [
                 'name' => '文本框',
@@ -306,7 +305,7 @@ class Config
         ];
         return $list;
     }
-
+    
     /*
     name 方法名
     type 方法类型
@@ -314,8 +313,7 @@ class Config
     button 是否按钮
     view  是否生成视图文件
     */
-    public static function actionList()
-    {
+    public static function actionList() {
         $list = [
             [
                 'name' => '数据列表',
@@ -392,7 +390,6 @@ class Config
                 'default_create' => true,
                 'show_admin' => true,
                 'show_api' => true
-
             ],
             [
                 'name' => '复制单条数据',
@@ -426,7 +423,6 @@ class Config
                 'default_create' => false,
                 'show_admin' => true,
                 'show_api' => true
-
             ],
             [
                 'name' => '软删除回收站',
@@ -599,7 +595,6 @@ class Config
                 'default_create' => false,
                 'show_admin' => true,
                 'show_api' => false
-
             ],
             [
                 'name' => '批量修改',
@@ -716,30 +711,60 @@ class Config
                 'show_api' => false
             ],
             [
-                'name'=>'xxx字段远程搜索权限',
-                'type'=>56,
-                'dialog'=>false,
-                'button'=>false,
-                'view'=>false,
-                'icon'=>'el-icon-edit',
+                'name' => 'xxx字段远程搜索权限',
+                'type' => 56,
+                'dialog' => false,
+                'button' => false,
+                'view' => false,
+                'icon' => 'el-icon-edit',
                 'button_color' => 'primary',
-                'action_name'=>'填写生成的远程搜索方法名',
-                'group_button_status'=>false,
-                'list_button_status'=>false,
-                'sortid'=>52,
-                'default_create'=>false,
-                'dialog_size'=>'',
-                'show_admin'=>true,
-                'show_api'=>false
+                'action_name' => '填写生成的远程搜索方法名',
+                'group_button_status' => false,
+                'list_button_status' => false,
+                'sortid' => 52,
+                'default_create' => false,
+                'dialog_size' => '',
+                'show_admin' => true,
+                'show_api' => false
+            ],
+            [
+                'name' => '设置审批事件',
+                'type' => 57,
+                'dialog' => false,
+                'button' => true,
+                'view' => false,
+                'icon' => 'fas fa-gopuram',
+                'button_color' => 'amethyst',
+                'action_name' => 'tfFlowEvens',
+                'group_button_status' => false,
+                'list_button_status' => true,
+                'sortid' => 57,
+                'default_create' => false,
+                'dialog_size' => '85%',
+                'show_admin' => true,
+                'show_api' => false
+            ],
+            [
+                'name' => '设置审批流程',
+                'type' => 60,
+                'dialog' => false,
+                'button' => false,
+                'view' => false,
+                'icon' => 'el-icon-plus',
+                'button_color' => 'warning',
+                'group_button_status' => true,
+                'list_button_status' => true,
+                'action_name' => 'tfFlowSetting',
+                'dialog_size' => '85%',
+                'sortid' => 59,
+                'show_admin' => true,
             ],
         ];
         return $list;
     }
-
-
+    
     //mysql字段的数据结构
-    public static function propertyField()
-    {
+    public static function propertyField() {
         $list = [
             ['type' => 1, 'name' => 'varchar', 'maxlen' => 250, 'decimal' => 0],
             ['type' => 2, 'name' => 'int', 'maxlen' => 11, 'decimal' => 0],
@@ -752,19 +777,17 @@ class Config
         ];
         return $list;
     }
-
+    
     //mongo字段的数据结构
-    public static function propertyMongoField()
-    {
+    public static function propertyMongoField() {
         $list = [
             ['type' => 1, 'name' => 'string'],
             ['type' => 2, 'name' => 'int'],
         ];
         return $list;
     }
-
-    public static function itemList()
-    {
+    
+    public static function itemList() {
         $list = [
             [
                 'name' => '性别',
@@ -788,13 +811,12 @@ class Config
                 ]
             ]
         ];
-
+        
         return $list;
     }
-
+    
     //字段验证规则列表
-    public static function ruleList()
-    {
+    public static function ruleList() {
         $list = [
             '邮箱' => '/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/',
             '网址' => '/^((ht|f)tps?):\/\/([\w\-]+(\.[\w\-]+)*\/)*[\w\-]+(\.[\w\-]+)*\/?(\?([\w\-\.,@?^=%&:\/~\+#]*)+)?/',
@@ -806,41 +828,33 @@ class Config
         ];
         return $list;
     }
-
-
+    
     //菜单页面显示结构
-    public static function page_type_list()
-    {
+    public static function page_type_list() {
         $list = [
             ['name' => 'table表格列表', 'type' => 1],
             ['name' => 'form表单', 'type' => 2],
         ];
         return $list;
     }
-
-
+    
     //内置的短信平台
-    public static function sms_list()
-    {
+    public static function sms_list() {
         $list = [
             ['name' => '阿里', 'type' => 'Ali'],
             ['name' => '腾讯', 'type' => 'Tencent'],
         ];
         return $list;
     }
-
-
+    
     //默认创建的字段
-    public static function defaultFields()
-    {
+    public static function defaultFields() {
         $list = [
             ['title' => '编号', 'type' => 1, 'datatype' => 'int', 'length' => 11, 'list_show' => 2, 'create_table_field' => 1, 'sortid' => 1, 'primary' => true, 'width' => 70],
             ['title' => '标题', 'field' => 'title', 'list_show' => 4, 'type' => 1, 'search_type' => 1],
         ];
-
+        
         return $list;
     }
-
-
 }
 

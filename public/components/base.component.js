@@ -966,7 +966,7 @@ Vue.component('BaiduMap', {
 					that.address = addComp.province + addComp.city + addComp.district + addComp.street
 				})
 			})
-
+			
 			var ac = new BMap.Autocomplete( //建立一个自动完成的对象
 				{
 					"input": "suggestId",
@@ -1071,11 +1071,11 @@ Vue.component('GaodeMap', {
 				var citySearch = new AMap.CitySearch()
 				var map
 				var placeSearch
-
+				
 				if(self.lng && self.lat){
 					var map=new AMap.LngLat(self.lng, self.lat);
 				}
-
+				
 				citySearch.getLocalCity(function (status, result) {
 					if(status === 'complete' && result.info === 'OK') {
 						map = new AMap.Map("mapContainer", {
@@ -1086,7 +1086,7 @@ Vue.component('GaodeMap', {
 								keyboardEnable: false,
 							})
 						});
-
+						
 						if(self.lng && self.lat){
 							let marker = new AMap.Marker({
 								icon:new AMap.Icon({
@@ -1099,7 +1099,7 @@ Vue.component('GaodeMap', {
 							});
 							marker.setMap(map);
 						}
-
+						
 						map.addControl(new AMap.ToolBar());
 						let marker, geocoder
 						AMap.event.addListener(map, "click", function(e) {
@@ -1234,7 +1234,7 @@ Vue.component('TxMap', {
 			script.src ="https://map.qq.com/api/js?v=2.exp&key=" +this.mapKey +"&callback=initMap"
 			document.body.appendChild(script);
 		},
-
+		
 		//初始化地图
 		init() {
 			this.map = new qq.maps.Map(document.getElementById("map"), {
@@ -1249,7 +1249,7 @@ Vue.component('TxMap', {
 				let latLng = new qq.maps.LatLng(this.lat, this.lng)
 				this.setMarker(latLng);
 			}
-
+			
 			//绑定地图点击事件
 			qq.maps.event.addListener(this.map, "click", e => {
 				let latLng = new qq.maps.LatLng(e.latLng.lat, e.latLng.lng)
@@ -1275,7 +1275,7 @@ Vue.component('TxMap', {
 				this.selectPosition = -1;
 			});
 		},
-
+		
 		//地图中心点改变事件
 		centerChanged(e, type) {
 			let center = this.map.getCenter();
@@ -1284,7 +1284,7 @@ Vue.component('TxMap', {
 				this.marker.setAnimation(qq.maps.MarkerAnimation.DOWN);
 			}
 		},
-
+		
 		//查询位置
 		searchCity() {
 			let geocoder = new qq.maps.Geocoder({
@@ -1298,7 +1298,7 @@ Vue.component('TxMap', {
 			});
 			geocoder.getLocation(this.address);
 		},
-
+		
 		//搜索位置，查询周边位置信息
 		getLatLngBounds() {
 			let geocoder = new qq.maps.Geocoder({
@@ -1329,7 +1329,7 @@ Vue.component('TxMap', {
 		scrollTop () {
 			this.$refs.bounds.scrollTop = 0;
 		},
-
+		
 		//在列表中选择位置
 		selectCity (index,row) {
 			this.selectPosition = index;
@@ -1342,13 +1342,13 @@ Vue.component('TxMap', {
 			this.marker.setPosition(latLng);
 			//设置标注点下落动画
 			this.marker.setAnimation(qq.maps.MarkerAnimation.DOWN);
-
+			
 			this.address = row.address + row.name
 			this.lat = lat
 			this.lng = lng
 			this.showaddress = false
 		},
-
+		
 		//获取当前位置
 		getLocation() {
 			let cs = new qq.maps.CityService({
@@ -1361,7 +1361,7 @@ Vue.component('TxMap', {
 			});
 			cs.searchLocalCity();
 		},
-
+		
 		//设置底部标记点
 		setMarker(center) {
 			let icon = new qq.maps.MarkerImage("data:image/png;base64,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",
@@ -1571,7 +1571,7 @@ Vue.component('tinymce', {
 				.then(response => response.blob())
 				.then(blob => new File([blob], fileName, { type: blob.type }));
 		}
-
+		
 	},
 });
 
@@ -1741,9 +1741,9 @@ Vue.component('Icon', {
 	template: `
         <el-dialog title="设置字体图标" class="icon-dialog" width="800px" top="20px" :visible.sync="iconshow" :before-close="closeForm" append-to-body>
             <div class="icon-search">
-                <el-input 
-                    v-model="searchText" 
-                    placeholder="搜索图标..." 
+                <el-input
+                    v-model="searchText"
+                    placeholder="搜索图标..."
                     clearable
                     @input="filterIcons"
                 >
@@ -1833,64 +1833,6 @@ Vue.component('Icon', {
 });
 
 
-
-
-//键值对组件
-// Vue.component('KeyData', {
-// 	template: `
-// 		<div class="jzdItem">
-// 			<draggable v-model="jzd" v-bind="{group:'item'}" handle=".jzd-handle">
-// 				<el-row v-for="(item,i) in jzd" :key="i">
-// 					<el-col :span="10">
-// 						<el-form-item style="margin-bottom:3px !important">
-// 							<el-input v-model="item.key" placeholder="选项名称"/>
-// 						</el-form-item>
-// 					</el-col>
-// 					<el-col :span="8">
-// 						<el-form-item style="margin-bottom:3px !important">
-// 							<el-input style="position:relative;left:5px;" v-model="item.val" placeholder="选项值"/>
-// 						</el-form-item>
-// 					</el-col>
-// 					<el-col :span="4">
-// 						<el-button type="danger" size="mini" style="position:relative;left:15px"  icon="el-icon-close" @click="deleteItem(i)"></el-button>
-// 						<el-button class="jzd-handle" type="success" size="mini" style="position:relative;left:15px" icon="el-icon-rank"></el-button>
-// 					</el-col>
-// 				</el-row>
-// 			</draggable>
-// 			<div>
-// 				<el-button type="info" icon="el-icon-plus" style="padding:5px 7px" size="mini" @click="addItem">追加</el-button>
-// 				<el-button v-if="jzd.length > 0" type="warning" icon="el-icon-delete" style="padding:5px 7px" size="mini" @click="clearItem">清空</el-button>
-// 			</div>
-// 		</div>
-// 	`
-// 	,
-// 	props: {
-// 		item:{
-// 			type: Array,
-// 		},
-// 	},
-// 	watch:{
-// 		jzd(){
-// 			this.$emit('update:item',this.jzd)
-// 		},
-// 	},
-// 	data(){
-// 		return{
-// 			jzd:this.item
-// 		}
-// 	},
-// 	methods: {
-// 		addItem(){
-// 			this.jzd.push({})
-// 		},
-// 		deleteItem(index){
-// 			this.jzd.splice(index,1)
-// 		},
-// 		clearItem(){
-// 			this.jzd = []
-// 		},
-// 	}
-// });
 //键值对组件带自定义标签
 Vue.component('KeyData', {
 	template: `
@@ -1955,13 +1897,108 @@ Vue.component('KeyData', {
 	}
 });
 
-
-
-
-
-
-
-
+// 下拉单选审批流组件
+Vue.component('WorkflowData', {
+	template: `
+        <div class="jzdItem">
+            <draggable v-model="jzd" v-bind="{group:'item'}" handle=".jzd-handle">
+                <el-row v-for="(item,i) in jzd" :key="i">
+                    <el-col :span="19">
+                        <el-form-item style="margin-bottom:3px !important">
+                            <el-select
+                                style="width:100%"
+                                v-model="jzd[i]"
+                                filterable clearable
+                                :placeholder="keyPlaceholder || '选择审核员'"
+                            >
+                                <el-option
+                                    v-for="(option,index) in workflow"
+                                    :key="index"
+                                    :label="getOptionLabel(option)"
+                                    :value="getOptionValue(option)"
+                                >
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="5">
+                        <el-button type="danger" size="mini" style="position:relative;left:15px" icon="el-icon-close" @click="deleteItem(i)"></el-button>
+                        <el-button class="jzd-handle" type="success" size="mini" style="position:relative;left:15px" icon="el-icon-rank"></el-button>
+                    </el-col>
+                </el-row>
+            </draggable>
+            <div>
+                <el-button type="info" icon="el-icon-plus" style="padding:5px 7px" size="mini" @click="addItem">追加</el-button>
+                <el-button v-if="jzd.length > 0" type="warning" icon="el-icon-delete" style="padding:5px 7px" size="mini" @click="clearItem">清空</el-button>
+            </div>
+        </div>
+    `,
+	props: {
+		item: {
+			type: Array,
+			default: () => []
+		},
+		workflow: {
+			type: Array,
+			default: () => []
+		},
+		keyPlaceholder: {
+			type: String,
+			default: '选择审核员'
+		},
+		// 新增：支持指定选项的标签和值字段
+		labelKey: {
+			type: String,
+			default: 'label'
+		},
+		valueKey: {
+			type: String,
+			default: 'value'
+		}
+	},
+	watch: {
+		jzd: {
+			handler(newVal) {
+				this.$emit('update:item', newVal)
+			},
+			deep: true
+		}
+	},
+	data() {
+		return {
+			jzd: Array.isArray(this.item) ? this.item : []
+		}
+	},
+	methods: {
+		getOptionLabel(option) {
+			// 支持对象和字符串两种格式
+			if (typeof option === 'object') {
+				return option[this.labelKey] || option.label || option.key || option.name || '';
+			}
+			return option;
+		},
+		
+		getOptionValue(option) {
+			// 支持对象和字符串两种格式
+			if (typeof option === 'object') {
+				return option[this.valueKey] || option.value || option.val || option.id || '';
+			}
+			return option;
+		},
+		
+		addItem() {
+			this.jzd.push('')
+		},
+		
+		deleteItem(index) {
+			this.jzd.splice(index, 1)
+		},
+		
+		clearItem() {
+			this.jzd = []
+		}
+	}
+});
 
 
 //表格工具栏组件
@@ -2045,7 +2082,7 @@ Vue.component('tableTool', {
 			div.innerHTML = html
 			const ths = div.querySelectorAll('.el-table__header-wrapper th')
 			const rows = div.querySelectorAll('.el-table__body-wrapper table tr');
-
+			
 			const ThsTextArry = []
 			for (let i = 0, len = ths.length; i < len; i++) {
 				if (ths[i].innerText !== '' && ths[i].innerText !== '编号' && ths[i].innerText !== '操作') ThsTextArry.push(ths[i].innerText)
@@ -2075,17 +2112,17 @@ Vue.component('tableTool', {
 			for (let i = 0, len = ThsHtmlArry.length; i < len; i++) {
 				trStr += ThsHtmlArry[i]
 			}
-
+			
 			let newHTML = '<tr>'
 			for (let i = 0, len = ThsTextArry.length; i < len; i++) {
 				newHTML += '<td style="text-align: center; font-weight: bold">' + ThsTextArry[i] + '</td>'
 			}
 			newHTML += '</tr>'
-
+			
 			let printStr = "<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'></head>";
 			const tabStyle = "<style>table.gridtable {width:100%;font-family: verdana,arial,sans-serif;font-size:11px;color:#606266;border-width: 1px;border-color: #ddd;border-collapse: collapse;}table.gridtable th {border-width: 1px;padding: 8px;border-style: solid;border-color: #ddd;background-color: #dedede;}table.gridtable td {border-width: 1px;padding: 15px 0;border-style: solid;border-color: #ddd;background-color: #ffffff;text-align:center;}img{width:50px; height:50px;}</style><body>";
 			printStr = printStr + tabStyle + "<table class='gridtable'>" + newHTML + trStr + "</body></html>";
-
+			
 			let pwin = window.open("_blank");
 			pwin.document.write(printStr);
 			pwin.document.close();
@@ -2129,7 +2166,7 @@ Vue.component('SearchTool', {
 			type:Object,
 		},
 	},
-
+	
 	methods: {
 		refesh_list() {
 			this.$emit('update:page_data', {page:1,limit:this.page_data.limit,total:this.page_data.total})
@@ -2282,7 +2319,7 @@ Vue.component('import', {
 	template: `
 	<el-dialog title="导入excel" style="margin-top:100px;" width="600px" :visible.sync="show" @close="closeForm" append-to-body>
 		<el-upload v-if="!process" class="upload-demo" action :auto-upload="false" :show-file-list="false" :on-change="choose_file">
-			<el-button size="mini" icon="el-icon-upload" type="primary">请选择导入excel</el-button> 
+			<el-button size="mini" icon="el-icon-upload" type="primary">请选择导入excel</el-button>
 			<span v-if="file.name" style="color:#ff0000">{{file.name}}</span>
 			<span v-else-if="excel"><a style="color:#ff0000" :href="excel" @click.stop target="_blank">下载导入模板</a></span>
 		</el-upload>
@@ -2584,15 +2621,15 @@ Vue.component('scrollbar', {
 			const $containerWidth = $container.offsetWidth
 			const $scrollWrapper = this.scrollWrapper
 			const tagList = this.$parent.$refs.tag
-
+			
 			let firstTag = null
 			let lastTag = null
-
+			
 			if(tagList.length > 0) {
 				firstTag = tagList[0]
 				lastTag = tagList[tagList.length - 1]
 			}
-
+			
 			if(firstTag === currentTag) {
 				$scrollWrapper.scrollLeft = 0
 			}else if (lastTag === currentTag) {
@@ -2601,11 +2638,11 @@ Vue.component('scrollbar', {
 				const currentIndex = tagList.findIndex(item => item === currentTag)
 				const prevTag = tagList[currentIndex - 1]
 				const nextTag = tagList[currentIndex + 1]
-
+				
 				const afterNextTagOffsetLeft = nextTag.$el.offsetLeft + nextTag.$el.offsetWidth + 4
-
+				
 				const beforePrevTagOffsetLeft = prevTag.$el.offsetLeft - 4
-
+				
 				if (afterNextTagOffsetLeft > $scrollWrapper.scrollLeft + $containerWidth) {
 					$scrollWrapper.scrollLeft = afterNextTagOffsetLeft - $containerWidth
 				} else if (beforePrevTagOffsetLeft < $scrollWrapper.scrollLeft) {

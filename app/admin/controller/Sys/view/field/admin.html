@@ -4,13 +4,6 @@
     <el-card shadow="never" style="min-height:650px;" class="table-scroll-area">
         <div class="sticky-buttons">
             <div style="display: flex; justify-content: space-between; border-bottom:1px solid #ebeef5; padding-bottom:15px; font-size:14px;" class="clearfix">
-                <!--            <span>{{app_name}}-{{menu_title}} 字段列表 (支持拖动排序)</span>-->
-                <!--            <el-button size="small" @click="backup" type="primary" icon="el-icon-back"-->
-                <!--                       style="float:right; margin-left:10px;">返回菜单-->
-                <!--            </el-button>-->
-                <!--            <el-button size="small" @click="backupAction" type="primary" icon="el-icon-back" style="float:right">-->
-                <!--                前往方法-->
-                <!--            </el-button>-->
                 <span v-text="app_title_name"></span>
                 <span style="margin-right: 2px">
 				<el-button v-for="(item, i) in topGroupButtons" :key="i"  :disabled="$data[item.disabled]" :type="item.color" size="mini"
@@ -22,19 +15,12 @@
             
             <el-row style="margin-bottom:9px; margin-top:11px;">
                 <el-col :span="21">
-                    <!--                <el-button type="success" size="mini" icon="el-icon-plus" @click="dialog.addDialogStatus = true">新增-->
-                    <!--                </el-button>-->
-                    <!--                <el-button type="danger" size="mini" icon="el-icon-delete" :disabled="multiple"-->
-                    <!--                           @click="deleteField(ids)">删除-->
-                    <!--                </el-button>-->
-                    <!--                <el-button type="info" size="mini" icon="el-icon-edit-outline" @click="create(1)">生成代码</el-button>-->
-                    
                     <span v-for="(item, i) in filterGroupButtons" :key="i" style="margin-right: 2px">
-					<el-button :disabled="$data[item.disabled]" :type="item.color" size="mini"
-                               :icon="item.icon" @click="fn(item.clickname,item.param)">
-						<span v-text="item.name"></span>
-					</el-button>
-				</span>
+                        <el-button :disabled="$data[item.disabled]" :type="item.color" size="mini"
+                                   :icon="item.icon" @click="fn(item.clickname,item.param)">
+                            <span v-text="item.name"></span>
+                        </el-button>
+                    </span>
                     
                     <el-select size="small" style="margin-left:5px; width:140px;" class="select" clearable v-model="appid"
                                placeholder="字段同步到应用">
@@ -42,14 +28,11 @@
                                    :value="item.app_id"></el-option>
                     </el-select>
                     <span v-for="item in filterGroupButtonsQ" :key="item.clickname" style="margin-right: 2px">
-					<el-button :type="item.color" size="mini"
-                               :icon="item.icon" @click="fn(item.clickname,item.param)">
-						<span v-text="item.name"></span>
-					</el-button>
-				</span>
-                    <!--                <el-button type="primary" size="mini" style="margin-left:5px;" icon="el-icon-check"-->
-                    <!--                           @click="copyField()">确定同步-->
-                    <!--                </el-button>-->
+                        <el-button :type="item.color" size="mini"
+                                   :icon="item.icon" @click="fn(item.clickname,item.param)">
+                            <span v-text="item.name"></span>
+                        </el-button>
+                    </span>
                 </el-col>
                 <el-col :span="3" style="text-align:right">
                     <table-tool :expand_status="false" @refesh_list="loadlist"></table-tool>
@@ -103,8 +86,7 @@
                         </el-select>
                     </template>
                 </el-table-column>
-
-
+                
                 <el-table-column property="list_feild" label="列表归属字段">
                     <template slot-scope="scope">
                         <el-input size="mini" placeholder="列表字段"
@@ -444,6 +426,7 @@
                             } else {
                                 list_item.other_config = {}
                             }
+                            list_item.other_config.list_feild = list_item.other_config.list_feild ||'';
                             list_data.push(list_item);
                         })
                     }
