@@ -1,17 +1,17 @@
 /*
  Navicat Premium Dump SQL
 
- Source Server         : wsl
+ Source Server         : 铁粉git
  Source Server Type    : MySQL
- Source Server Version : 80041 (8.0.41)
- Source Host           : localhost:3306
- Source Schema         : git_tiefen_net
+ Source Server Version : 80036 (8.0.36)
+ Source Host           :
+ Source Schema         :
 
  Target Server Type    : MySQL
- Target Server Version : 80041 (8.0.41)
+ Target Server Version : 80036 (8.0.36)
  File Encoding         : 65001
 
- Date: 19/12/2025 15:23:23
+ Date: 23/12/2025 16:53:15
 */
 
 SET NAMES utf8mb4;
@@ -151,7 +151,7 @@ CREATE TABLE `cd_admin_user`  (
 -- ----------------------------
 -- Records of cd_admin_user
 -- ----------------------------
-INSERT INTO `cd_admin_user` VALUES (1, '铁粉', 'admin', '35bfa44f104ddfe466d1889daeff6e35', 1, '超级管理员', 1, 1548558919, '64cd5117b9dd49bf38f1e877703e75d8');
+INSERT INTO `cd_admin_user` VALUES (1, '铁粉', 'admin', '35bfa44f104ddfe466d1889daeff6e35', 1, '超级管理员', 1, 1548558919, 'c5a550f2da5a04b2e22b5e285484f1b6');
 
 -- ----------------------------
 -- Table structure for cd_application
@@ -360,7 +360,7 @@ CREATE TABLE `cd_log`  (
   `type` smallint NULL DEFAULT NULL COMMENT '类型',
   `times` int NULL DEFAULT NULL COMMENT '日期',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 46 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 97 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of cd_log
@@ -410,6 +410,57 @@ INSERT INTO `cd_log` VALUES (42, 'admin', 'admin', 'http://127.0.0.1:32555/admin
 INSERT INTO `cd_log` VALUES (43, 'admin', 'admin', 'http://127.0.0.1:32555/admin/Sys.Base/menu.html', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36', '[]', NULL, 1766128918, 2, NULL);
 INSERT INTO `cd_log` VALUES (44, 'admin', 'admin', 'http://127.0.0.1:32555/admin/Base/watermark', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36', '[]', NULL, 1766128918, 2, NULL);
 INSERT INTO `cd_log` VALUES (45, 'admin', 'admin', 'http://127.0.0.1:32555/admin/Sys.Base/menu', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36', '{\"app_id\":\"1\"}', NULL, 1766128919, 2, NULL);
+INSERT INTO `cd_log` VALUES (46, 'admin', NULL, 'http://git.tiefen.net/admin/login/index', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131832, 2, NULL);
+INSERT INTO `cd_log` VALUES (47, 'admin', NULL, 'http://git.tiefen.net/admin/Login/verify.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131832, 2, NULL);
+INSERT INTO `cd_log` VALUES (48, 'admin', NULL, 'http://git.tiefen.net/admin/login/index', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131834, 2, NULL);
+INSERT INTO `cd_log` VALUES (49, 'admin', NULL, 'http://git.tiefen.net/admin/login/index', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131834, 2, NULL);
+INSERT INTO `cd_log` VALUES (50, 'admin', NULL, 'http://git.tiefen.net/admin/login/index', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131834, 2, NULL);
+INSERT INTO `cd_log` VALUES (51, 'admin', NULL, 'http://git.tiefen.net/admin/Login/verify.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131839, 2, NULL);
+INSERT INTO `cd_log` VALUES (52, 'admin', NULL, 'http://git.tiefen.net/admin/Login/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"username\":\"admin\",\"rememberMe\":false,\"verify\":\"\",\"key\":\"6945087ff34ac\"}', NULL, 1766131846, 2, NULL);
+INSERT INTO `cd_log` VALUES (53, 'admin', 'admin', 'http://git.tiefen.net/admin/Login/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', NULL, NULL, 1766131846, 1, NULL);
+INSERT INTO `cd_log` VALUES (54, 'admin', 'admin', 'http://git.tiefen.net/admin/Index/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131846, 2, NULL);
+INSERT INTO `cd_log` VALUES (55, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/getMenu', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131846, 2, NULL);
+INSERT INTO `cd_log` VALUES (56, 'admin', 'admin', 'http://git.tiefen.net/admin/index/main.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131846, 2, NULL);
+INSERT INTO `cd_log` VALUES (57, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/watermark', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131846, 2, NULL);
+INSERT INTO `cd_log` VALUES (58, 'admin', 'admin', 'http://git.tiefen.net/admin/Baseconfig/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131848, 2, NULL);
+INSERT INTO `cd_log` VALUES (59, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/watermark', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131848, 2, NULL);
+INSERT INTO `cd_log` VALUES (60, 'admin', 'admin', 'http://git.tiefen.net/admin/Baseconfig/getInfo', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131849, 2, NULL);
+INSERT INTO `cd_log` VALUES (61, 'admin', 'admin', 'http://git.tiefen.net/admin/Baseconfig/index', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"site_title\":\"开源泽润\",\"logo\":\"\\/uploads\\/admin\\/202508\\/688c25bf0b48e.png\",\"keyword\":[],\"descrip\":\"平衡之道|创新之源\",\"copyright\":\"泽润九福\",\"filesize\":\"100\",\"filetype\":\"gif,png,jpg,jpeg,doc,docx,xls,xlsx,csv,pdf,rar,zip,txt,mp4,flv,wgt\",\"water_status\":\"0\",\"water_position\":\"5\",\"domain\":\"\",\"water_alpha\":90,\"pop_status\":\"0\",\"search_status\":\"1\",\"watermark_status\":\"0\",\"bdKey\":null,\"gdKey\":null,\"txKey\":null,\"deepseekkey\":null}', NULL, 1766131850, 2, NULL);
+INSERT INTO `cd_log` VALUES (62, 'admin', 'admin', 'http://git.tiefen.net/admin/Baseconfig/index', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"site_title\":\"开源泽润\",\"logo\":\"\\/uploads\\/admin\\/202508\\/688c25bf0b48e.png\",\"keyword\":[],\"descrip\":\"平衡之道|创新之源\",\"copyright\":\"泽润九福\",\"filesize\":\"100\",\"filetype\":\"gif,png,jpg,jpeg,doc,docx,xls,xlsx,csv,pdf,rar,zip,txt,mp4,flv,wgt\",\"water_status\":\"0\",\"water_position\":\"5\",\"domain\":\"\",\"water_alpha\":90,\"pop_status\":\"0\",\"search_status\":\"0\",\"watermark_status\":\"0\",\"bdKey\":null,\"gdKey\":null,\"txKey\":null,\"deepseekkey\":null}', NULL, 1766131851, 2, NULL);
+INSERT INTO `cd_log` VALUES (63, 'admin', 'admin', 'http://git.tiefen.net/admin/Index/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131853, 2, NULL);
+INSERT INTO `cd_log` VALUES (64, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/getMenu', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131853, 2, NULL);
+INSERT INTO `cd_log` VALUES (65, 'admin', 'admin', 'http://git.tiefen.net/admin/index/main.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131853, 2, NULL);
+INSERT INTO `cd_log` VALUES (66, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/watermark', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131853, 2, NULL);
+INSERT INTO `cd_log` VALUES (67, 'admin', 'admin', 'http://git.tiefen.net/admin/Baseconfig/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131854, 2, NULL);
+INSERT INTO `cd_log` VALUES (68, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/watermark', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131854, 2, NULL);
+INSERT INTO `cd_log` VALUES (69, 'admin', 'admin', 'http://git.tiefen.net/admin/Baseconfig/getInfo', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131854, 2, NULL);
+INSERT INTO `cd_log` VALUES (70, 'admin', 'admin', 'http://git.tiefen.net/admin/Baseconfig/index', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"site_title\":\"开源泽润\",\"logo\":\"\\/uploads\\/admin\\/202508\\/688c25bf0b48e.png\",\"keyword\":[],\"descrip\":\"平衡之道|创新之源\",\"copyright\":\"泽润九福\",\"filesize\":\"100\",\"filetype\":\"gif,png,jpg,jpeg,doc,docx,xls,xlsx,csv,pdf,rar,zip,txt,mp4,flv,wgt\",\"water_status\":\"0\",\"water_position\":\"5\",\"domain\":\"\",\"water_alpha\":90,\"pop_status\":\"0\",\"search_status\":\"1\",\"watermark_status\":\"0\",\"bdKey\":null,\"gdKey\":null,\"txKey\":null,\"deepseekkey\":null}', NULL, 1766131855, 2, NULL);
+INSERT INTO `cd_log` VALUES (71, 'admin', 'admin', 'http://git.tiefen.net/admin/Index/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131856, 2, NULL);
+INSERT INTO `cd_log` VALUES (72, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/getMenu', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131856, 2, NULL);
+INSERT INTO `cd_log` VALUES (73, 'admin', 'admin', 'http://git.tiefen.net/admin/index/main.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131856, 2, NULL);
+INSERT INTO `cd_log` VALUES (74, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/watermark', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131856, 2, NULL);
+INSERT INTO `cd_log` VALUES (75, 'admin', NULL, 'http://git.tiefen.net/admin/Login/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766193032, 2, NULL);
+INSERT INTO `cd_log` VALUES (76, 'admin', NULL, 'http://git.tiefen.net/admin/Login/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '[]', NULL, 1766209365, 2, NULL);
+INSERT INTO `cd_log` VALUES (77, 'admin', NULL, 'http://git.tiefen.net/admin/Login/verify.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '[]', NULL, 1766209367, 2, NULL);
+INSERT INTO `cd_log` VALUES (78, 'admin', NULL, 'http://git.tiefen.net/admin/Login/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766477595, 2, NULL);
+INSERT INTO `cd_log` VALUES (79, 'admin', NULL, 'http://git.tiefen.net/admin/Login/verify.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766477597, 2, NULL);
+INSERT INTO `cd_log` VALUES (80, 'admin', NULL, 'http://git.tiefen.net/admin/Login/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"username\":\"admin\",\"rememberMe\":false,\"verify\":\"\",\"key\":\"694a4f1d86734\"}', NULL, 1766477599, 2, NULL);
+INSERT INTO `cd_log` VALUES (81, 'admin', 'admin', 'http://git.tiefen.net/admin/Login/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', NULL, NULL, 1766477599, 1, NULL);
+INSERT INTO `cd_log` VALUES (82, 'admin', 'admin', 'http://git.tiefen.net/admin/Index/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766477600, 2, NULL);
+INSERT INTO `cd_log` VALUES (83, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/getMenu', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766477600, 2, NULL);
+INSERT INTO `cd_log` VALUES (84, 'admin', 'admin', 'http://git.tiefen.net/admin/index/main.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766477600, 2, NULL);
+INSERT INTO `cd_log` VALUES (85, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/watermark', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766477601, 2, NULL);
+INSERT INTO `cd_log` VALUES (86, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/menu.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766477601, 2, NULL);
+INSERT INTO `cd_log` VALUES (87, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/watermark', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766477601, 2, NULL);
+INSERT INTO `cd_log` VALUES (88, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/menu', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"app_id\":\"1\"}', NULL, 1766477603, 2, NULL);
+INSERT INTO `cd_log` VALUES (89, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/updateMenuExt', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"menu_id\":179,\"create_code\":0}', NULL, 1766477607, 2, NULL);
+INSERT INTO `cd_log` VALUES (90, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/create', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"menu_id\":179,\"type\":2}', NULL, 1766477612, 2, NULL);
+INSERT INTO `cd_log` VALUES (91, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/fieldList?menu_id=179&appid=1', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"menu_id\":\"179\",\"appid\":\"1\"}', NULL, 1766477613, 2, NULL);
+INSERT INTO `cd_log` VALUES (92, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/watermark', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766477613, 2, NULL);
+INSERT INTO `cd_log` VALUES (93, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/fieldList', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"limit\":100,\"page\":1,\"appid\":\"1\",\"menu_id\":\"179\"}', NULL, 1766477614, 2, NULL);
+INSERT INTO `cd_log` VALUES (94, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/menu?appid=1', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"appid\":\"1\"}', NULL, 1766477615, 2, NULL);
+INSERT INTO `cd_log` VALUES (95, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/watermark', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766477615, 2, NULL);
+INSERT INTO `cd_log` VALUES (96, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/menu', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"app_id\":\"1\"}', NULL, 1766477615, 2, NULL);
 
 -- ----------------------------
 -- Table structure for cd_menu
@@ -465,7 +516,7 @@ INSERT INTO `cd_menu` VALUES (12, 11, 'Action', '方法管理', '', '', 1, 0, 12
 INSERT INTO `cd_menu` VALUES (13, 11, 'Field', '字段管理', '', '', 0, 0, 13, 0, '', '', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1);
 INSERT INTO `cd_menu` VALUES (19, 9, 'Secrect', '秘钥管理', '', '', 0, 1, 19, 0, '/admin/Sys.Base/secrect', 'el-icon-s-tools', NULL, 1, 0, NULL, 'mysql', 2, 0, NULL, NULL, NULL, 0, 0, 1);
 INSERT INTO `cd_menu` VALUES (104, 11, 'Actionremarks', '版本记录', 'id', 'action_remarks', 1, 0, 104, 1, '', NULL, NULL, 1, 0, 0, 'mysql', 1, 0, '', '', NULL, 0, 0, 1);
-INSERT INTO `cd_menu` VALUES (179, 2, 'MyConfig', '系统配置', '', '', 1, 1, 179, 0, '', 'el-icon-cpu', NULL, 1, 0, 0, 'mysql', 1, 0, '', '', NULL, 0, 0, 1);
+INSERT INTO `cd_menu` VALUES (179, 2, 'MyConfig', '系统配置', '', '', 0, 1, 179, 0, '', 'el-icon-cpu', NULL, 1, 0, 0, 'mysql', 1, 0, '', '', NULL, 0, 0, 1);
 
 -- ----------------------------
 -- Table structure for cd_role
