@@ -11,7 +11,17 @@ class Login extends Admin{
 	//用户登录 
     public function index(){
 		if(!$this->request->isPost()) {
-			return view('index');
+            // 开启安全入口
+            if (config("my.security_gateway_enabled")) {
+                // 验证参数
+                if (session(config("my.auth_session_key")) == config("my.auth_session_value")) {
+                    return view('index');
+                } else {
+                    return view('index_no');
+                }
+            } else {
+                return view('index');
+            }
 		}else{
 			$data = $this->request->post();
 			

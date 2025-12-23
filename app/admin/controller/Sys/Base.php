@@ -1369,6 +1369,7 @@ class Base extends Admin
                     if (!empty($result)) {
                         $dropColumnSql = "ALTER TABLE `{$prefix}{$mainTableName}` DROP COLUMN `{$fieldName}`";
                         Db::connect($connect)->execute($dropColumnSql);
+                        Db::name('field')->where('field', $fieldName)->delete();
                     }
                 }
                 
@@ -1802,8 +1803,6 @@ class Base extends Admin
                 ->order('menu_id desc')
                 ->find();
             $data['flow_field'] = Field::where('menu_id', $data['flow_menu']['menu_id'])->select()->toArray();
-            $data['fieldList'] = $this->addFlowField($data['fieldList'], $menuInfo, $menu_id, $application, $data['dbpre']);
-            
             
             $data['group_field'] = Db::name('field')
                 ->where(['menu_id' => $data['flow_menu']['menu_id'], 'type' => 2])
@@ -2381,7 +2380,7 @@ class Base extends Admin
             $pk = strtolower(trim($approvalRecords_pk));
             
             // 1. 创建子表
-            $this->createSubtable($connect, $prefix, $table_name, $pk, $flow_table, $menuInfo, $data, $menu_other_config);
+            $this->createSubtable($connect, $prefix, $table_name, $pk, $flow_table, $menuInfo, $data, $menu_other_config, $application);
             
             // 2. 插入菜单记录
             $controllerName = str_replace(' ', '', ucwords(str_replace('_', ' ', $table_name)));
@@ -2542,10 +2541,11 @@ class Base extends Admin
         Action::create($approvalRecordAction);
     }
     
+    
     /**
      * 1. 创建子表
      */
-    private function createSubtable($connect, $prefix, $table_name, $pk, $flow_table, $menuInfo, $data, $menu_other_config) {
+    private function createSubtable($connect, $prefix, $table_name, $pk, $flow_table, $menuInfo, $data, $menu_other_config, $application) {
         // 检查并删除已存在的表
         $dropSql = "DROP TABLE IF EXISTS `" . $prefix . $table_name . "`";
         Db::connect($connect)->execute($dropSql);
@@ -2629,6 +2629,10 @@ class Base extends Admin
                 Db::connect($connect)->execute($addColumnSql);
             }
         }
+        
+        
+        $fieldList = $this->addFlowField([], $menuInfo, $menuInfo['menu_id'], $application, $prefix);
+        Db::name('field')->insertAll($fieldList);
     }
     
     /**
@@ -3113,6 +3117,8 @@ class Base extends Admin
      * @param array $fieldList
      * @param       $menuInfo
      * @param       $menu_id
+     * @param       $application
+     * @param       $prefix
      * @return array
      * @desc      隐藏字段处理
      * @author    JiaWei
@@ -3124,7 +3130,6 @@ class Base extends Admin
         $username = explode('|', $application['login_fields'])[0];
         // 审核状态字段
         $fieldList[] = [
-            "id" => 77777, // 需要设置一个唯一的ID
             "menu_id" => $menu_id,
             "title" => "审批状态",
             "field" => "{$menuInfo['table_name']}_status_tfadmin", // 根据表名动态生成
@@ -3184,12 +3189,17 @@ class Base extends Admin
             "improve_zhi" => "",
             "improve_color" => null,
             "list_background_config" => "[]",
-            "tx_config" => "[]"
+            // "tx_config" =>json_encode([[
+            //     "tx_tiaojian" => 3,
+            //     "tx_zhi" => "{:session('{$application['app_dir']}.{$application['pk']}')}",
+            //     "tx_color" => "#f56c6c",
+            // ]], 256),
+            "tx_config" => "[]",
+            "field_show" => 0,
         ];
         
         // 审核备注字段
         $fieldList[] = [
-            "id" => 66666, // 需要设置一个唯一的ID
             "menu_id" => $menu_id,
             "title" => "审批备注",
             "field" => "{$menuInfo['table_name']}_remark_tfadmin", // 根据表名动态生成
@@ -3245,11 +3255,11 @@ class Base extends Admin
             "improve_zhi" => "",
             "improve_color" => null,
             "list_background_config" => "[]",
-            "tx_config" => "[]"
+            "tx_config" => "[]",
+            "field_show" => 0,
         ];
         // 当前审核人字段
         $fieldList[] = [
-            "id" => 88888, // 需要设置一个唯一的ID
             "menu_id" => $menu_id,
             "title" => "上次审核",
             "field" => "{$menuInfo['table_name']}_apply_now_tfadmin", // 根据表名动态生成
@@ -3304,12 +3314,12 @@ class Base extends Admin
             "improve_zhi" => "",
             "improve_color" => null,
             "list_background_config" => "[]",
-            "tx_config" => "[]"
+            "tx_config" => "[]",
+            "field_show" => 0,
         ];
         
         // 下一个审核人字段
         $fieldList[] = [
-            "id" => 99999, // 需要设置一个唯一的ID
             "menu_id" => $menu_id,
             "title" => "当前审核",
             "field" => "{$menuInfo['table_name']}_apply_next_tfadmin", // 根据表名动态生成
@@ -3364,7 +3374,12 @@ class Base extends Admin
             "improve_zhi" => "",
             "improve_color" => null,
             "list_background_config" => "[]",
-            "tx_config" => "[]"
+            "tx_config" => json_encode([[
+                "tx_tiaojian" => 3,
+                "tx_zhi" => "{:session('{$application['app_dir']}.{$application['pk']}')}",
+                "tx_color" => "#f56c6c",
+            ]], 256),
+            "field_show" => 0,
         ];
         return $fieldList;
     }

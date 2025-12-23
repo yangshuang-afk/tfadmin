@@ -90,6 +90,96 @@
                             </el-form-item>
                         </el-col>
                     </el-row>
+                    
+                    <!-- 安全入口配置 -->
+                    <el-divider content-position="left">安全入口配置</el-divider>
+                    
+                    <el-row>
+                        <el-col :span="24">
+                            <el-form-item label="安全入口开关" prop="security_gateway_enabled">
+                                <el-switch v-model="form.security_gateway_enabled"
+                                           :active-value="true"
+                                           :inactive-value="false"
+                                           active-text="启用"
+                                           inactive-text="禁用"></el-switch>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    
+                    <el-row>
+                        <el-col :span="24">
+                            <el-form-item label="安全入口路径">
+                                <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 5px;">
+                                    <span>/</span>
+                                    <el-input
+                                            v-model="form.gateway_module"
+                                            autoComplete="off"
+                                            clearable
+                                            placeholder="模块名"
+                                            style="flex: 1;"
+                                            size="small">
+                                    </el-input>
+                                    <span>/</span>
+                                    <el-input
+                                            v-model="form.gateway_controller"
+                                            autoComplete="off"
+                                            clearable
+                                            placeholder="控制器名"
+                                            style="flex: 1;"
+                                            size="small">
+                                    </el-input>
+                                    <span>/</span>
+                                    <el-input
+                                            v-model="form.gateway_action"
+                                            autoComplete="off"
+                                            clearable
+                                            placeholder="方法名"
+                                            style="flex: 1;"
+                                            size="small">
+                                    </el-input>
+                                </div>
+                                <div class="el-form-item__help">
+                                    <span>完整路径：</span>
+                                    <el-tag
+                                            type="info"
+                                            size="small"
+                                            style="cursor: pointer; margin-left: 5px;"
+                                            @click="copyFullPath">
+                                        {$Request.host}/{{form.gateway_module || '模块名'}}/{{form.gateway_controller || '控制器名'}}/{{form.gateway_action || '方法名'}}
+                                        <i class="el-icon-copy-document"></i>
+                                    </el-tag>
+                                    <span style="color: #909399; font-size: 12px; margin-left: 10px;">点击复制完整路径</span>
+                                </div>
+                                <div class="el-form-item__help" style="color: #909399;">
+                                    安全入口模块名（对应namespace目录）/安全入口控制器名（对应控制器类）/安全入口方法名（对应控制器方法）
+                                </div>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="Session键名" prop="auth_session_key">
+                                <el-input v-model="form.auth_session_key" autoComplete="off" clearable
+                                          placeholder="验证通过后设置的session标识"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="Session值" prop="auth_session_value">
+                                <el-input v-model="form.auth_session_value" autoComplete="off" clearable
+                                          placeholder="验证通过后设置的session值"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    
+                    <el-row>
+                        <el-col :span="24">
+                            <el-form-item label="目标地址" prop="redirect_url">
+                                <el-input v-model="form.redirect_url" autoComplete="off" clearable
+                                          placeholder="验证通过后跳转的目标地址"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
                 </el-form>
             </el-tab-pane>
             
@@ -150,7 +240,6 @@
             <!-- 短信配置 -->
             <el-tab-pane label="短信配置" name="sms">
                 <el-form size="small" ref="form" :model="form" :rules="rules" :label-width="ismobile()?'90px':'111px'">
-                    <!-- 短信配置内容保持不变 -->
                     <el-row>
                         <el-col :span="24">
                             <el-form-item label="腾讯云短信AppID" prop="tencent_sms_appid">
@@ -398,11 +487,9 @@
                 </el-form>
             </el-tab-pane>
             
-            <!-- 其他配置选项卡内容保持不变 -->
             <!-- API TF鉴权配置 -->
             <el-tab-pane label="API TF鉴权配置" name="tfauth">
                 <el-form size="small" ref="form" :model="form" :rules="rules" :label-width="ismobile()?'90px':'111px'">
-                    <!-- API TF鉴权配置内容保持不变 -->
                     <el-row>
                         <el-col :span="24">
                             <el-form-item label="过期时间" prop="tf_expire_time">
@@ -463,7 +550,6 @@
             <!-- 小程序配置 -->
             <el-tab-pane label="小程序配置" name="miniprogram">
                 <el-form size="small" ref="form" :model="form" :rules="rules" :label-width="ismobile()?'90px':'111px'">
-                    <!-- 小程序配置内容保持不变 -->
                     <el-row>
                         <el-col :span="24">
                             <el-form-item label="小程序AppID" prop="mini_program.app_id">
@@ -485,7 +571,6 @@
             <!-- 公众号配置 -->
             <el-tab-pane label="公众号配置" name="official">
                 <el-form size="small" ref="form" :model="form" :rules="rules" :label-width="ismobile()?'90px':'111px'">
-                    <!-- 公众号配置内容保持不变 -->
                     <el-row>
                         <el-col :span="24">
                             <el-form-item label="公众号AppID" prop="official_accounts.app_id">
@@ -528,7 +613,6 @@
             <!-- 微信支付配置 -->
             <el-tab-pane label="微信支付配置" name="payment">
                 <el-form size="small" ref="form" :model="form" :rules="rules" :label-width="ismobile()?'90px':'111px'">
-                    <!-- 微信支付配置内容保持不变 -->
                     <el-row>
                         <el-col :span="24">
                             <el-form-item label="商户号" prop="wechart_pay.mch_id">
@@ -649,7 +733,15 @@
                         key: '',
                         cert_path: '',
                         key_path: ''
-                    }
+                    },
+                    // 新增安全入口配置字段
+                    security_gateway_enabled: false,
+                    gateway_module: '',
+                    gateway_controller: '',
+                    gateway_action: '',
+                    auth_session_key: '',
+                    auth_session_value: 1,
+                    redirect_url: ''
                 },
                 loading: false,
                 show: false,
@@ -668,29 +760,26 @@
             }
         },
         mounted() {
-            axios.post(base_url + '/MyConfig/getInfo').then(res => {
-                if (res.data.status == 200) {
-                    // 处理数组类型的nocheck，将其转换为字符串以便在textarea中显示
-                    const data = res.data.data || {};
-                    if (Array.isArray(data.nocheck)) {
-                        this.form.nocheck = data.nocheck;
-                    }
-                    
-                    // 合并获取到的配置数据
-                    this.form = {...this.form, ...data};
-                    
-                    // 初始化OSS面板展开状态
-                    this.setOssPanelByType(this.form.oss_default_type);
-                    
-                    // 确保嵌套对象存在
-                    this.form.mini_program = {...this.form.mini_program, ...(data.mini_program || {})};
-                    this.form.official_accounts = {...this.form.official_accounts, ...(data.official_accounts || {})};
-                    this.form.wechart_pay = {...this.form.wechart_pay, ...(data.wechart_pay || {})};
-                }
-                this.show = true;
-            })
+            this.loadConfigData();
         },
         methods: {
+            // 复制完整路径
+            copyFullPath() {
+                // 获取当前域名
+                const host = window.location.origin || '{$Request.host}';
+                const fullPath = host + '/' + (this.form.gateway_module || '模块名') + '/' + (this.form.gateway_controller || '控制器名') + '/' + (this.form.gateway_action || '方法名');
+                const textarea = document.createElement('textarea');
+                textarea.value = fullPath;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                this.$message({
+                    message: '已复制完整路径: ' + fullPath,
+                    type: 'success'
+                });
+            },
+            
             // 处理OSS类型变更
             handleOssTypeChange(type) {
                 this.setOssPanelByType(type);
@@ -719,27 +808,112 @@
             },
             // 提交
             submit() {
-                // 将textarea中的nocheck转换回数组
-                if (typeof this.form.nocheck === 'string') {
-                    this.form.nocheck = this.form.nocheck.split('\n')
-                            .map(item => item.trim())
-                            .filter(item => item);
+                // 创建表单验证规则的副本
+                const formRules = {
+                    upload_subdir: this.rules.upload_subdir,
+                    password_secrect: this.rules.password_secrect,
+                    error_log_code: this.rules.error_log_code
+                };
+                
+                // 只有当安全入口开关启用时，才添加相关字段的验证规则
+                if (this.form.security_gateway_enabled) {
+                    formRules.gateway_module = [
+                        {required: true, message: '安全入口模块名不能为空', trigger: 'blur'}
+                    ];
+                    formRules.gateway_controller = [
+                        {required: true, message: '安全入口控制器名不能为空', trigger: 'blur'}
+                    ];
+                    formRules.gateway_action = [
+                        {required: true, message: '安全入口方法名不能为空', trigger: 'blur'}
+                    ];
+                    formRules.auth_session_key = [
+                        {required: true, message: '认证Session键名不能为空', trigger: 'blur'}
+                    ];
+                    formRules.auth_session_value = [
+                        {required: true, message: '认证Session值不能为空', trigger: 'blur'}
+                    ];
+                    formRules.redirect_url = [
+                        {required: true, message: '验证后跳转地址不能为空', trigger: 'blur'},
+                        {type: 'url', message: '请输入有效的URL地址', trigger: 'blur'}
+                    ];
                 }
                 
-                this.loading = true;
-                axios.post(base_url + '/MyConfig/index', this.form).then(res => {
-                    this.loading = false;
-                    if (res.data.status == 200) {
-                        this.$message({message: res.data.msg, type: 'success'});
-                    } else {
-                        this.$message.error(res.data.msg);
+                // 使用动态验证规则进行验证
+                this.$refs.form.validate((valid) => {
+                    if (!valid) {
+                        return false;
                     }
-                }).catch(() => {
-                    this.loading = false;
-                    this.$message.error('保存失败，请重试');
+                    
+                    // 将textarea中的nocheck转换回数组
+                    if (typeof this.form.nocheck === 'string') {
+                        this.form.nocheck = this.form.nocheck.split('\n')
+                            .map(item => item.trim())
+                            .filter(item => item);
+                    }
+                    
+                    this.loading = true;
+                    axios.post(base_url + '/MyConfig/index', this.form).then(res => {
+                        this.loading = false;
+                        if (res.data.status == 200) {
+                            this.$message({message: res.data.msg, type: 'success'});
+                        } else {
+                            this.$message.error(res.data.msg);
+                        }
+                    }).catch(() => {
+                        this.loading = false;
+                        this.$message.error('保存失败，请重试');
+                    })
+                });
+            },
+            
+            loadConfigData() {
+                axios.post(base_url + '/MyConfig/getInfo').then(res => {
+                    if (res.data.status == 200) {
+                        // 处理数组类型的nocheck，将其转换为字符串以便在textarea中显示
+                        const data = res.data.data || {};
+                        if (Array.isArray(data.nocheck)) {
+                            this.form.nocheck = data.nocheck;
+                        }
+                        
+                        // 合并获取到的配置数据
+                        this.form = {...this.form, ...data};
+                        console.log(data)
+                        // 确保安全入口配置字段存在并设置默认值
+                        if (this.form.security_gateway_enabled === undefined || this.form.security_gateway_enabled === null) {
+                            this.form.security_gateway_enabled = false;
+                        }
+                        if (!this.form.gateway_module) {
+                            this.form.gateway_module = '';
+                        }
+                        if (!this.form.gateway_controller) {
+                            this.form.gateway_controller = '';
+                        }
+                        if (!this.form.gateway_action) {
+                            this.form.gateway_action = '';
+                        }
+                        if (!this.form.auth_session_key) {
+                            this.form.auth_session_key = 'login_check';
+                        }
+                        if (this.form.auth_session_value === undefined || this.form.auth_session_value === null) {
+                            this.form.auth_session_value = 1;
+                        }
+                        if (!this.form.redirect_url) {
+                            const host = window.location.origin || '{$Request.host}';
+                            this.form.redirect_url = host + '/admin/login/index';
+                        }
+                        
+                        // 初始化OSS面板展开状态
+                        this.setOssPanelByType(this.form.oss_default_type);
+                        
+                        // 确保嵌套对象存在
+                        this.form.mini_program = {...this.form.mini_program, ...(data.mini_program || {})};
+                        this.form.official_accounts = {...this.form.official_accounts, ...(data.official_accounts || {})};
+                        this.form.wechart_pay = {...this.form.wechart_pay, ...(data.wechart_pay || {})};
+                    }
+                    this.show = true;
                 })
-            }
-        }
+            },
+        },
     })
 </script>
 {/block}
