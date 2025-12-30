@@ -1826,36 +1826,6 @@ class Base extends Admin
         $ret = $res;
         $res = json_decode($res, true);
         
-        $access53 = [];
-        $access54 = [];
-        foreach ($data['actionList'] as $actionListItem1) {
-            if ($actionListItem1['type'] == 53) {
-                $caozuo_field = $actionListItem1['fields'];
-                $ex_caozuo_field = $actionListItem1['sql'];
-                $access53[] = '"/' . $application['app_dir'] . '/' . $menuInfo['controller_name'] . '/' . $actionListItem1['action_name'] . '.html"';
-            }
-            if ($actionListItem1['type'] == 54) {
-                $access54[] = '"/' . $application['app_dir'] . '/' . $menuInfo['controller_name'] . '/' . $actionListItem1['action_name'] . '.html"';
-            }
-        }
-        
-        $access = array_unique(array_merge($access53, $access54));
-        $access = implode(',', $access);
-        $replace = "if(!in_array(session('admin.role_id'),[1]) && empty(array_intersect(session('admin.access'),[" . $access . "]))){";
-        if (!empty($access53)) {
-            $replace_end = $replace;
-            $access = $access53;
-            $access = implode(',', $access);
-            $replace = "if(!in_array(session('admin.role_id'),[1]) && !empty(array_intersect(session('admin.access'),[" . $access . "]))){\n\t\t\t\t\$query->whereRaw('";
-            foreach ($data['fieldList'] as $fieldList) {
-                if ($fieldList['type'] == 30) {
-                    $replace .= "{$fieldList['field']} = '.session('admin.{$fieldList['field']}').' or ";
-                }
-            }
-            $replace .= "FIND_IN_SET('.session('admin.{$ex_caozuo_field}').', {$caozuo_field})');\n\t\t\t}\n\t\t\t" . $replace_end;
-        }
-        $res['controller']['content'] = str_replace("if(!in_array(session('admin.role_id'),[1])){", $replace, $res['controller']['content']);
-        
         $res['jscomponent'][2]['content'] = str_replace("ismobile()?'90px':'16%'", "ismobile()?'90px':'88px'", $res['jscomponent'][2]['content']);
         $res['jscomponent'][3]['content'] = str_replace("ismobile()?'90px':'16%'", "ismobile()?'90px':'88px'", $res['jscomponent'][3]['content']);
         
