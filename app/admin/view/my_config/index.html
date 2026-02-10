@@ -647,6 +647,37 @@
                     </el-row>
                 </el-form>
             </el-tab-pane>
+            
+            
+            <!-- esdb配置 -->
+            <el-tab-pane label="es配置" name="esconfig">
+                <el-form size="small" ref="form" :model="form" :rules="rules" :label-width="ismobile()?'90px':'111px'">
+                    <el-row>
+                        <el-col :span="24">
+                            <el-form-item label="es地址" prop="esdb_hostname">
+                                <el-input v-model="form.esdb_hostname" autoComplete="off" clearable></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="24">
+                            <el-form-item label="es账号" prop="esdb_username">
+                                <el-input v-model="form.esdb_username" autoComplete="off" clearable></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="24">
+                            <el-form-item label="es密码" prop="esdb_password">
+                                <el-input v-model="form.esdb_password" autoComplete="off" clearable></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                
+                
+                
+                </el-form>
+            </el-tab-pane>
         </el-tabs>
         
         <div style="margin-top: 15px; text-align: right;">

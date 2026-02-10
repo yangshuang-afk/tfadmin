@@ -1,19 +1,3 @@
-/*
- Navicat Premium Dump SQL
-
- Source Server         : 铁粉git
- Source Server Type    : MySQL
- Source Server Version : 80036 (8.0.36)
- Source Host           :
- Source Schema         :
-
- Target Server Type    : MySQL
- Target Server Version : 80036 (8.0.36)
- File Encoding         : 65001
-
- Date: 23/12/2025 16:53:15
-*/
-
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -22,57 +6,57 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_action`;
 CREATE TABLE `cd_action`  (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT '点击添加备注',
-  `menu_id` int NOT NULL COMMENT '模块ID',
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '动作名称',
-  `action_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '动作名称',
-  `type` tinyint NOT NULL COMMENT '点击添加备注',
-  `icon` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'icon图标',
-  `pagesize` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '每页显示数据条数',
-  `group_button_status` tinyint NULL DEFAULT NULL COMMENT '按钮组显示状态',
-  `list_button_status` tinyint NULL DEFAULT NULL COMMENT '按钮是否显示列表',
-  `button_color` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `fields` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '操作的字段',
-  `sortid` mediumint NULL DEFAULT 0 COMMENT '排序',
-  `orderby` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '配置排序',
-  `tree_config` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `jump` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '按钮跳转地址',
-  `server_create_status` tinyint NULL DEFAULT 1,
-  `vue_create_status` tinyint NULL DEFAULT 1 COMMENT '视图生成',
-  `cache_time` mediumint NULL DEFAULT NULL COMMENT '缓存时间',
-  `api_auth` tinyint NULL DEFAULT NULL COMMENT '接口是否鉴权',
-  `img_auth` tinyint NULL DEFAULT NULL COMMENT '图片验证码鉴权',
-  `sms_auth` tinyint NULL DEFAULT NULL COMMENT '短信验证',
-  `list_filter` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '过滤',
-  `tab_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-  `sql` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-  `dialog_size` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `status_val` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `validate` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '无备注',
-  `select_type` tinyint NULL DEFAULT 1 COMMENT '选中方式 1多选 2单选',
-  `table_height` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '表格高度',
-  `left_tree_sql` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '侧栏生成的sql',
-  `with_join` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '关联模型',
-  `other_config` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '字段配置',
-  `dialog_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '页面打开方式',
-  `version` int NULL DEFAULT NULL COMMENT 'apipost接口文档版本号',
-  `remark` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '方法备注',
-  `remark_desc` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '功能描述',
-  `q_template` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-  `h_php` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-  `action_pid` int NULL DEFAULT NULL COMMENT '联动方法id（例如：审批流关联方法）',
-  `action_show` tinyint NULL DEFAULT 1 COMMENT '列表显示 0不显示 1显示',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `menu_id`(`menu_id` ASC) USING BTREE,
-  INDEX `name`(`name` ASC) USING BTREE,
-  INDEX `type`(`type` ASC) USING BTREE,
-  INDEX `pagesize`(`pagesize` ASC) USING BTREE,
-  INDEX `group_button_status`(`group_button_status` ASC) USING BTREE,
-  INDEX `list_button_status`(`list_button_status` ASC) USING BTREE,
-  INDEX `sortid`(`sortid` ASC) USING BTREE,
-  INDEX `server_create_status`(`server_create_status` ASC) USING BTREE,
-  INDEX `vue_create_status`(`vue_create_status` ASC) USING BTREE,
-  INDEX `select_type`(`select_type` ASC) USING BTREE
+                              `id` int NOT NULL AUTO_INCREMENT COMMENT '点击添加备注',
+                              `menu_id` int NOT NULL COMMENT '模块ID',
+                              `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '动作名称',
+                              `action_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '动作名称',
+                              `type` tinyint NOT NULL COMMENT '点击添加备注',
+                              `icon` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'icon图标',
+                              `pagesize` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '每页显示数据条数',
+                              `group_button_status` tinyint NULL DEFAULT NULL COMMENT '按钮组显示状态',
+                              `list_button_status` tinyint NULL DEFAULT NULL COMMENT '按钮是否显示列表',
+                              `button_color` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+                              `fields` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '操作的字段',
+                              `sortid` int NULL DEFAULT 0 COMMENT '排序',
+                              `orderby` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '配置排序',
+                              `tree_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+                              `jump` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '按钮跳转地址',
+                              `server_create_status` tinyint NULL DEFAULT 1,
+                              `vue_create_status` tinyint NULL DEFAULT 1 COMMENT '视图生成',
+                              `cache_time` mediumint NULL DEFAULT NULL COMMENT '缓存时间',
+                              `api_auth` tinyint NULL DEFAULT NULL COMMENT '接口是否鉴权',
+                              `img_auth` tinyint NULL DEFAULT NULL COMMENT '图片验证码鉴权',
+                              `sms_auth` tinyint NULL DEFAULT NULL COMMENT '短信验证',
+                              `list_filter` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '过滤',
+                              `tab_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+                              `sql` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+                              `dialog_size` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+                              `status_val` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+                              `validate` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '无备注',
+                              `select_type` tinyint NULL DEFAULT 1 COMMENT '选中方式 1多选 2单选',
+                              `table_height` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '表格高度',
+                              `left_tree_sql` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '侧栏生成的sql',
+                              `with_join` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '关联模型',
+                              `other_config` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '字段配置',
+                              `dialog_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '页面打开方式',
+                              `version` int NULL DEFAULT NULL COMMENT 'apipost接口文档版本号',
+                              `remark` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '方法备注',
+                              `remark_desc` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '功能描述',
+                              `q_template` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+                              `h_php` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+                              `action_pid` int NULL DEFAULT NULL COMMENT '联动方法id（例如：审批流关联方法）',
+                              `action_show` tinyint NULL DEFAULT 1 COMMENT '列表显示 0不显示 1显示',
+                              PRIMARY KEY (`id`) USING BTREE,
+                              INDEX `menu_id`(`menu_id` ASC) USING BTREE,
+                              INDEX `name`(`name` ASC) USING BTREE,
+                              INDEX `type`(`type` ASC) USING BTREE,
+                              INDEX `pagesize`(`pagesize` ASC) USING BTREE,
+                              INDEX `group_button_status`(`group_button_status` ASC) USING BTREE,
+                              INDEX `list_button_status`(`list_button_status` ASC) USING BTREE,
+                              INDEX `sortid`(`sortid` ASC) USING BTREE,
+                              INDEX `server_create_status`(`server_create_status` ASC) USING BTREE,
+                              INDEX `vue_create_status`(`vue_create_status` ASC) USING BTREE,
+                              INDEX `select_type`(`select_type` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4941 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -116,15 +100,15 @@ INSERT INTO `cd_action` VALUES (4927, 2, '查看详情', 'detail', 5, 'el-icon-v
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_action_remarks`;
 CREATE TABLE `cd_action_remarks`  (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
-  `action_id` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'action_id',
-  `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '代码内容',
-  `description` tinytext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '功能描述',
-  `create_time` int NULL DEFAULT NULL COMMENT '创建时间',
-  `menu_id` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '所属菜单',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `action_id`(`action_id` ASC) USING BTREE,
-  INDEX `menu_id`(`menu_id` ASC) USING BTREE
+                                      `id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
+                                      `action_id` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'action_id',
+                                      `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '代码内容',
+                                      `description` tinytext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '功能描述',
+                                      `create_time` int NULL DEFAULT NULL COMMENT '创建时间',
+                                      `menu_id` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '所属菜单',
+                                      PRIMARY KEY (`id`) USING BTREE,
+                                      INDEX `action_id`(`action_id` ASC) USING BTREE,
+                                      INDEX `menu_id`(`menu_id` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '版本记录' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -136,16 +120,16 @@ CREATE TABLE `cd_action_remarks`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_admin_user`;
 CREATE TABLE `cd_admin_user`  (
-  `user_id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
-  `name` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户姓名',
-  `user` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户名',
-  `pwd` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '密码',
-  `role_id` int NULL DEFAULT NULL COMMENT '所属分组',
-  `note` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
-  `status` tinyint NULL DEFAULT NULL COMMENT '状态',
-  `create_time` int NULL DEFAULT NULL COMMENT '创建时间',
-  `session_token` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '唯一登录',
-  PRIMARY KEY (`user_id`) USING BTREE
+                                  `user_id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
+                                  `name` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户姓名',
+                                  `user` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户名',
+                                  `pwd` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '密码',
+                                  `role_id` int NULL DEFAULT NULL COMMENT '所属分组',
+                                  `note` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+                                  `status` tinyint NULL DEFAULT NULL COMMENT '状态',
+                                  `create_time` int NULL DEFAULT NULL COMMENT '创建时间',
+                                  `session_token` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '唯一登录',
+                                  PRIMARY KEY (`user_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 341 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户管理' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -158,23 +142,23 @@ INSERT INTO `cd_admin_user` VALUES (1, '铁粉', 'admin', '35bfa44f104ddfe466d18
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_application`;
 CREATE TABLE `cd_application`  (
-  `app_id` int NOT NULL AUTO_INCREMENT,
-  `application_name` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `app_dir` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `status` tinyint NULL DEFAULT NULL,
-  `app_type` tinyint NULL DEFAULT NULL,
-  `login_table` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `login_fields` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `domain` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `pk` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '登录表主键',
-  `connect` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据库连接',
-  `project_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'apipost项目id',
-  `register` tinyint(1) NULL DEFAULT NULL COMMENT '是否开启注册 1开启 0禁用',
-  PRIMARY KEY (`app_id`) USING BTREE,
-  INDEX `status`(`status` ASC) USING BTREE,
-  INDEX `app_type`(`app_type` ASC) USING BTREE,
-  INDEX `pk`(`pk` ASC) USING BTREE,
-  INDEX `project_id`(`project_id` ASC) USING BTREE
+                                   `app_id` int NOT NULL AUTO_INCREMENT,
+                                   `application_name` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+                                   `app_dir` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+                                   `status` tinyint NULL DEFAULT NULL,
+                                   `app_type` tinyint NULL DEFAULT NULL,
+                                   `login_table` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+                                   `login_fields` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+                                   `domain` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+                                   `pk` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '登录表主键',
+                                   `connect` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据库连接',
+                                   `project_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'apipost项目id',
+                                   `register` tinyint(1) NULL DEFAULT NULL COMMENT '是否开启注册 1开启 0禁用',
+                                   PRIMARY KEY (`app_id`) USING BTREE,
+                                   INDEX `status`(`status` ASC) USING BTREE,
+                                   INDEX `app_type`(`app_type` ASC) USING BTREE,
+                                   INDEX `pk`(`pk` ASC) USING BTREE,
+                                   INDEX `project_id`(`project_id` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 310 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -187,11 +171,11 @@ INSERT INTO `cd_application` VALUES (1, '后台管理', 'admin', 1, 1, '', '', '
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_base_config`;
 CREATE TABLE `cd_base_config`  (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
-  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `name`(`name` ASC) USING BTREE
+                                   `id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
+                                   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+                                   `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+                                   PRIMARY KEY (`id`) USING BTREE,
+                                   INDEX `name`(`name` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 29 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -221,44 +205,44 @@ INSERT INTO `cd_base_config` VALUES (28, 'deepseekkey', NULL);
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_field`;
 CREATE TABLE `cd_field`  (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `menu_id` int NOT NULL COMMENT '模块ID',
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字段名称',
-  `field` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `type` smallint NOT NULL COMMENT '表单类型1输入框 2下拉框 3单选框 4多选框 5上传图片 6编辑器 7时间',
-  `list_show` tinyint NULL DEFAULT NULL COMMENT '列表显示',
-  `search_type` tinyint NULL DEFAULT NULL COMMENT '1精确匹配 2模糊搜索',
-  `post_status` tinyint NULL DEFAULT NULL COMMENT '是否前台录入',
-  `create_table_field` tinyint NULL DEFAULT NULL,
-  `validate` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '验证方式',
-  `rule` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '验证规则',
-  `sortid` mediumint NULL DEFAULT 0 COMMENT '排序号',
-  `sql` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '字段配置数据源sql',
-  `default_value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `datatype` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字段数据类型',
-  `length` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字段长度',
-  `indexdata` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '索引',
-  `show_condition` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `item_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-  `width` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '单元格宽度',
-  `datetime_config` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他配置',
-  `other_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-  `belong_table` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '虚拟字段所属表 用户多表关联',
-  `icon` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字体图标',
-  `key_placeholder` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '建站位文本',
-  `value_placeholder` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '值占位文本',
-  `tx_tiaojian` smallint NULL DEFAULT NULL COMMENT '鎻愰啋鏉′欢',
-  `tx_zhi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '体型值',
-  `tx_color` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '提醒颜色',
-  `improve_tiaojian` smallint NULL DEFAULT NULL COMMENT '完善条件',
-  `improve_zhi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '完善条件校验值',
-  `improve_color` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '完善条件提醒颜色',
-  `tx_config` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '列表文字变色配置项',
-  `list_background_config` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '列表背景变色配置项',
-  `field_show` tinyint NULL DEFAULT 1 COMMENT '列表显示 0不显示 1显示',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `menu_id`(`menu_id` ASC) USING BTREE,
-  INDEX `tx_tiaojian`(`tx_tiaojian` ASC) USING BTREE
+                             `id` int NOT NULL AUTO_INCREMENT,
+                             `menu_id` int NOT NULL COMMENT '模块ID',
+                             `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字段名称',
+                             `field` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+                             `type` smallint NOT NULL COMMENT '表单类型1输入框 2下拉框 3单选框 4多选框 5上传图片 6编辑器 7时间',
+                             `list_show` tinyint NULL DEFAULT NULL COMMENT '列表显示',
+                             `search_type` tinyint NULL DEFAULT NULL COMMENT '1精确匹配 2模糊搜索',
+                             `post_status` tinyint NULL DEFAULT NULL COMMENT '是否前台录入',
+                             `create_table_field` tinyint NULL DEFAULT NULL,
+                             `validate` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '验证方式',
+                             `rule` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '验证规则',
+                             `sortid` mediumint NULL DEFAULT 0 COMMENT '排序号',
+                             `sql` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '字段配置数据源sql',
+                             `default_value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+                             `datatype` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字段数据类型',
+                             `length` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字段长度',
+                             `indexdata` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '索引',
+                             `show_condition` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+                             `item_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+                             `width` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '单元格宽度',
+                             `datetime_config` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他配置',
+                             `other_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+                             `belong_table` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '虚拟字段所属表 用户多表关联',
+                             `icon` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字体图标',
+                             `key_placeholder` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '建站位文本',
+                             `value_placeholder` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '值占位文本',
+                             `tx_tiaojian` smallint NULL DEFAULT NULL COMMENT '鎻愰啋鏉′欢',
+                             `tx_zhi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '体型值',
+                             `tx_color` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '提醒颜色',
+                             `improve_tiaojian` smallint NULL DEFAULT NULL COMMENT '完善条件',
+                             `improve_zhi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '完善条件校验值',
+                             `improve_color` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '完善条件提醒颜色',
+                             `tx_config` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '列表文字变色配置项',
+                             `list_background_config` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '列表背景变色配置项',
+                             `field_show` tinyint NULL DEFAULT 1 COMMENT '列表显示 0不显示 1显示',
+                             PRIMARY KEY (`id`) USING BTREE,
+                             INDEX `menu_id`(`menu_id` ASC) USING BTREE,
+                             INDEX `tx_tiaojian`(`tx_tiaojian` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 5457 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -326,17 +310,17 @@ INSERT INTO `cd_field` VALUES (5310, 3, '腾讯地图KEY', 'txKey', 1, 2, 1, 1, 
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_file`;
 CREATE TABLE `cd_file`  (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `filepath` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图片路径',
-  `hash` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件hash值',
-  `create_time` int NULL DEFAULT NULL COMMENT '创建时间',
-  `disk` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '存储类似',
-  `type` tinyint NULL DEFAULT NULL COMMENT '文件类型',
-  `use_in` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-  `only_param` int NOT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `hash`(`hash` ASC) USING BTREE,
-  INDEX `only_param`(`only_param` ASC) USING BTREE
+                            `id` int NOT NULL AUTO_INCREMENT,
+                            `filepath` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图片路径',
+                            `hash` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件hash值',
+                            `create_time` int NULL DEFAULT NULL COMMENT '创建时间',
+                            `disk` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '存储类似',
+                            `type` tinyint NULL DEFAULT NULL COMMENT '文件类型',
+                            `use_in` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+                            `only_param` int NOT NULL,
+                            PRIMARY KEY (`id`) USING BTREE,
+                            INDEX `hash`(`hash` ASC) USING BTREE,
+                            INDEX `only_param`(`only_param` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -348,18 +332,18 @@ CREATE TABLE `cd_file`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_log`;
 CREATE TABLE `cd_log`  (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
-  `application_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '应用名称',
-  `username` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作用户',
-  `url` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求url',
-  `ip` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'ip',
-  `useragent` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'useragent',
-  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '请求内容',
-  `errmsg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '异常信息',
-  `create_time` int NULL DEFAULT NULL COMMENT '创建时间',
-  `type` smallint NULL DEFAULT NULL COMMENT '类型',
-  `times` int NULL DEFAULT NULL COMMENT '日期',
-  PRIMARY KEY (`id`) USING BTREE
+                           `id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
+                           `application_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '应用名称',
+                           `username` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作用户',
+                           `url` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求url',
+                           `ip` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'ip',
+                           `useragent` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'useragent',
+                           `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '请求内容',
+                           `errmsg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '异常信息',
+                           `create_time` int NULL DEFAULT NULL COMMENT '创建时间',
+                           `type` smallint NULL DEFAULT NULL COMMENT '类型',
+                           `times` int NULL DEFAULT NULL COMMENT '日期',
+                           PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 97 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -467,69 +451,70 @@ INSERT INTO `cd_log` VALUES (96, 'admin', 'admin', 'http://git.tiefen.net/admin/
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_menu`;
 CREATE TABLE `cd_menu`  (
-  `menu_id` int NOT NULL AUTO_INCREMENT,
-  `pid` mediumint NULL DEFAULT 0 COMMENT '父级id',
-  `controller_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '模块名称',
-  `title` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '模块标题',
-  `pk` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '主键名',
-  `table_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '模块数据库表',
-  `create_code` tinyint NULL DEFAULT NULL COMMENT '是否允许生成模块',
-  `status` tinyint NULL DEFAULT 1 COMMENT '0隐藏 1显示',
-  `sortid` mediumint NULL DEFAULT 0 COMMENT '排序号',
-  `create_table` tinyint NULL DEFAULT NULL COMMENT '是否生成数据库表',
-  `url` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '组件路径',
-  `icon` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'icon字体图标',
-  `tab_config` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'tab选项卡菜单配置',
-  `app_id` int NULL DEFAULT NULL COMMENT '所属模块',
-  `is_post` tinyint NULL DEFAULT NULL COMMENT '是否允许投稿',
-  `upload_config_id` smallint NULL DEFAULT NULL COMMENT '上传配置id',
-  `connect` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据库连接',
-  `page_type` tinyint NULL DEFAULT NULL COMMENT '页面类型',
-  `home_show` tinyint NULL DEFAULT 0 COMMENT '首页快捷导航显示状态',
-  `menu_pic` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '快捷导航的图片',
-  `notice` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '列表提示说明',
-  `prompt_session` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '提醒区别session字段名',
-  `prompt` tinyint NULL DEFAULT 0 COMMENT '显示提醒图标',
-  `flow_subtable` tinyint NULL DEFAULT 0 COMMENT '是否为审核流子表 默认0 不是',
-  `menu_show` tinyint NULL DEFAULT 1 COMMENT '列表显示 0不显示 1显示',
-  PRIMARY KEY (`menu_id`) USING BTREE,
-  INDEX `controller_name`(`controller_name` ASC) USING BTREE,
-  INDEX `module_id`(`app_id` ASC) USING BTREE,
-  INDEX `pid`(`pid` ASC) USING BTREE
+                            `menu_id` int NOT NULL AUTO_INCREMENT,
+                            `pid` mediumint NULL DEFAULT 0 COMMENT '父级id',
+                            `controller_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '模块名称',
+                            `title` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '模块标题',
+                            `pk` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '主键名',
+                            `table_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '模块数据库表',
+                            `create_code` tinyint NULL DEFAULT NULL COMMENT '是否允许生成模块',
+                            `status` tinyint NULL DEFAULT 1 COMMENT '0隐藏 1显示',
+                            `sortid` mediumint NULL DEFAULT 0 COMMENT '排序号',
+                            `create_table` tinyint NULL DEFAULT NULL COMMENT '是否生成数据库表',
+                            `url` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '组件路径',
+                            `icon` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'icon字体图标',
+                            `tab_config` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'tab选项卡菜单配置',
+                            `app_id` int NULL DEFAULT NULL COMMENT '所属模块',
+                            `is_post` tinyint NULL DEFAULT NULL COMMENT '是否允许投稿',
+                            `upload_config_id` smallint NULL DEFAULT NULL COMMENT '上传配置id',
+                            `connect` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据库连接',
+                            `page_type` tinyint NULL DEFAULT NULL COMMENT '页面类型',
+                            `home_show` tinyint NULL DEFAULT 0 COMMENT '首页快捷导航显示状态',
+                            `menu_pic` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '快捷导航的图片',
+                            `notice` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '列表提示说明',
+                            `prompt_session` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '提醒区别session字段名',
+                            `prompt` tinyint NULL DEFAULT 0 COMMENT '显示提醒图标',
+                            `flow_subtable` tinyint NULL DEFAULT 0 COMMENT '是否为审核流子表 默认0 不是',
+                            `menu_show` tinyint NULL DEFAULT 1 COMMENT '列表显示 0不显示 1显示',
+                            `enable_es` tinyint NULL DEFAULT 0 COMMENT '启用es 1=>启用 0 禁用',
+                            PRIMARY KEY (`menu_id`) USING BTREE,
+                            INDEX `controller_name`(`controller_name` ASC) USING BTREE,
+                            INDEX `module_id`(`app_id` ASC) USING BTREE,
+                            INDEX `pid`(`pid` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 181 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of cd_menu
 -- ----------------------------
-INSERT INTO `cd_menu` VALUES (1, 0, '', '控制台', '', '', 0, 1, 1, 0, '/admin/Index/main.html', 'el-icon-platform-eleme', NULL, 1, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0, 0, 1);
-INSERT INTO `cd_menu` VALUES (2, 0, 'Config', '站长配置', NULL, NULL, NULL, 1, 1000, NULL, NULL, 'fas fa-database', NULL, 1, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0, 0, 1);
-INSERT INTO `cd_menu` VALUES (3, 2, 'Baseconfig', '基本配置', 'id', 'base_config', 1, 1, 1, 1, NULL, NULL, NULL, 1, NULL, NULL, 'mysql', NULL, 0, NULL, '', NULL, 0, 0, 1);
-INSERT INTO `cd_menu` VALUES (4, 2, 'Uploadconfig', '缩略图配置', 'id', 'upload_config', 1, 1, 2, 1, NULL, 'el-icon-camera-solid', NULL, 1, NULL, NULL, 'mysql', 1, 0, NULL, '', NULL, 0, 0, 1);
-INSERT INTO `cd_menu` VALUES (5, 0, 'System', '系统管理', '', '', 0, 1, 1001, 0, '', 'fas fa-user-cog', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1);
-INSERT INTO `cd_menu` VALUES (6, 5, 'Adminuser', '用户管理', 'user_id', 'admin_user', 1, 1, 6, 1, '', 'el-icon-user-solid', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1);
-INSERT INTO `cd_menu` VALUES (7, 5, 'Role', '角色管理', 'role_id', 'role', 1, 1, 7, 1, '', 'el-icon-s-check', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1);
-INSERT INTO `cd_menu` VALUES (8, 5, 'Log', '日志管理', 'id', 'log', 1, 1, 8, 1, '', 'el-icon-s-promotion', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1);
-INSERT INTO `cd_menu` VALUES (9, 0, 'Tool', '工具管理', '', '', 1, 1, 1002, 0, '', 'dripicons-gear', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1);
-INSERT INTO `cd_menu` VALUES (10, 9, 'Application', '应用管理', '', '', 0, 1, 10, 0, '/admin/Sys.Base/applicationList', 'el-icon-s-shop', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1);
-INSERT INTO `cd_menu` VALUES (11, 0, 'Menu', '菜单管理', '', '', 1, 1, 9999, 0, '/admin/Sys.Base/menu', '', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1);
-INSERT INTO `cd_menu` VALUES (12, 11, 'Action', '方法管理', '', '', 1, 0, 12, 0, '', '', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1);
-INSERT INTO `cd_menu` VALUES (13, 11, 'Field', '字段管理', '', '', 0, 0, 13, 0, '', '', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1);
-INSERT INTO `cd_menu` VALUES (19, 9, 'Secrect', '秘钥管理', '', '', 0, 1, 19, 0, '/admin/Sys.Base/secrect', 'el-icon-s-tools', NULL, 1, 0, NULL, 'mysql', 2, 0, NULL, NULL, NULL, 0, 0, 1);
-INSERT INTO `cd_menu` VALUES (104, 11, 'Actionremarks', '版本记录', 'id', 'action_remarks', 1, 0, 104, 1, '', NULL, NULL, 1, 0, 0, 'mysql', 1, 0, '', '', NULL, 0, 0, 1);
-INSERT INTO `cd_menu` VALUES (179, 2, 'MyConfig', '系统配置', '', '', 0, 1, 179, 0, '', 'el-icon-cpu', NULL, 1, 0, 0, 'mysql', 1, 0, '', '', NULL, 0, 0, 1);
+INSERT INTO `cd_menu` VALUES (1, 0, '', '控制台', '', '', 0, 1, 1, 0, '/admin/Index/main.html', 'el-icon-platform-eleme', NULL, 1, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0, 0, 1, 0);
+INSERT INTO `cd_menu` VALUES (2, 0, 'Config', '站长配置', NULL, NULL, NULL, 1, 1000, NULL, NULL, 'fas fa-database', NULL, 1, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0, 0, 1, 0);
+INSERT INTO `cd_menu` VALUES (3, 2, 'Baseconfig', '基本配置', 'id', 'base_config', 1, 1, 1, 1, NULL, NULL, NULL, 1, NULL, NULL, 'mysql', NULL, 0, NULL, '', NULL, 0, 0, 1, 0);
+INSERT INTO `cd_menu` VALUES (4, 2, 'Uploadconfig', '缩略图配置', 'id', 'upload_config', 1, 1, 2, 1, NULL, 'el-icon-camera-solid', NULL, 1, NULL, NULL, 'mysql', 1, 0, NULL, '', NULL, 0, 0, 1, 0);
+INSERT INTO `cd_menu` VALUES (5, 0, 'System', '系统管理', '', '', 0, 1, 1001, 0, '', 'fas fa-user-cog', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0);
+INSERT INTO `cd_menu` VALUES (6, 5, 'Adminuser', '用户管理', 'user_id', 'admin_user', 1, 1, 6, 1, '', 'el-icon-user-solid', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0);
+INSERT INTO `cd_menu` VALUES (7, 5, 'Role', '角色管理', 'role_id', 'role', 1, 1, 7, 1, '', 'el-icon-s-check', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0);
+INSERT INTO `cd_menu` VALUES (8, 5, 'Log', '日志管理', 'id', 'log', 1, 1, 8, 1, '', 'el-icon-s-promotion', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0);
+INSERT INTO `cd_menu` VALUES (9, 0, 'Tool', '工具管理', '', '', 1, 1, 1002, 0, '', 'dripicons-gear', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0);
+INSERT INTO `cd_menu` VALUES (10, 9, 'Application', '应用管理', '', '', 0, 1, 10, 0, '/admin/Sys.Base/applicationList', 'el-icon-s-shop', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0);
+INSERT INTO `cd_menu` VALUES (11, 0, 'Menu', '菜单管理', '', '', 1, 1, 9999, 0, '/admin/Sys.Base/menu', '', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0);
+INSERT INTO `cd_menu` VALUES (12, 11, 'Action', '方法管理', '', '', 1, 0, 12, 0, '', '', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0);
+INSERT INTO `cd_menu` VALUES (13, 11, 'Field', '字段管理', '', '', 0, 0, 13, 0, '', '', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0);
+INSERT INTO `cd_menu` VALUES (19, 9, 'Secrect', '秘钥管理', '', '', 0, 1, 19, 0, '/admin/Sys.Base/secrect', 'el-icon-s-tools', NULL, 1, 0, NULL, 'mysql', 2, 0, NULL, NULL, NULL, 0, 0, 1, 0);
+INSERT INTO `cd_menu` VALUES (104, 11, 'Actionremarks', '版本记录', 'id', 'action_remarks', 1, 0, 104, 1, '', NULL, NULL, 1, 0, 0, 'mysql', 1, 0, '', '', NULL, 0, 0, 1, 0);
+INSERT INTO `cd_menu` VALUES (179, 2, 'MyConfig', '系统配置', '', '', 0, 1, 179, 0, '', 'el-icon-cpu', NULL, 1, 0, 0, 'mysql', 1, 0, '', '', NULL, 0, 0, 1, 0);
 
 -- ----------------------------
 -- Table structure for cd_role
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_role`;
 CREATE TABLE `cd_role`  (
-  `role_id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
-  `name` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '分组名称',
-  `status` tinyint NULL DEFAULT NULL COMMENT '状态',
-  `pid` smallint NULL DEFAULT NULL COMMENT '所属父类',
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '描述',
-  `access` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '权限节点',
-  PRIMARY KEY (`role_id`) USING BTREE
+                            `role_id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
+                            `name` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '分组名称',
+                            `status` tinyint NULL DEFAULT NULL COMMENT '状态',
+                            `pid` smallint NULL DEFAULT NULL COMMENT '所属父类',
+                            `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '描述',
+                            `access` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '权限节点',
+                            PRIMARY KEY (`role_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 60 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -542,11 +527,11 @@ INSERT INTO `cd_role` VALUES (1, '超级管理员', 1, 0, '超级管理员', '')
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_secrect`;
 CREATE TABLE `cd_secrect`  (
-  `secrect_id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
-  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `appid` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'appid',
-  PRIMARY KEY (`secrect_id`) USING BTREE
+                               `secrect_id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
+                               `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+                               `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+                               `appid` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'appid',
+                               PRIMARY KEY (`secrect_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -560,14 +545,14 @@ INSERT INTO `cd_secrect` VALUES (2, 'secrect', '', NULL);
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_upload_config`;
 CREATE TABLE `cd_upload_config`  (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
-  `title` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '配置名称',
-  `upload_replace` tinyint NULL DEFAULT NULL COMMENT '覆盖同名文件',
-  `thumb_status` tinyint NULL DEFAULT NULL COMMENT '缩图开关',
-  `thumb_width` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '缩放宽度',
-  `thumb_height` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '缩放高度',
-  `thumb_type` smallint NULL DEFAULT NULL COMMENT '缩图方式',
-  PRIMARY KEY (`id`) USING BTREE
+                                     `id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
+                                     `title` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '配置名称',
+                                     `upload_replace` tinyint NULL DEFAULT NULL COMMENT '覆盖同名文件',
+                                     `thumb_status` tinyint NULL DEFAULT NULL COMMENT '缩图开关',
+                                     `thumb_width` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '缩放宽度',
+                                     `thumb_height` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '缩放高度',
+                                     `thumb_type` smallint NULL DEFAULT NULL COMMENT '缩图方式',
+                                     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '缩略图配置' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------

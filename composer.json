@@ -41,7 +41,8 @@
         "setasign/fpdi": "2.6.0",
         "endroid/qr-code": "1.9.3",
         "topthink/think-worker": "^4.0",
-        "setasign/fpdf": "1.8.6"
+        "setasign/fpdf": "1.8.6",
+        "elasticsearch/elasticsearch": "^8.0"
     },
     "require-dev": {
         "symfony/var-dumper": ">=4.2"

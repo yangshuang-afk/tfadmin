@@ -3,6 +3,7 @@
 namespace app\admin\controller\Sys;
 
 use app\admin\model\Baseconfig as BaseconfigModel;
+use app\admin\service\Elasticsearch as EsService;
 use think\exception\ValidateException;
 use app\admin\controller\Sys\Build;
 use app\admin\controller\Sys\model\Application;
@@ -11,6 +12,7 @@ use app\admin\controller\Sys\model\Menu;
 use app\admin\controller\Sys\model\Action;
 use app\admin\controller\Admin;
 use think\facade\Db;
+use think\facade\Log;
 
 class Base extends Admin
 {
@@ -19,6 +21,13 @@ class Base extends Admin
     private string $url = 'http://tfadmin.tiefen.net';
     private string $groupTableSuffix = "_tf_approval_group";
     private string $flowTableSuffix = "_tf_approval_flow";
+    
+    /**
+     * Elasticsearch服务实例
+     * @var EsService|null
+     */
+    private $esService = null;
+    
     
     public function initialize() {
         parent::initialize();
@@ -165,7 +174,6 @@ class Base extends Admin
         $res = $this->curlRequest($this->url . '/produce/createApp/buildCode', 'POST', $info);
         
         $res = json_decode($res, true);
-        
         if ($res['status'] == 411) {
             throw new ValidateException($res['msg']);
         }
@@ -323,6 +331,15 @@ class Base extends Admin
     //方法列表直接修改操作
     public function updateMenuExt() {
         $data = $this->request->post();
+        // es验证
+        if (isset($data['enable_es']) && !empty($data['enable_es'])) {
+            if (empty(config('my.esdb_hostname'))
+                || empty(config('my.esdb_username'))
+                || empty(config('my.esdb_password'))) {
+                throw new ValidateException("请在 控制台-配置管理-系统配置 中配置es相关信息");
+            }
+        }
+        
         try {
             $res = Menu::update($data);
         } catch (\Exception $e) {
@@ -453,6 +470,7 @@ class Base extends Admin
                 ->order('sortid asc')
                 ->paginate(['list_rows' => $limit, 'page' => $page])
                 ->toArray();
+            
             $data['status'] = 200;
             $data['data'] = $res;
             $data['typeField'] = Config::fieldList();
@@ -822,8 +840,10 @@ class Base extends Admin
                 'action_show' => 1
             ])
                 ->order('sortid asc')
-                ->paginate(['list_rows' => $limit, 'page' => $page]);
-            
+                ->paginate([
+                    'list_rows' => $limit,
+                    'page' => $page
+                ]);
             $data['data'] = $res;
             $data['status'] = 200;
             $data['actionList'] = Config::actionList();
@@ -837,12 +857,12 @@ class Base extends Admin
     public function getPostField() {
         $menu_id = $this->request->post('menu_id');
         $menuInfo = Menu::find($menu_id);
-        $list = [];
         // 审批流相关数据
         $flowMenu_id = 0;
         $groupFields = [];
         $flowTableList = [];
         
+        $list = [];
         $fieldlist = Field::field('type,field,title,post_status')->where('menu_id', $menu_id)->order('sortid asc')->select()->toArray();
         foreach ($fieldlist as $k => $v) {
             if ($v['post_status'] == 1) {
@@ -859,9 +879,9 @@ class Base extends Admin
             ->field('controller_name')
             ->select()
             ->toArray();
-        
-        $with_join = [];
         $actionList = Action::where('menu_id', $menu_id)->select();
+        $with_join = [];
+        
         foreach ($actionList as $v) {
             if ($v['with_join'] && in_array($v['type'], [2, 3])) {
                 foreach (json_decode($v['with_join'], true) as $n) {
@@ -871,7 +891,6 @@ class Base extends Admin
                     }
                 }
             }
-            
             if ($v['type'] == 57) {
                 $v_other_config = json_decode($v['other_config'], true);
                 $flowMenu_id = $v_other_config['flow_table'];
@@ -919,7 +938,6 @@ class Base extends Admin
             'tab_fields' => $tab_fields,
             'tableList' => $tableList,
             'sms_list' => Config::sms_list(),
-            
             'flowTableList' => $flowTableList,
             'groupFields' => $groupFields,
         ]);
@@ -931,18 +949,45 @@ class Base extends Admin
         
         $this->validate($data, \app\admin\controller\Sys\validate\Action::class);
         
+        $with_join_feilds = [];
         if ($data['with_join']) {
             foreach ($data['with_join'] as $k => $v) {
+                if ($v['_table_fields']) unset($data['with_join'][$k]['_table_fields']);
                 $menuInfo = Menu::field('connect,table_name')->where('controller_name', $v['relative_table'])->find();
                 $data['with_join'][$k]['table_name'] = $menuInfo['table_name'];
                 $data['with_join'][$k]['connect'] = $menuInfo['connect'];
+                
+                $with_menu = Menu::where('controller_name', $v['relative_table'])->find();
+                foreach ($v['fields'] as $with_join_field) {
+                    $filed_detail = Field::where([
+                        'menu_id' => $with_menu['menu_id'],
+                        'field' => $with_join_field,
+                    ])
+                        ->find();
+                    // 确保转换为数组
+                    if ($filed_detail instanceof \think\Model) {
+                        $field_data = $filed_detail->toArray();
+                    } else {
+                        $field_data = (array)$filed_detail;
+                    }
+                    unset($field_data['id']);
+                    $field_data['menu_id'] = $data['menu_id'];
+                    $field_data['sortid'] = 99999;
+                    $field_data['post_status'] = 0;
+                    $field_data['create_table_field'] = 0;
+                    $field_data['belong_table'] = $with_menu['table_name'];
+                    $field_data['field'] = lcfirst(str_replace('_', '', ucwords($v['fk'], '_'))) . "__" . $field_data['field'];
+                    $with_join_feilds[] = $field_data;
+                }
             }
         }
+        
         // 处理超级页面数据
         if ($data['type'] == 55) { // 55是超级页面类型
             $data['q_template'] = $data['q_template'] ?? '';
             $data['h_php'] = $data['h_php'] ?? '';
         }
+        
         
         /**
          * 审批事件验证
@@ -1005,6 +1050,29 @@ class Base extends Admin
             
             if ($res->id) {
                 Action::update(['id' => $res->id, 'sortid' => $res->id]);
+                
+                
+                $actionInfo = db("action")
+                    ->where('id', $res->id)
+                    ->find();
+                // 数据列表同步到详情
+                if ($actionInfo['type'] == 1) {
+                    if (!empty($with_join_feilds)) {
+                        (new Field)->saveAll($with_join_feilds);
+                    }
+                    
+                    $detail_ids = Action::where([
+                        'type' => 5,
+                        'menu_id' => $actionInfo['menu_id']
+                    ])
+                        ->whereNotNull('with_join')
+                        ->where('with_join', '<>', '')
+                        ->column('id');
+                    if (!empty($detail_ids)) {
+                        Action::whereIn('id', $detail_ids)->update(['with_join' => $data['with_join']]);
+                    }
+                }
+                
                 
                 if ($data['type'] == 20) {
                     $menuInfo = db("menu")
@@ -1071,13 +1139,40 @@ class Base extends Admin
         $data = $this->request->post();
         $this->validate($data, \app\admin\controller\Sys\validate\Action::class);
         
+        $with_join_feilds = [];
         if ($data['with_join']) {
             foreach ($data['with_join'] as $k => $v) {
+                if ($v['_table_fields']) unset($data['with_join'][$k]['_table_fields']);
                 $menuInfo = Menu::field('connect,table_name')->where('controller_name', $v['relative_table'])->find();
                 $data['with_join'][$k]['table_name'] = $menuInfo['table_name'];
                 $data['with_join'][$k]['connect'] = $menuInfo['connect'];
+                $with_menu = Menu::where('controller_name', $v['relative_table'])->find();
+                foreach ($v['fields'] as $with_join_field) {
+                    $filed_detail = Field::where([
+                        'menu_id' => $with_menu['menu_id'],
+                        'field' => $with_join_field,
+                    ])
+                        ->find();
+                    // 确保转换为数组
+                    if ($filed_detail instanceof \think\Model) {
+                        $field_data = $filed_detail->toArray();
+                    } else {
+                        $field_data = (array)$filed_detail;
+                    }
+                    unset($field_data['id']);
+                    $field_data['search_type'] = $with_join_field['search_type'];
+                    $field_data['list_show'] = $with_join_field['list_show'];
+                    $field_data['menu_id'] = $data['menu_id'];
+                    $field_data['sortid'] = 99999;
+                    $field_data['post_status'] = 0;
+                    $field_data['create_table_field'] = 0;
+                    $field_data['belong_table'] = $with_menu['table_name'];
+                    $field_data['field'] = lcfirst(str_replace('_', '', ucwords($v['fk'], '_'))) . "__" . $field_data['field'];
+                    $with_join_feilds[] = $field_data;
+                }
             }
         }
+        
         $filterField = [];
         if (!empty($data['tree_config'])) {
             foreach ($data['list_filter'] as $v) {
@@ -1131,10 +1226,48 @@ class Base extends Admin
         $data['other_config'] = json_encode($data['other_config']);
         
         try {
+            $actionInfo = db("action")->where('id', $data['id'])->find();
+            $old_with_joins = json_decode($actionInfo['with_join'], true);
+            
+            $delete_field_ids = [];
+            foreach ($old_with_joins as $old_with_join) {
+                foreach ($old_with_join['fields'] as $del_field) {
+                    $with_menu = Menu::where('controller_name', $old_with_join['relative_table'])->find();
+                    $delete_field_id = Field::where(
+                        [
+                            'field' => lcfirst(str_replace('_', '', ucwords($with_menu['table_name'], '_'))) . "__" . $del_field['field'],
+                            'menu_id' => $actionInfo['menu_id'],
+                            'create_table_field' => 0,
+                        ]
+                    )
+                        ->value('id');
+                    if ($delete_field_id) $delete_field_ids[] = $delete_field_id;
+                }
+            }
+            
             $res = Action::update($data);
+            
+            // 数据列表同步到详情
+            if ($actionInfo['type'] == 1) {
+                // 删除原虚拟字段
+                if (!empty($delete_field_ids)) (new Field)->whereIn('id', $delete_field_ids)->delete();
+                // 创建字段
+                if (!empty($with_join_feilds)) (new Field)->saveAll($with_join_feilds);
+                $detail_ids = Action::where(
+                    [
+                        'type' => 5,
+                        'menu_id' => $actionInfo['menu_id'],
+                    ])
+                    ->column('id');
+                if (!empty($detail_ids)) {
+                    Action::whereIn('id', $detail_ids)->update(['with_join' => $data['with_join']]);
+                }
+            }
+            
             if ($data['type'] == 20) {
-                $actionInfo = db("action")->where('id', $data['id'])->find();
-                $menuInfo = db("menu")->where('menu_id', $actionInfo['menu_id'])->find();
+                $menuInfo = db("menu")
+                    ->where('menu_id', $actionInfo['menu_id'])
+                    ->find();
                 $connect = $menuInfo['connect'] ? $menuInfo['connect'] : config('database.default');
                 $delete_field = !is_null(config('my.delete_field')) ? config('my.delete_field') : 'delete_time';
                 $deleteFieldStatus = $this->getFieldStatus(config('database.connections.' . $connect . '.prefix') . $menuInfo['table_name'], $delete_field, $connect);
@@ -1263,6 +1396,7 @@ class Base extends Admin
         /**
          * 删除关联审核流
          */
+        $fieldDeleteList = [];
         $flow = Action::where($data)->find();
         if (in_array($flow['type'], [57, 60])) {
             $flow_list = Action::where("action_pid", $flow['id'])
@@ -1477,7 +1611,6 @@ class Base extends Admin
         
         return json(['status' => 200]);
     }
-    
     
     //根据流程表名获取字段列表
     public function getFlowTableFields() {
@@ -1718,7 +1851,7 @@ class Base extends Admin
     
     //获取菜单列表
     private function getMenu($app_id) {
-        $field = 'menu_id,pid,title,controller_name,create_code,create_table,table_name,status,sortid';
+        $field = 'menu_id,pid,title,controller_name,create_code,create_table,table_name,status,sortid,enable_es';
         $list = Menu::field($field)
             ->where(['app_id' => $app_id])
             ->where('menu_show', 1)
@@ -1728,7 +1861,6 @@ class Base extends Admin
         return _generateListTree($list, 0, ['menu_id', 'pid']);
     }
     
-    
     //获取上传配置列表
     public function getUploadList() {
         $appid = $this->request->post('app_id');
@@ -1737,18 +1869,16 @@ class Base extends Admin
         return json(['status' => 200, 'data' => $list, 'app_type' => $app_type]);
     }
     
-    
     //生成
     public function create() {
         $menu_id = $this->request->post('menu_id');
-        $type = $this->request->post('type');
-        if ($this->createCode($menu_id, $type)) {
+        if ($this->createCode($menu_id)) {
             return json(['status' => 200]);
         }
     }
     
     //生成
-    private function createCode($menu_id, $type, $tf_flow_group = []) {
+    private function createCode($menu_id, $tf_flow_group = []) {
         $menuInfo = Menu::find($menu_id)->toArray();
         
         if (!$menuInfo['create_code']) {
@@ -1757,7 +1887,6 @@ class Base extends Admin
         
         $fieldList = Field::where('menu_id', $menu_id)->order('sortid asc')->select()->toArray();
         $actionList = Action::where('menu_id', $menu_id)->order('sortid asc')->select()->toArray();
-        
         $application = Application::where('app_id', $menuInfo['app_id'])->find()->toArray();
         
         $rootPath = app()->getRootPath();
@@ -1803,7 +1932,6 @@ class Base extends Admin
                 ->order('menu_id desc')
                 ->find();
             $data['flow_field'] = Field::where('menu_id', $data['flow_menu']['menu_id'])->select()->toArray();
-            
             $data['group_field'] = Db::name('field')
                 ->where(['menu_id' => $data['flow_menu']['menu_id'], 'type' => 2])
                 ->whereNotNull('sql')
@@ -1814,9 +1942,10 @@ class Base extends Admin
         }
         $data['tf_flow_group'] = $tf_flow_group;
         
+        // 有没有审批流
+        $approval_flow = Action::where(['menu_id' => $menu_id, 'type' => 60])->find();
         
         $data['sign'] = md5(md5(json_encode($data, JSON_UNESCAPED_UNICODE) . $secrect['secrect']));
-        
         $data['domain'] = $_SERVER['HTTP_HOST'];
         $data['base_config'] = Db::name('base_config')->column('data', 'name');
         $data['menuInfoPid'] = Db::name('menu')->where('menu_id', $data['menuInfo']['pid'])->find();
@@ -1825,6 +1954,35 @@ class Base extends Admin
         $res = str_replace("<el-table-column", "<el-table-column header-align='center'", $res);
         $ret = $res;
         $res = json_decode($res, true);
+        $access53 = [];
+        $access54 = [];
+        foreach ($data['actionList'] as $actionListItem1) {
+            if ($actionListItem1['type'] == 53) {
+                $caozuo_field = $actionListItem1['fields'];
+                $ex_caozuo_field = $actionListItem1['sql'];
+                $access53[] = '"/' . $application['app_dir'] . '/' . $menuInfo['controller_name'] . '/' . $actionListItem1['action_name'] . '.html"';
+            }
+            if ($actionListItem1['type'] == 54) {
+                $access54[] = '"/' . $application['app_dir'] . '/' . $menuInfo['controller_name'] . '/' . $actionListItem1['action_name'] . '.html"';
+            }
+        }
+        
+        $access = array_unique(array_merge($access53, $access54));
+        $access = implode(',', $access);
+        $replace = "if(!in_array(session('admin.role_id'),[1]) && empty(array_intersect(session('admin.access'),[" . $access . "]))){";
+        if (!empty($access53)) {
+            $replace_end = $replace;
+            $access = $access53;
+            $access = implode(',', $access);
+            $replace = "if(!in_array(session('admin.role_id'),[1]) && !empty(array_intersect(session('admin.access'),[" . $access . "]))){\n\t\t\t\t\$query->whereRaw('";
+            foreach ($data['fieldList'] as $fieldList) {
+                if ($fieldList['type'] == 30) {
+                    $replace .= "{$fieldList['field']} = '.session('admin.{$fieldList['field']}').' or ";
+                }
+            }
+            $replace .= "FIND_IN_SET('.session('admin.{$ex_caozuo_field}').', {$caozuo_field})');\n\t\t\t}\n\t\t\t" . $replace_end;
+        }
+        $res['controller']['content'] = str_replace("if(!in_array(session('admin.role_id'),[1])){", $replace, $res['controller']['content']);
         
         $res['jscomponent'][2]['content'] = str_replace("ismobile()?'90px':'16%'", "ismobile()?'90px':'88px'", $res['jscomponent'][2]['content']);
         $res['jscomponent'][3]['content'] = str_replace("ismobile()?'90px':'16%'", "ismobile()?'90px':'88px'", $res['jscomponent'][3]['content']);
@@ -1949,7 +2107,7 @@ class Base extends Admin
                 Db::rollback();
                 throw new ValidateException ($e->getMessage());
             }
-            if ($this->createCode($res->menu_id, $data['type'])) {
+            if ($this->createCode($res->menu_id)) {
                 return json(['status' => 200]);
             }
         } else {
@@ -1970,24 +2128,23 @@ class Base extends Admin
                 }
             }
         }
-        
         return $with_join;
     }
     
-    
     private function getExtendFields($val) {
+        $extend_fields = array_column($val['fields'], 'field');
         $menuInfo = Menu::field('menu_id,table_name')->where('controller_name', $val['relative_table'])->find();
         $fieldList = Field::where('menu_id', $menuInfo['menu_id'])->order('sortid asc')->select()->toArray();
         foreach ($fieldList as $k => $v) {
             $fieldList[$k]['belong_table'] = $val['relative_table'];
             $fieldList[$k]['table_name'] = $menuInfo['table_name'];
-            if (!in_array($v['field'], $val['fields'])) {
+            if (!in_array($v['field'], $extend_fields)) {
                 unset($fieldList[$k]);
             }
         }
+        $fieldList = array_values($fieldList);
         return $fieldList;
     }
-    
     
     //检测cms模型字段
     public function checkCmsField() {
@@ -2025,7 +2182,6 @@ class Base extends Admin
         return json($data);
     }
     
-    
     //获取应用名 以及数据表名称
     public function getAppType() {
         $appid = $this->request->post('app_id');
@@ -2049,7 +2205,6 @@ class Base extends Admin
         }
         return $controller_name;
     }
-    
     
     //获取秘钥信息
     private function getSecrect() {
@@ -2139,7 +2294,6 @@ class Base extends Admin
         return $response;
     }
     
-    
     //多级控制器 获取控制其名称
     function getRouteName($controller_name) {
         if ($controller_name && strpos($controller_name, '/') > 0) {
@@ -2147,7 +2301,6 @@ class Base extends Admin
         }
         return $controller_name;
     }
-    
     
     // 更新备注内容杨爽
     public function updateActionRemark() {
@@ -2192,7 +2345,6 @@ class Base extends Admin
             return json(['status' => 500, 'msg' => $e->getMessage()]);
         }
     }
-    
     
     /**
      * 获取备注版本记录
@@ -2320,9 +2472,7 @@ class Base extends Admin
         }
     }
     
-    
     /**************************************************************************/
-    
     /**
      * 创建审批流子表和相关配置
      */
@@ -2365,7 +2515,7 @@ class Base extends Admin
             // 5. 审批记录,审核数据
             $this->insertApprovalActions($connect, $data, $menuInfo, $controllerName, $pk, $application);
             // 6. 代码生成
-            if (!$this->createCode($newMenuId, 2)) {
+            if (!$this->createCode($newMenuId)) {
                 // 回滚事务
                 Db::rollback();
                 throw new ValidateException("审批流创建失败");
@@ -2510,7 +2660,6 @@ class Base extends Admin
         Action::create($auditDataAction);
         Action::create($approvalRecordAction);
     }
-    
     
     /**
      * 1. 创建子表
@@ -3159,11 +3308,6 @@ class Base extends Admin
             "improve_zhi" => "",
             "improve_color" => null,
             "list_background_config" => "[]",
-            // "tx_config" =>json_encode([[
-            //     "tx_tiaojian" => 3,
-            //     "tx_zhi" => "{:session('{$application['app_dir']}.{$application['pk']}')}",
-            //     "tx_color" => "#f56c6c",
-            // ]], 256),
             "tx_config" => "[]",
             "field_show" => 0,
         ];
@@ -3401,8 +3545,8 @@ class Base extends Admin
             
             // 9. 代码生成
             if (
-                !$this->createCode($groupMenuId, 2)
-                || !$this->createCode($flowMenuId, 2, [
+                !$this->createCode($groupMenuId)
+                || !$this->createCode($flowMenuId, [
                     'flow_group_field' => $flow_group_field,
                     'group_table_id' => $create_res['group_table'] . "_id"
                 ])
@@ -4622,6 +4766,106 @@ class Base extends Admin
             $application['login_fields'] = 'name|pwd';
         }
         return $application;
+    }
+    /**************************************************************************/
+    
+    /**************************************************************************/
+    /**
+     * @return \think\response\Json|void
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @desc      同步更新
+     * @author    JiaWei
+     * @email     975162853@qq.com
+     * @date      2026/1/10
+     * @time      13:43
+     */
+    public function esSynchronization() {
+        $param = $this->request->param();
+        $menu = Menu::find($param['id']);
+        $connect = $menu['connect'] ?: config('database.default');
+        $prefix = config('database.connections.' . $connect . '.prefix');
+        $esIndex = $prefix . $menu['table_name'];
+        $tabel_pk = $menu['pk'];
+        if ($this->initEsService($esIndex)) {
+            $this->esService->deleteIndex();
+            return $this->esService->runEsScriptWithShellExec($esIndex, $tabel_pk);
+        }
+    }
+    
+    /**
+     * @return \think\response\Json|\think\response\View
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @desc      查看es同步日志
+     * @author    JiaWei
+     * @email     975162853@qq.com
+     * @date      2026/1/10
+     * @time      13:43
+     */
+    public function esLog() {
+        if ($this->request->isPost()) {
+            $param = $this->request->param();
+            $menu = Menu::find($param['id']);
+            $connect = $menu['connect'] ?: config('database.default');
+            $prefix = config('database.connections.' . $connect . '.prefix');
+            $esIndex = $prefix . $menu['table_name'];
+            if ($this->initEsService($esIndex)) {
+                return $this->esService->viewLog($esIndex);
+            }
+        }
+        
+        return view('controller/Sys/view/es_log');
+    }
+    
+    /**
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @desc      检查是否开启es
+     * @author    JiaWei
+     * @email     975162853@qq.com
+     * @date      2026/1/10
+     * @time      13:43
+     */
+    public function esCheck() {
+        $param = $this->request->param();
+        if (!isset($param['id']) || empty($param['id'])) {
+            throw new ValidateException("参数错误");
+        }
+        $menu = Menu::find($param['id']);
+        if ($menu['enable_es'] != 1) {
+            throw new ValidateException("未启用启ES,无法同步");
+        }
+        return json(['status' => 200]);
+    }
+    
+    /**
+     * 初始化ES服务
+     * @return bool
+     */
+    private function initEsService($esIndex) {
+        // es验证
+        if (empty(config('my.esdb_hostname'))
+            || empty(config('my.esdb_username'))
+            || empty(config('my.esdb_password'))) {
+            throw new ValidateException("请在 控制台-配置管理-系统配置 中配置es相关信息");
+        }
+        if ($this->esService === null) {
+            try {
+                $this->esService = new EsService($esIndex);
+                return true;
+            } catch (\Exception $e) {
+                Log::error('ES服务初始化失败: ' . $e->getMessage());
+                $this->esService = false;
+                return false;
+            }
+        }
+        
+        return $this->esService !== false;
     }
     /**************************************************************************/
 }

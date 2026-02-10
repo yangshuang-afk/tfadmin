@@ -1,0 +1,14 @@
+{
+    "php_ext":"fileinfo,opcache,redis,imagemagick",
+    "chmod":[
+        {"mode":755,"path":"/tfadmin-main"}
+    ],
+    "success_url":"/admin/login/index.html",
+    "php_versions":"80,82",
+    "db_config":"tfadmin-main/config/database.php",
+    "admin_username":"admin",
+    "admin_password":"admin888",
+    "run_path":"/public",
+    "remove_file":["tfadmin-main/.gitignore","tfadmin-main/.htaccess"],
+    "enable_functions":["shell_exec"]
+}

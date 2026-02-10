@@ -418,10 +418,11 @@
                     this.loading = false
                     this.app_title_name = this.app_name + '-' + this.menu_title + ' 字段列表 (支持拖动排序)';
                     const list_data = [];
+                    
                     if (this.list.length > 0) {
                         this.list.forEach(item => {
                             let list_item = {...item};
-                            if (item.other_config) {
+                            if (item.other_config &&  item.other_config != '' && item.other_config != null && item.other_config != 'null') {
                                 list_item.other_config = JSON.parse(item.other_config)
                             } else {
                                 list_item.other_config = {}
@@ -430,7 +431,6 @@
                             list_data.push(list_item);
                         })
                     }
-
                     this.list = list_data;
                 })
             },

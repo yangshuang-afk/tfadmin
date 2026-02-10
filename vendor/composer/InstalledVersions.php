@@ -62,6 +62,24 @@ private static $installed = array (
       ),
       'reference' => '3fc6a7ab6d3853c0f4e2922539b56cc37ef361cd',
     ),
+    'elastic/transport' => 
+    array (
+      'pretty_version' => 'v8.11.0',
+      'version' => '8.11.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '1d476af5dc0b74530d59b67d5dd96ee39768d5a4',
+    ),
+    'elasticsearch/elasticsearch' => 
+    array (
+      'pretty_version' => 'v8.17.0',
+      'version' => '8.17.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '6cd0fe6a95fdb7198a2795624927b094813b3d8b',
+    ),
     'endroid/qr-code' => 
     array (
       'pretty_version' => '1.9.3',
@@ -233,6 +251,24 @@ private static $installed = array (
       ),
       'reference' => '4e1b88d21c69391150ace211e9eaf05810858d0b',
     ),
+    'open-telemetry/api' => 
+    array (
+      'pretty_version' => '1.0.3',
+      'version' => '1.0.3.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '87de95d926f46262885d0d390060c095af13e2e5',
+    ),
+    'open-telemetry/context' => 
+    array (
+      'pretty_version' => '1.0.2',
+      'version' => '1.0.2.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'e9d254a7c89885e63fd2fde54e31e81aaaf52b7c',
+    ),
     'overtrue/socialite' => 
     array (
       'pretty_version' => '4.11.1',
@@ -250,6 +286,47 @@ private static $installed = array (
       array (
       ),
       'reference' => 'a9235a1d236a1892fccc989bd73008f2fe20094f',
+    ),
+    'php-http/async-client-implementation' => 
+    array (
+      'provided' => 
+      array (
+        0 => '*',
+      ),
+    ),
+    'php-http/client-implementation' => 
+    array (
+      'provided' => 
+      array (
+        0 => '*',
+      ),
+    ),
+    'php-http/discovery' => 
+    array (
+      'pretty_version' => '1.20.0',
+      'version' => '1.20.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '82fe4c73ef3363caed49ff8dd1539ba06044910d',
+    ),
+    'php-http/httplug' => 
+    array (
+      'pretty_version' => '2.4.0',
+      'version' => '2.4.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '625ad742c360c8ac580fcc647a1541d29e257f67',
+    ),
+    'php-http/promise' => 
+    array (
+      'pretty_version' => '1.3.1',
+      'version' => '1.3.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'fc85b1fba37c169a69a07ef0d5a8075770cc1f83',
     ),
     'phpoffice/math' => 
     array (
@@ -358,6 +435,7 @@ private static $installed = array (
       'provided' => 
       array (
         0 => '1.0',
+        1 => '*',
       ),
     ),
     'psr/http-factory' => 
@@ -374,6 +452,7 @@ private static $installed = array (
       'provided' => 
       array (
         0 => '1.0',
+        1 => '*',
       ),
     ),
     'psr/http-message' => 
@@ -390,6 +469,7 @@ private static $installed = array (
       'provided' => 
       array (
         0 => '1.0',
+        1 => '*',
       ),
     ),
     'psr/log' => 
@@ -572,6 +652,24 @@ private static $installed = array (
       array (
       ),
       'reference' => '77fa7995ac1b21ab60769b7323d600a991a90433',
+    ),
+    'symfony/polyfill-php81' => 
+    array (
+      'pretty_version' => 'v1.32.0',
+      'version' => '1.32.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '4a4cfc2d253c21a5ad0e53071df248ed48c6ce5c',
+    ),
+    'symfony/polyfill-php82' => 
+    array (
+      'pretty_version' => 'v1.32.0',
+      'version' => '1.32.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '5d2ed36f7734637dacc025f179698031951b1692',
     ),
     'symfony/process' => 
     array (

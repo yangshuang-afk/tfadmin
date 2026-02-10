@@ -41,7 +41,12 @@ return [
     'gateway_action' => '', // 安全入口操作
     'auth_session_key' => 'login_check', // 认证会话键名
     'auth_session_value' => 1, // 认证会话值
-    'redirect_url' => app()->request->domain() . '/admin/login/index', // 重定向地址
+    'redirect_url' => '/admin/login/index', // 重定向地址
+    
+    // es配置
+    'esdb_hostname' => '', // esurl+端口
+    'esdb_username' => '', // es账号
+    'esdb_password' => '', // es密码
     
     // 腾讯云短信配置
     'tencent_sms_appid' => '', // appiid

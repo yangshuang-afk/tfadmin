@@ -2,10 +2,12 @@
 
 namespace app\admin\controller;
 
+use think\exception\ValidateException;
+
 class MyConfig extends Admin
 {
-    private $oldGatewayConfig = null;
-    private $newGatewayConfig = null;
+    private ?array $oldGatewayConfig = null;
+    private ?array $newGatewayConfig = null;
     
     /**
      * @description 配置表单
@@ -16,6 +18,31 @@ class MyConfig extends Admin
             return view('index');
         } else {
             $configData = $this->request->post();
+            
+            // es连接验证
+            if (!empty(trim($configData['esdb_hostname']))
+                && !empty(trim($configData['esdb_username']))
+                && !empty(trim($configData['esdb_password']))) {
+                $configData['esdb_hostname'] = trim($configData['esdb_hostname']);
+                $configData['esdb_username'] = trim($configData['esdb_username']);
+                $configData['esdb_password'] = trim($configData['esdb_password']);
+                $esClient = false;
+                $es_res = new \app\admin\service\Elasticsearch('cd_application', $configData);
+                // 使用反射读取私有属性
+                $reflection = new \ReflectionClass($es_res);
+                if ($reflection->hasProperty('esClient')) {
+                    // 获取属性
+                    $property = $reflection->getProperty('esClient');
+                    // 设置属性可访问
+                    $property->setAccessible(true);
+                    // 读取属性值
+                    $esClient = $property->getValue($es_res) !== false;
+                }
+                if (!$esClient) {
+                    throw new ValidateException("ES配置有误，请检查ES配置以及ES是否正确安装");
+                }
+            }
+            
             try {
                 // 保存旧的网关配置用于恢复
                 $this->oldGatewayConfig = [
@@ -574,6 +601,11 @@ return [
     'auth_session_key' => '{$this->escapeValue($data['auth_session_key'] ?? 'login_check')}', // 认证会话键名
     'auth_session_value' => {$this->escapeValue($data['auth_session_value'] ?? 1)}, // 认证会话值
     'redirect_url' => '{$this->escapeValue($data['redirect_url'] ?? $domain . '/admin/login/index')}', // 重定向地址
+    
+    // es配置
+    'esdb_hostname' => '{$this->escapeValue($data['esdb_hostname'] ?? '127.0.0.1:9200')}', // esurl+端口
+    'esdb_username' => '{$this->escapeValue($data['esdb_username'] ?? '')}', // es账号
+    'esdb_password' => '{$this->escapeValue($data['esdb_password'] ?? '')}', // es密码
     
     // 腾讯云短信配置
     'tencent_sms_appid' => '{$this->escapeValue($data['tencent_sms_appid'] ?? '')}', // appiid

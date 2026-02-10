@@ -289,10 +289,16 @@ html {
   margin-left: 120px; /* 与方法名称label相同的左侧距离 */
 }
 
-
+/*审批*/
+.no-label-width .el-form-item__label {
+  width: 70px !important;
+  min-width: 0 !important;
+}
+.no-label-width .el-form-item__content {
+    margin-left: 70px !important;
+}
 `;
 document.head.appendChild(style);
-//后台方法添加
 //后台方法添加
 Vue.component('AdminAdd', {
     template: `
@@ -678,7 +684,7 @@ Vue.component('AdminAdd', {
 								</el-select>
 							</el-form-item>
 						</el-row>
-						<el-row v-if="[1,2,3,4,5,7,8,9,10,11,12,17,18,19,20,22].includes(form.type)">
+						<el-row v-if="[1,2,3,4,5,7,8,9,10,11,12,17,18,19,20,22,58].includes(form.type)">
 							<el-form-item label="方法钩子" prop="hook">
                                     <el-row style="margin: 5px 0;">
                                         <div style="display: inline-block; width: 100px;">
@@ -719,42 +725,93 @@ Vue.component('AdminAdd', {
 					</div>
 					<div class="section-content">
 						<el-form-item label="关联模型" prop="with_join">
-							<el-row :gutter="2" v-for="(item,i) in form.with_join" :key="i">
-								<el-col style="margin-left:0px" :span="5">
-									<el-form-item style="margin-bottom:3px !important"  prop="fk">
-										<el-select style="width:100%" v-model="item.fk" filterable placeholder="主表外键">
-											<el-option v-for="(vo,i) in model_fields" :key="i"  :value="vo.field">{{vo.title}}({{vo.field}})</el-option>
-										</el-select>
-									</el-form-item>
-								</el-col>
-								<el-col :span="5">
-									<el-form-item style="margin-bottom:3px !important" prop="relative_table">
-										<el-select style="width:100%" v-model="item.relative_table" filterable placeholder="模型">
-											<el-option v-for="(vo,i) in tableList" :key="i" :value="vo.controller_name">{{vo.controller_name}}</el-option>
-										</el-select>
-									</el-form-item>
-								</el-col>
-								<el-col :span="5">
-									<el-form-item style="margin-bottom:3px !important" prop="pk">
-										<el-select @focus="getTableFields(i)" style="width:100%" v-model="item.pk" filterable placeholder="关联键">
-											<el-option v-for="(vo,i) in table_fields" :key="i"  :value="vo.Field">{{vo.Field}}({{vo.Comment}})</el-option>
-										</el-select>
-									</el-form-item>
-								</el-col>
-								<el-col :span="7">
-									 <el-form-item style="margin-bottom:3px !important" prop="fields">
-										<el-select @focus="getTableFields(i)" style="width:100%" multiple collapse-tags v-model="item.fields" filterable :placeholder="form.type == 1?'关联表查询字段':'操作字段'">
-											<el-option v-for="(vo,i) in table_fields" :key="i"  :value="vo.Field">{{vo.Field}}({{vo.Comment}})</el-option>
-										</el-select>
-									</el-form-item>
-								</el-col>
-								<el-col :span="1">
-									<el-button type="danger" size="mini" style="position:relative;left:5px"  icon="el-icon-close" @click="deleteItem('with_join',i)"></el-button>
-								</el-col>
-							</el-row>
-							<el-button type="success" icon="el-icon-plus" style="padding:5px 7px" :size="size" @click="addItem('with_join')">追加</el-button>
-							<el-button v-if="form.with_join.length > 0" type="warning" icon="el-icon-delete" style="padding:5px 7px" :size="size" @click="clearItem('with_join')">清空</el-button>
+							<div v-for="(item,i) in form.with_join" :key="i" style="margin-bottom:15px;border:1px solid #ebeef5;padding:15px;border-radius:4px;">
+								<!-- 模型基础配置 - 改大并换行 -->
+								<el-row :gutter="10" style="margin-bottom:10px;">
+									<el-col :span="8">
+										<el-form-item style="margin-bottom:3px !important" prop="fk">
+											<el-select style="width:100%" v-model="item.fk" @change="onFkChange(i)" filterable placeholder="主表外键">
+												<el-option v-for="(vo,j) in model_fields" :key="j" :value="vo.field">{{vo.title}}({{vo.field}})</el-option>
+											</el-select>
+										</el-form-item>
+									</el-col>
+									<el-col :span="8">
+										<el-form-item style="margin-bottom:3px !important" prop="relative_table">
+											<el-select style="width:100%" v-model="item.relative_table" @change="onModelChange(i)" filterable placeholder="关联模型">
+												<el-option v-for="(vo,j) in tableList" :key="j" :value="vo.controller_name">{{vo.controller_name}}</el-option>
+											</el-select>
+										</el-form-item>
+									</el-col>
+									<el-col :span="6">
+										<el-form-item style="margin-bottom:3px !important" prop="pk">
+											<el-select style="width:100%" v-model="item.pk" filterable placeholder="关联键">
+												<el-option v-for="(vo,j) in (item._table_fields || [])" :key="j" :value="vo.Field">{{vo.Field}}({{vo.Comment}})</el-option>
+											</el-select>
+										</el-form-item>
+									</el-col>
+									<el-col :span="2">
+										<el-button type="danger" size="mini" icon="el-icon-close" @click="deleteItem('with_join',i)"></el-button>
+									</el-col>
+								</el-row>
+								
+								<!-- 字段配置区域 -->
+								<div v-if="item.relative_table">
+									<el-row :gutter="5" v-for="(field,fIndex) in (item.fields || [])" :key="fIndex" style="margin-bottom:5px;">
+										<el-col :span="6">
+											<el-form-item style="margin-bottom:3px !important">
+												<el-select style="width:100%" v-model="field.field" size="mini" filterable placeholder="选择字段">
+													<el-option v-for="(vo,j) in (item._table_fields || [])" :key="j" :value="vo.Field">{{vo.Field}}({{vo.Comment}})</el-option>
+												</el-select>
+											</el-form-item>
+										</el-col>
+										<el-col :span="6">
+											<el-form-item style="margin-bottom:3px !important">
+												<el-select style="width:100%" v-model="field.list_show" size="mini" filterable placeholder="显示设置">
+													<el-option-group label="显示状态">
+														<el-option key="show_0" label="不显示" :value="0"></el-option>
+													</el-option-group>
+													<el-option-group label="显示位置">
+														<el-option key="show_1" label="居中" :value="2"></el-option>
+														<el-option key="show_2" label="居左" :value="3"></el-option>
+														<el-option key="show_3" label="居右" :value="4"></el-option>
+														<el-option key="show_4" label="换行显示" :value="5"></el-option>
+													</el-option-group>
+												</el-select>
+											</el-form-item>
+										</el-col>
+										<el-col :span="6">
+											<el-form-item style="margin-bottom:3px !important">
+												<el-select style="width:100%" v-model="field.search_type" size="mini" placeholder="搜索设置">
+													<el-option-group label="是否搜索">
+														<el-option key="search_0" label="否" :value="0"></el-option>
+													</el-option-group>
+													<el-option-group label="搜索模式">
+														<el-option key="search_1" label="=" :value="1"></el-option>
+														<el-option key="search_2" label="like" :value="2"></el-option>
+														<el-option key="search_3" label="in" :value="3"></el-option>
+														<el-option key="search_4" label="between" :value="4"></el-option>
+													</el-option-group>
+												</el-select>
+											</el-form-item>
+										</el-col>
+										<el-col :span="4">
+											<el-button type="danger" size="mini" icon="el-icon-close" @click="deleteField(i,fIndex)"></el-button>
+										</el-col>
+									</el-row>
+									
+									<!-- 字段操作按钮 -->
+									<div style="margin-top:10px;">
+										<el-button type="success" icon="el-icon-plus" style="padding:5px 7px;margin-right:5px" :size="size" @click="addField(i)">添加字段</el-button>
+										<el-button v-if="item.fields && item.fields.length > 0" type="warning" icon="el-icon-delete" style="padding:5px 7px" :size="size" @click="clearFields(i)">清空字段</el-button>
+									</div>
+								</div>
+							</div>
+							
+							<!-- 模型操作按钮 -->
+							<el-button type="success" icon="el-icon-plus" style="padding:5px 7px;margin-right:5px" :size="size" @click="addItem('with_join')">追加模型</el-button>
+							<el-button v-if="form.with_join.length > 0" type="warning" icon="el-icon-delete" style="padding:5px 7px" :size="size" @click="clearItem('with_join')">清空模型</el-button>
 						</el-form-item>
+						
 						<el-row v-if="[1,5,11].includes(form.type) && dbtype !== 'mongo'">
 							<el-form-item label="table列表sql" prop="sql">
 								<el-input v-model="form.sql" type="textarea" placeholder="通过sql语句生成table列表"  />
@@ -818,8 +875,8 @@ Vue.component('AdminAdd', {
                 q_template: '<div class="super-page">\n  <h1>自定义页面</h1>\n</div>', // 前端代码
                 h_php: 'public function ygluntan() {\n   if (!$this->request->isPost()){\n     return view(\'ygluntan\');\n   }\n}\n', // 后端PHP代码
                 codeTabActive: 'frontend', // 新增选项卡激活状态
-                // 新增超级页面数据结构结束
                 
+                // 新增超级页面数据结构结束
                 other_config: {
                     export_type: '',
                     hook: [],
@@ -850,25 +907,13 @@ Vue.component('AdminAdd', {
             dbtype: '',
             restaurants: [{'value': 'null'}, {'value': 'not null'}],
             rules: {
-                name: [{
-                        required: true,
-                        message: '方法中文名不能为空',
-                    trigger: 'blur'
-                }],
+                name: [{required: true, message: '方法中文名不能为空', trigger: 'blur'}],
                 action_name: [{
                     required: true,
                     message: '方法英文名不能为空',
                     trigger: 'blur'
-                }, {
-                    pattern: /^[a-zA-Z0-9_]+$/,
-                    message: '仅允许输入字母、数字和下划线',
-                    trigger: 'blur'
-                }],
-                type: [{
-                    required: true,
-                    message: '方法类型不能为空',
-                    trigger: 'blur'
-                }],
+                }, {pattern: /^[a-zA-Z0-9_]+$/, message: '仅允许输入字母、数字和下划线', trigger: 'blur'}],
+                type: [{required: true, message: '方法类型不能为空', trigger: 'blur'}],
             },
         }
     },
@@ -877,7 +922,6 @@ Vue.component('AdminAdd', {
             this.$refs['form'].validate(valid => {
                 if (valid) {
                     this.loading = true
-                    
                     // 新增超级页面安全验证开始
                     if (this.form.type == 55 && !this.validateSuperPage()) {
                         this.loading = false
@@ -885,7 +929,25 @@ Vue.component('AdminAdd', {
                     }
                     // 新增超级页面安全验证结束
                     
-                    axios.post(base_url + '/Sys.Base/createAction', this.form).then(res => {
+                    // 清理数据，去掉不需要的字段
+                    const submitData = JSON.parse(JSON.stringify(this.form));
+                    if (submitData.with_join && Array.isArray(submitData.with_join)) {
+                        submitData.with_join = submitData.with_join.map(item => {
+                            // 只保留需要的字段
+                            const cleanItem = {
+                                fk: item.fk,
+                                relative_table: item.relative_table,
+                                pk: item.pk,
+                                fields: item.fields || []
+                            };
+                            // 可选保留其他字段
+                            if (item.table_name) cleanItem.table_name = item.table_name;
+                            if (item.connect) cleanItem.connect = item.connect;
+                            return cleanItem;
+                        });
+                    }
+                    
+                    axios.post(base_url + '/Sys.Base/createAction', submitData).then(res => {
                         if (res.data.status == 200) {
                             this.$message({message: '操作成功', type: 'success'})
                             this.$emit('refesh_list')
@@ -932,15 +994,15 @@ Vue.component('AdminAdd', {
         
         open() {
             axios.post(base_url + '/Sys.Base/getPostField', {menu_id: this.menuid}).then(res => {
-                this.post_fields = res.data.data
-                this.jump_fields = res.data.jump_field
-                this.tab_fields = res.data.tab_fields
-                this.model_fields = res.data.model_fields
-                this.tableList = res.data.tableList
-                this.dbtype = res.data.dbtype
+                this.post_fields = res.data.data;
+                this.jump_fields = res.data.jump_field;
+                this.tab_fields = res.data.tab_fields;
+                this.model_fields = res.data.model_fields;
+                this.tableList = res.data.tableList;
+                this.dbtype = res.data.dbtype;
+                this.flow_tablelist = res.data?.flowTableList || [];
+                this.group_fields = res.data?.groupFields || [];
                 this.codeTabActive = 'frontend'; // 设置默认激活的选项卡
-                this.flow_tablelist = res.data?.flowTableList || []; // 审批表数据
-                this.group_fields = res.data?.groupFields || []; // 审批组数据
             })
         },
         selectType(val) {
@@ -972,7 +1034,7 @@ Vue.component('AdminAdd', {
                     backend: {language: 'php', code: ''}
                 })
             }
-            // 新增超级页面初始化结
+            // 新增超级页面初始化结束
         },
         getTableFields(i) {
             axios.post(base_url + '/Sys.Base/getTableFields', {controller_name: this.form.with_join[i].relative_table}).then(res => {
@@ -1003,6 +1065,7 @@ Vue.component('AdminAdd', {
                 this.group_fields = res.data.group
             })
         },
+        
         closeForm() {
             this.$emit('update:show', false)
             this.loading = false
@@ -1016,7 +1079,16 @@ Vue.component('AdminAdd', {
             })
         },
         addItem(key) {
-            this.form[key].push({})
+            if (key === 'with_join') {
+                this.form[key].push({
+                    fk: '',
+                    relative_table: '',
+                    pk: '',
+                    fields: []
+                });
+            } else {
+                this.form[key].push({});
+            }
         },
         deleteItem(key, index) {
             this.form[key].splice(index, 1)
@@ -1054,8 +1126,77 @@ Vue.component('AdminAdd', {
                 this.form.other_config.after_hook = ''
             }
         },
+        // 新增关联模型相关方法
+        onFkChange(index) {
+            const item = this.form.with_join[index];
+            item.pk = '';
+            if (item.fields) {
+                item.fields = [];
+            }
+            // 清空缓存字段
+            delete item._table_fields;
+        },
+        
+        onModelChange(index) {
+            const item = this.form.with_join[index];
+            if (item.relative_table) {
+                // 清空相关字段
+                item.pk = '';
+                if (item.fields) {
+                    item.fields = [];
+                }
+                // 清空缓存字段
+                delete item._table_fields;
+                // 加载新模型的字段
+                this.loadModelFields(index);
+            } else {
+                item.pk = '';
+                if (item.fields) {
+                    item.fields = [];
+                }
+                // 清空缓存字段
+                delete item._table_fields;
+            }
+        },
+        
+        loadModelFields(index) {
+            const item = this.form.with_join[index];
+            if (item.relative_table) {
+                axios.post(base_url + '/Sys.Base/getTableFields', {controller_name: item.relative_table}).then(res => {
+                    // 缓存字段列表到_item中（不保存到数据库）
+                    this.$set(item, '_table_fields', res.data.filedList);
+                });
+            }
+        },
+        
+        addField(index) {
+            const item = this.form.with_join[index];
+            if (!item.fields) {
+                this.$set(item, 'fields', []);
+            }
+            item.fields.push({
+                field: '',
+                list_show: 2,
+                search_type: 0
+            });
+        },
+        
+        deleteField(index, fieldIndex) {
+            const item = this.form.with_join[index];
+            if (item.fields && item.fields.length > fieldIndex) {
+                item.fields.splice(fieldIndex, 1);
+            }
+        },
+        
+        clearFields(index) {
+            const item = this.form.with_join[index];
+            if (item.fields) {
+                item.fields = [];
+            }
+        },
     },
 });
+
 
 //后台方法修改
 Vue.component('AdminUpdate', {
@@ -1107,6 +1248,7 @@ Vue.component('AdminUpdate', {
 								</el-form-item>
 							</el-col>
 						</el-row>
+						
 						<el-row v-if="button">
 							<el-form-item label="按钮图标" prop="icon">
 								<el-input v-model="form.icon" placeholder="点击选择图标" clearable>
@@ -1114,6 +1256,7 @@ Vue.component('AdminUpdate', {
 								</el-input>
 							</el-form-item>
 						</el-row>
+						
 						<el-row v-if="form.type == 11">
 							<el-form-item label="导出方式" prop="export_type">
 								<el-select style="width:100%" :size="size" v-model="form.other_config.export_type" clearable  filterable placeholder="请选择导出方式">
@@ -1129,6 +1272,7 @@ Vue.component('AdminUpdate', {
 								</el-form-item>
 							</el-col>
 						</el-row>
+						
 						<el-row v-if="form.type == 15 || form.type == 16 || form.type == 55">
 							<el-form-item label="url参数字段" prop="fields">
 								<el-checkbox-group v-model="form.fields">
@@ -1139,99 +1283,99 @@ Vue.component('AdminUpdate', {
 						
                         <!-- 审批流 -->
                         <el-row v-if="form.type == 57">
-                                <el-col :span="22">
-                                    <el-form-item prop="flow_join" label="设置流程">
-                                        <el-row>
-                                            <el-col :span="5">
-                                                <el-form-item label="关联字段"
-                                                        prop="flow_join"
-                                                        class="no-label-width"
+                            <el-col :span="22">
+                                <el-form-item prop="flow_join" label="设置流程">
+                                    <el-row>
+                                        <el-col :span="5">
+                                            <el-form-item label="关联字段"
+                                                    prop="flow_join"
+                                                    class="no-label-width"
+                                            >
+                                                <el-select
+                                                        style="width:100%"
+                                                        v-model="form.other_config.flow_join"
+                                                        filterable
+                                                        clearable
+                                                        placeholder="选择关联字段"
                                                 >
-                                                    <el-select
-                                                            style="width:100%"
-                                                            v-model="form.other_config.flow_join"
-                                                            filterable
-                                                            clearable
-                                                            placeholder="选择关联字段"
-                                                    >
-                                                        <el-option v-for="(vo,i) in jump_fields"
+                                                    <el-option v-for="(vo,i) in jump_fields"
+                                                        :key="i"
+                                                        :label="vo.title"
+                                                        :value="vo.field"
+                                                    ></el-option>
+                                                </el-select>
+                                            </el-form-item>
+                                        </el-col>
+                                        <el-col :span="6" style="margin-left: 15px">
+                                            <el-form-item label="关联流程"
+                                                    prop="flow_table"
+                                                    class="no-label-width"
+                                            >
+                                                <el-select
+                                                        style="width:100%"
+                                                        v-model="form.other_config.flow_table"
+                                                        @change="onFlowTableChange"
+                                                        filterable
+                                                        clearable
+                                                        placeholder="选择关联流程表"
+                                                >
+                                                    <el-option v-for="(vo,i) in flow_tablelist"
+                                                        :key="i"
+                                                        :label="vo.title"
+                                                        :value="vo.menu_id"
+                                                    ></el-option>
+                                                </el-select>
+                                            </el-form-item>
+                                        </el-col>
+                                        <el-col :span="5" style="margin-left: 15px">
+                                            <el-form-item label="流程字段"
+                                                    prop="flow_filed"
+                                                    class="no-label-width"
+                                            >
+                                                <el-select
+                                                        style="width:100%"
+                                                        v-model="form.other_config.flow_filed"
+                                                        :disabled="true"
+                                                        filterable
+                                                        placeholder="选择关联流程对应字段"
+                                               >
+                                                    <el-option v-for="(vo,i) in table_fields"
                                                             :key="i"
-                                                            :label="vo.title"
-                                                            :value="vo.field"
-                                                        ></el-option>
-                                                    </el-select>
-                                                </el-form-item>
-                                            </el-col>
-                                            <el-col :span="6" style="margin-left: 15px">
-                                                <el-form-item label="关联流程"
-                                                        prop="flow_table"
-                                                        class="no-label-width"
-                                                >
-                                                    <el-select
-                                                            style="width:100%"
-                                                            v-model="form.other_config.flow_table"
-                                                            @change="onFlowTableChange"
-                                                            filterable
-                                                            clearable
-                                                            placeholder="选择关联流程表"
-                                                    >
-                                                        <el-option v-for="(vo,i) in flow_tablelist"
-                                                            :key="i"
-                                                            :label="vo.title"
-                                                            :value="vo.menu_id"
-                                                        ></el-option>
-                                                    </el-select>
-                                                </el-form-item>
-                                            </el-col>
-                                            <el-col :span="5" style="margin-left: 15px">
-                                                <el-form-item label="流程字段"
-                                                        prop="flow_filed"
-                                                        class="no-label-width"
-                                                >
-                                                    <el-select
-                                                            style="width:100%"
-                                                            v-model="form.other_config.flow_filed"
-                                                            :disabled="true"
-                                                            filterable
-                                                            placeholder="选择关联流程对应字段"
-                                                   >
-                                                        <el-option v-for="(vo,i) in table_fields"
-                                                                :key="i"
-                                                                :value="vo.Field"
-                                                                :label="vo.Comment"
-                                                                >
-                                                        </el-option>
-                                                    </el-select>
-                                                </el-form-item>
-                                            </el-col>
-                                            <el-col :span="5" style="margin-left: 15px">
-                                                <el-form-item label="关联组"
-                                                        prop="flow_filed_label"
-                                                        class="no-label-width"
-                                                >
-                                                    <el-select
-                                                            @focus="getFlowTableGroup(form.other_config.flow_table)"
-                                                            style="width:100%"
-                                                            v-model="form.other_config.flow_group_field"
-                                                            filterable
-                                                            clearable
-                                                            placeholder="选择关联流程组"
-                                                   >
-                                                        <el-option
-                                                            v-for="(vo,i) in group_fields"
-                                                            :key="i"
-                                                            :value="vo.val"
-                                                            :label="vo.key">
-                                                        </el-option>
-                                                    </el-select>
-                                                </el-form-item>
-                                            </el-col>
-                                        </el-row>
-                                    </el-form-item>
-                                    <div style="margin-left: 52px;color: red;font-size: 15px;">关联字段选择 需与关联流程中的设置字段对应  如: 部门管理审批流  中选择部门id 关联字段选择对应的部门id</div>
-                                </el-col>
-                            </el-row>
-                            
+                                                            :value="vo.Field"
+                                                            :label="vo.Comment"
+                                                            >
+                                                    </el-option>
+                                                </el-select>
+                                            </el-form-item>
+                                        </el-col>
+                                        <el-col :span="5" style="margin-left: 15px">
+                                            <el-form-item label="关联组"
+                                                    prop="flow_filed_label"
+                                                    class="no-label-width"
+                                            >
+                                                <el-select
+                                                        @focus="getFlowTableGroup(form.other_config.flow_table)"
+                                                        style="width:100%"
+                                                        v-model="form.other_config.flow_group_field"
+                                                        filterable
+                                                        clearable
+                                                        placeholder="选择关联流程组"
+                                               >
+                                                    <el-option
+                                                        v-for="(vo,i) in group_fields"
+                                                        :key="i"
+                                                        :value="vo.val"
+                                                        :label="vo.key">
+                                                    </el-option>
+                                                </el-select>
+                                            </el-form-item>
+                                        </el-col>
+                                    </el-row>
+                                </el-form-item>
+                                <div style="margin-left: 52px;color: red;font-size: 15px;">关联字段选择 需与关联流程中的设置字段对应  如: 部门管理审批流  中选择部门id 关联字段选择对应的部门id</div>
+                            </el-col>
+                        </el-row>
+                        
 						<!-- 审批组 -->
                         <el-row v-if="form.type == 60">
                             <el-form-item label="关联字段" prop="flow_group">
@@ -1259,46 +1403,48 @@ Vue.component('AdminUpdate', {
 							</el-form-item>
 						</el-row>
 						
-                        <el-row v-if="form.type == 55">
-                            <el-col :span="24">
-                                <el-form-item label="">
-                                    <div style="font-size: 12px; color: #999; margin-top: 5px;">
-                                        <p><strong>URL参数选择逻辑：</strong></p>
-                                        <p>1. <strong>未选择任何字段</strong>：按钮始终可点击（如"添加"操作）</p>
-                                        <p>2. <strong>仅选择主键字段</strong>：允许多选操作（如"删除"）</p>
-                                        <p>3. <strong>选择多个字段</strong>：仅允许单选操作（如"修改"）</p>
-                                    </div>
-                                </el-form-item>
-                            </el-col>
-                        </el-row>
-                        
-                        <el-row v-if="form.type == 55">
-                            <el-col :span="24">
-                                <el-tabs v-model="codeTabActive" class="code-tabs">
-                                    <el-tab-pane label="前端代码" name="frontend">
-                                        <el-form-item style="margin-left: 0px;">
-                                            <el-input
-                                                v-model="form.q_template"
-                                                type="textarea"
-                                                :autosize="{minRows: 10}"
-                                                placeholder="输入HTML模板代码">
-                                            </el-input>
-                                        </el-form-item>
-                                    </el-tab-pane>
-                                    <el-tab-pane label="后端代码" name="backend">
-                                        <el-form-item style="margin-left: 0px;">
-                                            <el-input
-                                                v-model="form.h_php"
-                                                type="textarea"
-                                                :autosize="{minRows: 10}"
-                                                placeholder="输入后端处理代码">
-                                            </el-input>
-                                        </el-form-item>
-                                    </el-tab-pane>
-                                </el-tabs>
-                            </el-col>
-                        </el-row>
+						
+<el-row v-if="form.type == 55">
+    <el-col :span="24">
+        <el-form-item label="">
+            <div style="font-size: 12px; color: #999; margin-top: 5px;">
+                <p><strong>URL参数选择逻辑：</strong></p>
+                <p>1. <strong>未选择任何字段</strong>：按钮始终可点击（如"添加"操作）</p>
+                <p>2. <strong>仅选择主键字段</strong>：允许多选操作（如"删除"）</p>
+                <p>3. <strong>选择多个字段</strong>：仅允许单选操作（如"修改"）</p>
+            </div>
+        </el-form-item>
+    </el-col>
+</el-row>
 
+<el-row v-if="form.type == 55">
+    <el-col :span="24">
+        <el-tabs v-model="codeTabActive" class="code-tabs">
+            <el-tab-pane label="前端代码" name="frontend">
+                <el-form-item style="margin-left: 0px;">
+                    <el-input
+                        v-model="form.q_template"
+                        type="textarea"
+                        :autosize="{minRows: 10}"
+                        placeholder="输入HTML模板代码">
+                    </el-input>
+                </el-form-item>
+            </el-tab-pane>
+            <el-tab-pane label="后端代码" name="backend">
+                <el-form-item style="margin-left: 0px;">
+                    <el-input
+                        v-model="form.h_php"
+                        type="textarea"
+                        :autosize="{minRows: 10}"
+                        placeholder="输入后端处理代码">
+                    </el-input>
+                </el-form-item>
+            </el-tab-pane>
+        </el-tabs>
+    </el-col>
+</el-row>
+						
+						
 						<el-row v-if="form.type == 5">
 							<el-form-item label="是否打印" prop="printer_status">
 								<el-select @change="selectTreeLoadType" style="width:100%" v-model="form.other_config.printer_status" :size="size" clearable filterable placeholder="是否打印详情页数据">
@@ -1465,7 +1611,7 @@ Vue.component('AdminUpdate', {
                                         </div>
 							</el-form-item>
 						</el-row>
-						<el-row v-if="[1,2,3,4,5,7,8,9,10,11,12,17,18,19,20,22].includes(form.type)">
+						<el-row v-if="[1,2,3,4,5,7,8,9,10,11,12,17,18,19,20,22,58].includes(form.type)">
 							<el-form-item label="方法钩子" prop="hook">
 								<el-row style="margin: 5px 0;">
 								    <div style="display: inline-block; width: 100px;">
@@ -1506,42 +1652,93 @@ Vue.component('AdminUpdate', {
 					</div>
 					<div class="section-content">
 						<el-form-item label="关联模型" prop="with_join">
-							<el-row :gutter="2" v-for="(item,i) in form.with_join" :key="i">
-								<el-col style="margin-left:0px" :span="5">
-									<el-form-item style="margin-bottom:3px !important"  prop="fk">
-										<el-select style="width:100%" v-model="item.fk" filterable placeholder="主表外键">
-											<el-option v-for="(vo,i) in model_fields" :key="i"  :value="vo.field">{{vo.title}}({{vo.field}})</el-option>
-										</el-select>
-									</el-form-item>
-								</el-col>
-								<el-col :span="5">
-									<el-form-item style="margin-bottom:3px !important" prop="relative_table">
-										<el-select style="width:100%" v-model="item.relative_table" filterable placeholder="模型">
-											<el-option v-for="(vo,i) in tableList" :key="i" :value="vo.controller_name">{{vo.controller_name}}</el-option>
-										</el-select>
-									</el-form-item>
-								</el-col>
-								<el-col :span="5">
-									<el-form-item style="margin-bottom:3px !important" prop="pk">
-										<el-select @focus="getTableFields(i)" style="width:100%" v-model="item.pk" filterable placeholder="关联键">
-											<el-option v-for="(vo,i) in table_fields" :key="i"  :value="vo.Field">{{vo.Field}}({{vo.Comment}})</el-option>
-										</el-select>
-									</el-form-item>
-								</el-col>
-								<el-col :span="7">
-									 <el-form-item style="margin-bottom:3px !important" prop="fields">
-										<el-select @focus="getTableFields(i)" style="width:100%" multiple collapse-tags v-model="item.fields" filterable :placeholder="form.type == 1?'关联表查询字段':'操作字段'">
-											<el-option v-for="(vo,i) in table_fields" :key="i"  :value="vo.Field">{{vo.Field}}({{vo.Comment}})</el-option>
-										</el-select>
-									</el-form-item>
-								</el-col>
-								<el-col :span="1">
-									<el-button type="danger" size="mini" style="position:relative;left:5px"  icon="el-icon-close" @click="deleteItem('with_join',i)"></el-button>
-								</el-col>
-							</el-row>
-							<el-button type="success" icon="el-icon-plus" style="padding:5px 7px" :size="size" @click="addItem('with_join')">追加</el-button>
-							<el-button v-if="form.with_join.length > 0" type="warning" icon="el-icon-delete" style="padding:5px 7px" :size="size" @click="clearItem('with_join')">清空</el-button>
+							<div v-for="(item,i) in form.with_join" :key="i" style="margin-bottom:15px;border:1px solid #ebeef5;padding:15px;border-radius:4px;">
+								<!-- 模型基础配置 - 改大并换行 -->
+								<el-row :gutter="10" style="margin-bottom:10px;">
+									<el-col :span="8">
+										<el-form-item style="margin-bottom:3px !important" prop="fk">
+											<el-select style="width:100%" v-model="item.fk" @change="onFkChange(i)" filterable placeholder="主表外键">
+												<el-option v-for="(vo,j) in model_fields" :key="j" :value="vo.field">{{vo.title}}({{vo.field}})</el-option>
+											</el-select>
+										</el-form-item>
+									</el-col>
+									<el-col :span="8">
+										<el-form-item style="margin-bottom:3px !important" prop="relative_table">
+											<el-select style="width:100%" v-model="item.relative_table" @change="onModelChange(i)" filterable placeholder="关联模型">
+												<el-option v-for="(vo,j) in tableList" :key="j" :value="vo.controller_name">{{vo.controller_name}}</el-option>
+											</el-select>
+										</el-form-item>
+									</el-col>
+									<el-col :span="6">
+										<el-form-item style="margin-bottom:3px !important" prop="pk">
+											<el-select style="width:100%" v-model="item.pk" filterable placeholder="关联键">
+												<el-option v-for="(vo,j) in (getTableFieldsForModel(i) || [])" :key="j" :value="vo.Field">{{vo.Field}}({{vo.Comment}})</el-option>
+											</el-select>
+										</el-form-item>
+									</el-col>
+									<el-col :span="2">
+										<el-button type="danger" size="mini" icon="el-icon-close" @click="deleteItem('with_join',i)"></el-button>
+									</el-col>
+								</el-row>
+								
+								<!-- 字段配置区域 -->
+								<div v-if="item.relative_table">
+									<el-row :gutter="5" v-for="(field,fIndex) in (item.fields || [])" :key="fIndex" style="margin-bottom:5px;">
+										<el-col :span="6">
+											<el-form-item style="margin-bottom:3px !important">
+												<el-select style="width:100%" v-model="field.field" size="mini" filterable placeholder="选择字段">
+													<el-option v-for="(vo,j) in (getTableFieldsForModel(i) || [])" :key="j" :value="vo.Field">{{vo.Field}}({{vo.Comment}})</el-option>
+												</el-select>
+											</el-form-item>
+										</el-col>
+										<el-col :span="6">
+											<el-form-item style="margin-bottom:3px !important">
+												<el-select style="width:100%" v-model="field.list_show" size="mini" filterable placeholder="显示设置">
+													<el-option-group label="显示状态">
+														<el-option key="show_0" label="不显示" :value="0"></el-option>
+													</el-option-group>
+													<el-option-group label="显示位置">
+														<el-option key="show_1" label="居中" :value="2"></el-option>
+														<el-option key="show_2" label="居左" :value="3"></el-option>
+														<el-option key="show_3" label="居右" :value="4"></el-option>
+														<el-option key="show_4" label="换行显示" :value="5"></el-option>
+													</el-option-group>
+												</el-select>
+											</el-form-item>
+										</el-col>
+										<el-col :span="6">
+											<el-form-item style="margin-bottom:3px !important">
+												<el-select style="width:100%" v-model="field.search_type" size="mini" placeholder="搜索设置">
+													<el-option-group label="是否搜索">
+														<el-option key="search_0" label="否" :value="0"></el-option>
+													</el-option-group>
+													<el-option-group label="搜索模式">
+														<el-option key="search_1" label="=" :value="1"></el-option>
+														<el-option key="search_2" label="like" :value="2"></el-option>
+														<el-option key="search_3" label="in" :value="3"></el-option>
+														<el-option key="search_4" label="between" :value="4"></el-option>
+													</el-option-group>
+												</el-select>
+											</el-form-item>
+										</el-col>
+										<el-col :span="4">
+											<el-button type="danger" size="mini" icon="el-icon-close" @click="deleteField(i,fIndex)"></el-button>
+										</el-col>
+									</el-row>
+									
+									<!-- 字段操作按钮 -->
+									<div style="margin-top:10px;">
+										<el-button type="success" icon="el-icon-plus" style="padding:5px 7px;margin-right:5px" :size="size" @click="addField(i)">添加字段</el-button>
+										<el-button v-if="item.fields && item.fields.length > 0" type="warning" icon="el-icon-delete" style="padding:5px 7px" :size="size" @click="clearFields(i)">清空字段</el-button>
+									</div>
+								</div>
+							</div>
+							
+							<!-- 模型操作按钮 -->
+							<el-button type="success" icon="el-icon-plus" style="padding:5px 7px;margin-right:5px" :size="size" @click="addItem('with_join')">追加模型</el-button>
+							<el-button v-if="form.with_join.length > 0" type="warning" icon="el-icon-delete" style="padding:5px 7px" :size="size" @click="clearItem('with_join')">清空模型</el-button>
 						</el-form-item>
+						
 						<el-row v-if="[1,5,11].includes(form.type) && dbtype !== 'mongo'">
 							<el-form-item label="table列表sql" prop="sql">
 								<el-input v-model="form.sql" type="textarea" placeholder="通过sql语句生成table列表"  />
@@ -1718,6 +1915,7 @@ Vue.component('AdminUpdate', {
             return true
         },
         // 超级页面安全验证方法结束
+        
         open() {
             this.form = this.info
             this.setDefaultVal('list_filter')
@@ -1746,6 +1944,25 @@ Vue.component('AdminUpdate', {
             }
             //超级页面结束
             
+            // 处理with_join数据，转换fields格式
+            if (this.form.with_join && Array.isArray(this.form.with_join)) {
+                this.form.with_join.forEach((item, index) => {
+                    if (item.fields && Array.isArray(item.fields)) {
+                        // 如果fields是字符串数组，转换为对象数组
+                        if (item.fields.length > 0 && typeof item.fields[0] === 'string') {
+                            const newFields = item.fields.map(field => ({
+                                field: field,
+                                list_show: 2,
+                                search_type: 0
+                            }));
+                            item.fields = newFields;
+                        }
+                    } else {
+                        item.fields = [];
+                    }
+                });
+            }
+            
             this.initAction()
             axios.post(base_url + '/Sys.Base/getPostField', {menu_id: this.menu_id}).then(res => {
                 this.post_fields = res.data.data
@@ -1770,7 +1987,6 @@ Vue.component('AdminUpdate', {
                 this.form.dialog_size = ''
             }
             
-            
             if (val == 55 && !this.form.super_page) {
                 this.$set(this.form, 'super_page', {
                     frontend: {q_template: '', script: '', style: ''},
@@ -1789,10 +2005,20 @@ Vue.component('AdminUpdate', {
                 }
             })
         },
-        getTableFields(i) {
-            axios.post(base_url + '/Sys.Base/getTableFields', {controller_name: this.form.with_join[i].relative_table}).then(res => {
-                this.table_fields = res.data.filedList
-            })
+        getTableFieldsForModel(i) {
+            const item = this.form.with_join[i];
+            if (item && item.relative_table) {
+                // 如果已有缓存，直接返回
+                if (item._table_fields) {
+                    return item._table_fields;
+                }
+                // 否则动态获取并缓存
+                axios.post(base_url + '/Sys.Base/getTableFields', {controller_name: item.relative_table}).then(res => {
+                    this.$set(item, '_table_fields', res.data.filedList);
+                });
+                return [];
+            }
+            return [];
         },
         // 添加新的方法
         onFlowTableChange(menu_id) {
@@ -1817,6 +2043,7 @@ Vue.component('AdminUpdate', {
                 this.group_fields = res.data.group
             })
         },
+        
         closeForm() {
             this.$emit('update:show', false)
             this.loading = false
@@ -1843,7 +2070,16 @@ Vue.component('AdminUpdate', {
             }
         },
         addItem(key) {
-            this.form[key].push({})
+            if (key === 'with_join') {
+                this.form[key].push({
+                    fk: '',
+                    relative_table: '',
+                    pk: '',
+                    fields: []
+                });
+            } else {
+                this.form[key].push({});
+            }
         },
         deleteItem(key, index) {
             this.form[key].splice(index, 1)
@@ -1892,9 +2128,64 @@ Vue.component('AdminUpdate', {
                 this.form.other_config.after_hook = ''
             }
         },
+        // 新增关联模型相关方法
+        onFkChange(index) {
+            const item = this.form.with_join[index];
+            item.pk = '';
+            if (item.fields) {
+                item.fields = [];
+            }
+            // 清空缓存字段
+            delete item._table_fields;
+        },
+        
+        onModelChange(index) {
+            const item = this.form.with_join[index];
+            if (item.relative_table) {
+                // 清空相关字段
+                item.pk = '';
+                if (item.fields) {
+                    item.fields = [];
+                }
+                // 清空缓存字段
+                delete item._table_fields;
+            } else {
+                item.pk = '';
+                if (item.fields) {
+                    item.fields = [];
+                }
+                // 清空缓存字段
+                delete item._table_fields;
+            }
+        },
+        
+        addField(index) {
+            const item = this.form.with_join[index];
+            if (!item.fields) {
+                this.$set(item, 'fields', []);
+            }
+            item.fields.push({
+                field: '',
+                list_show: 2,
+                search_type: 0
+            });
+        },
+        
+        deleteField(index, fieldIndex) {
+            const item = this.form.with_join[index];
+            if (item.fields && item.fields.length > fieldIndex) {
+                item.fields.splice(fieldIndex, 1);
+            }
+        },
+        
+        clearFields(index) {
+            const item = this.form.with_join[index];
+            if (item.fields) {
+                item.fields = [];
+            }
+        },
     },
 });
-
 
 //api方法添加
 Vue.component('ApiAdd', {
