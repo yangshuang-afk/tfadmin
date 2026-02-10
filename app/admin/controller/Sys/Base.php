@@ -1872,13 +1872,14 @@ class Base extends Admin
     //生成
     public function create() {
         $menu_id = $this->request->post('menu_id');
-        if ($this->createCode($menu_id)) {
+        $type = $this->request->post('type');
+        if ($this->createCode($menu_id, $type)) {
             return json(['status' => 200]);
         }
     }
     
     //生成
-    private function createCode($menu_id, $tf_flow_group = []) {
+    private function createCode($menu_id, $type=2, $tf_flow_group = []) {
         $menuInfo = Menu::find($menu_id)->toArray();
         
         if (!$menuInfo['create_code']) {
@@ -2107,7 +2108,7 @@ class Base extends Admin
                 Db::rollback();
                 throw new ValidateException ($e->getMessage());
             }
-            if ($this->createCode($res->menu_id)) {
+            if ($this->createCode($res->menu_id, $data['type'])) {
                 return json(['status' => 200]);
             }
         } else {
@@ -2515,7 +2516,7 @@ class Base extends Admin
             // 5. 审批记录,审核数据
             $this->insertApprovalActions($connect, $data, $menuInfo, $controllerName, $pk, $application);
             // 6. 代码生成
-            if (!$this->createCode($newMenuId)) {
+            if (!$this->createCode($newMenuId, 2)) {
                 // 回滚事务
                 Db::rollback();
                 throw new ValidateException("审批流创建失败");
@@ -3545,8 +3546,8 @@ class Base extends Admin
             
             // 9. 代码生成
             if (
-                !$this->createCode($groupMenuId)
-                || !$this->createCode($flowMenuId, [
+                !$this->createCode($groupMenuId, 2)
+                || !$this->createCode($flowMenuId, 2, [
                     'flow_group_field' => $flow_group_field,
                     'group_table_id' => $create_res['group_table'] . "_id"
                 ])
