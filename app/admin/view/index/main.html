@@ -1,875 +1,916 @@
 {extend name='common/container'}
 {block name="style"}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* 原有所有样式保持不变 */
-        :root {
-            --primary: #696cff;
-            --primary-dark: #5a5dff;
-            --primary-light: #f0f0ff;
-            --secondary: #8a8d93;
-            --success: #71dd37;
-            --info: #03c3ec;
-            --warning: #ffab00;
-            --danger: #ff3e1d;
-            --dark: #2b2d42;
-            --light: #f8f9fa;
-            --border: rgba(138, 141, 147, 0.2);
-            --space-xs: 4px;
-            --space-sm: 8px;
-            --space-md: 10px;
-            --space-lg: 15px;
-            --space-xl: 15px;
-            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.1);
-            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            --danger-light: rgba(255, 62, 29, 0.12);
-            --warning-light: rgba(255, 171, 0, 0.12);
-            --info-light: rgba(3, 195, 236, 0.12);
+<style>
+    /* 原有所有样式保持不变 */
+    :root {
+        --primary: #696cff;
+        --primary-dark: #5a5dff;
+        --primary-light: #f0f0ff;
+        --secondary: #8a8d93;
+        --success: #71dd37;
+        --info: #03c3ec;
+        --warning: #ffab00;
+        --danger: #ff3e1d;
+        --dark: #2b2d42;
+        --light: #f8f9fa;
+        --border: rgba(138, 141, 147, 0.2);
+        --space-xs: 4px;
+        --space-sm: 8px;
+        --space-md: 10px;
+        --space-lg: 15px;
+        --space-xl: 15px;
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.1);
+        --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        --danger-light: rgba(255, 62, 29, 0.12);
+        --warning-light: rgba(255, 171, 0, 0.12);
+        --info-light: rgba(3, 195, 236, 0.12);
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont,
+        'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+        sans-serif;
+        background-color: var(--light);
+        color: var(--dark);
+        line-height: 1.5;
+    }
+    
+    /* 新增全屏滚动样式 */
+    html, body {
+        overflow: hidden;
+        height: 100%;
+    }
+    
+    .dashboard-container {
+        height: 100vh;
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+        padding: 0;
+    }
+    
+    .dashboard-content {
+        height: 200vh; /* 两屏高度 */
+        transition: transform 0.5s ease;
+        will-change: transform;
+    }
+    
+    /* 屏幕容器 */
+    .screen {
+        height: 100vh;
+        width: 100%;
+        padding: 65px 15px 0px 15px;
+        overflow-y: auto;
+    }
+    
+    /* 底部导航点样式ks */
+    .screen-nav {
+        position: fixed;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        height: 50px;
+        justify-content: center;
+        background-color: rgba(255, 255, 255, 0.5);
+        padding: 0 50px;
+        border-radius: 25px;
+        box-shadow: var(--shadow-md);
+    }
+    
+    .screen-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: rgba(105, 108, 255, 0.3);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin: 0;
+    }
+    
+    .screen-dot.active {
+        background-color: var(--primary);
+        transform: scale(1.2);
+    }
+    
+    /* 底部导航点样式js */
+    
+    /* 分割线样式 */
+    .screen-divider {
+        position: absolute;
+        width: 100%;
+        height: 1px;
+        background-color: var(--border);
+        left: 0;
+        top: 100vh;
+        z-index: 10;
+        display: none; /* 可以根据需要显示或隐藏 */
+    }
+    
+    /* 自定义滚动条 */
+    .screen::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .screen::-webkit-scrollbar-track {
+        background: rgba(138, 141, 147, 0.1);
+    }
+    
+    .screen::-webkit-scrollbar-thumb {
+        background: rgba(105, 108, 255, 0.3);
+        border-radius: 3px;
+    }
+    
+    .screen::-webkit-scrollbar-thumb:hover {
+        background: var(--primary);
+    }
+    
+    /* 原有样式保留 */
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        padding-bottom: var(--space-md);
+        border-bottom: 1px solid var(--border);
+        width: 100%;
+    }
+    
+    .header-title h1 {
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        margin-bottom: var(--space-xs);
+    }
+    
+    .header-title p {
+        color: var(--secondary);
+        font-size: 14px;
+        font-weight: 500;
+    }
+    
+    .header-actions {
+        display: flex;
+        gap: var(--space-sm);
+    }
+    
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: var(--space-lg);
+        width: 100%;
+        margin: 0 0 15px 0;
+    }
+    
+    .kpi-card {
+        background: white;
+        padding: var(--space-lg);
+        border-left: 4px solid var(--primary);
+        box-shadow: var(--shadow-md);
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    
+    .kpi-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .kpi-card.primary {
+        border-left-color: var(--primary);
+    }
+    
+    .kpi-card.success {
+        border-left-color: var(--success);
+    }
+    
+    .kpi-card.warning {
+        border-left-color: var(--warning);
+    }
+    
+    .kpi-card.danger {
+        border-left-color: var(--danger);
+    }
+    
+    .kpi-value {
+        font-size: 32px;
+        font-weight: 700;
+        line-height: 1.2;
+        margin: var(--space-sm) 0;
+        color: var(--dark);
+    }
+    
+    .kpi-label {
+        font-size: 14px;
+        color: var(--secondary);
+        font-weight: 500;
+        opacity: 0.9;
+    }
+    
+    .kpi-trend {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-xs);
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: auto;
+        padding: var(--space-xs) var(--space-sm);
+        background: var(--primary-light);
+        color: var(--primary);
+        width: fit-content;
+    }
+    
+    .kpi-trend.success {
+        background: rgba(113, 221, 55, 0.12);
+        color: var(--success);
+    }
+    
+    .kpi-trend.danger {
+        background: rgba(255, 62, 29, 0.12);
+        color: var(--danger);
+    }
+    
+    .kpi-trend.warning {
+        background: rgba(255, 171, 0, 0.12);
+        color: var(--warning);
+    }
+    
+    .kpi-trend.primary {
+        background: rgba(105, 108, 255, 0.12);
+        color: var(--primary);
+    }
+    
+    .chart-area {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: var(--space-lg);
+        width: 100%;
+        min-width: 300px;
+        margin: 0 0 15px 0;
+    }
+    
+    @media (max-width: 1200px) {
+        .chart-area {
+            grid-template-columns: 1fr;
         }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+    }
+    
+    .chart-card {
+        background: white;
+        padding: var(--space-lg);
+        box-shadow: var(--shadow-md);
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        overflow: hidden;
+    }
+    
+    .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-lg);
+    }
+    
+    .chart-title {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        font-size: 16px;
+        font-weight: 600;
+    }
+    
+    .chart-title i {
+        color: var(--primary);
+    }
+    
+    .chart-actions {
+        display: flex;
+        gap: var(--space-sm);
+    }
+    
+    .chart-container {
+        position: relative;
+        height: 320px;
+        width: 100%;
+        flex-grow: 1;
+        min-width: 0;
+    }
+    
+    /* 原有活动区域样式保留 */
+    .activity-area {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-lg);
+        width: 100%;
+    }
+    
+    @media (max-width: 1200px) {
+        .activity-area {
+            grid-template-columns: 1fr;
         }
-        
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 
-                        'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 
-                        sans-serif;
-            background-color: var(--light);
-            color: var(--dark);
-            line-height: 1.5;
+    }
+    
+    .panel-card {
+        background: white;
+        padding: var(--space-lg);
+        box-shadow: var(--shadow-md);
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-lg);
+    }
+    
+    .panel-title {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        font-size: 16px;
+        font-weight: 600;
+    }
+    
+    .panel-title i {
+        color: var(--primary);
+    }
+    
+    .activity-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+    
+    .activity-item {
+        display: flex;
+        gap: var(--space-md);
+        padding-bottom: var(--space-md);
+    }
+    
+    .activity-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--primary-light);
+        color: var(--primary);
+        flex-shrink: 0;
+    }
+    
+    .activity-info {
+        flex-grow: 1;
+    }
+    
+    .activity-title {
+        font-weight: 500;
+        margin-bottom: var(--space-xs);
+    }
+    
+    .activity-desc {
+        font-size: 13px;
+        color: var(--secondary);
+        opacity: 0.8;
+    }
+    
+    .activity-time {
+        font-size: 12px;
+        color: var(--secondary);
+        text-align: right;
+        min-width: 80px;
+    }
+    
+    .quick-actions-container {
+        margin: 0 0 15px 0;
+    }
+    
+    .tutorial-link-container {
+        margin: 0 0 15px 0;
+    }
+    
+    .tutorial-link {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-sm);
+        padding: var(--space-sm) var(--space-lg);
+        background: white;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-sm);
+        color: var(--primary);
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: var(--transition);
+    }
+    
+    .tutorial-link:hover {
+        background: var(--primary);
+        border-color: var(--primary);
+        box-shadow: var(--shadow-md);
+        color: white;
+    }
+    
+    .quick-actions-title {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: var(--space-md);
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+    }
+    
+    .quick-actions-title i {
+        color: var(--primary);
+    }
+    
+    .quick-actions-grid {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: var(--space-md);
+    }
+    
+    @media (max-width: 1500px) {
+        .quick-actions-grid {
+            grid-template-columns: repeat(4, 1fr);
         }
-        
-        /* 新增全屏滚动样式 */
-        html, body {
-            overflow: hidden;
-            height: 100%;
+    }
+    
+    @media (max-width: 768px) {
+        .quick-actions-grid {
+            grid-template-columns: 1fr;
         }
-
-        .dashboard-container {
-            height: 100vh;
-            width: 100%;
-            overflow: hidden;
-            position: relative;
-            padding: 0;
-        }
-
-        .dashboard-content {
-            height: 200vh; /* 两屏高度 */
-            transition: transform 0.5s ease;
-            will-change: transform;
-        }
-
-        /* 屏幕容器 */
-        .screen {
-            height: 100vh;
-            width: 100%;
-            padding:  65px 15px 0px 15px;
-            overflow-y: auto;
-        }
-
-/* 底部导航点样式ks */
-.screen-nav {
-    position: fixed;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1000;
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    height: 50px;
-    justify-content: center;
-    background-color: rgba(255,255,255,0.5);
-    padding: 0 50px;
-    border-radius: 25px;
-    box-shadow: var(--shadow-md);
-}
-
-.screen-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: rgba(105, 108, 255, 0.3);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin: 0;
-}
-
-.screen-dot.active {
-    background-color: var(--primary);
-    transform: scale(1.2);
-}
-/* 底部导航点样式js */
-
-        /* 分割线样式 */
-        .screen-divider {
-            position: absolute;
-            width: 100%;
-            height: 1px;
-            background-color: var(--border);
-            left: 0;
-            top: 100vh;
-            z-index: 10;
-            display: none; /* 可以根据需要显示或隐藏 */
-        }
-
-        /* 自定义滚动条 */
-        .screen::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .screen::-webkit-scrollbar-track {
-            background: rgba(138, 141, 147, 0.1);
-        }
-
-        .screen::-webkit-scrollbar-thumb {
-            background: rgba(105, 108, 255, 0.3);
-            border-radius: 3px;
-        }
-
-        .screen::-webkit-scrollbar-thumb:hover {
-            background: var(--primary);
-        }
-
-        /* 原有样式保留 */
+    }
+    
+    .quick-action {
+        background: white;
+        padding: var(--space-lg);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-md);
+        box-shadow: var(--shadow-md);
+        transition: var(--transition);
+        border: 1px solid transparent;
+        border-radius: 0px;
+    }
+    
+    .quick-action:hover {
+        background: var(--primary);
+        border-color: var(--primary);
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-2px);
+    }
+    
+    .quick-action:hover i,
+    .quick-action:hover .action-title {
+        color: white;
+    }
+    
+    .quick-action i {
+        font-size: 24px;
+        color: var(--primary);
+    }
+    
+    .action-title {
+        font-weight: 500;
+        color: var(--dark);
+        font-size: 14px;
+        text-align: center;
+    }
+    
+    .system-status {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-lg);
+    }
+    
+    .status-card {
+        background: white;
+        padding: var(--space-lg);
+        box-shadow: var(--shadow-md);
+        border-radius: 0px;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+    
+    .status-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .status-title {
+        font-weight: 600;
+        font-size: 15px;
+    }
+    
+    .status-badge {
+        padding: var(--space-xs) var(--space-sm);
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    .status-badge.primary {
+        background: var(--primary-light);
+        color: var(--primary);
+    }
+    
+    .status-badge.success {
+        background: rgba(113, 221, 55, 0.12);
+        color: var(--success);
+    }
+    
+    .status-badge.warning {
+        background: rgba(255, 171, 0, 0.12);
+        color: var(--warning);
+    }
+    
+    .status-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+    
+    .status-item {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+    }
+    
+    .status-item-label {
+        color: var(--secondary);
+    }
+    
+    .status-item-value {
+        font-weight: 500;
+    }
+    
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-xs);
+        padding: var(--space-sm) var(--space-md);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        border: 1px solid var(--border);
+        background: white;
+        transition: var(--transition);
+        border-radius: 6px;
+    }
+    
+    .btn:hover {
+        background: rgba(105, 108, 255, 0.04);
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+    
+    .btn-primary {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+    
+    .btn-primary:hover {
+        background: var(--primary-dark);
+        border-color: var(--primary-dark);
+    }
+    
+    @media (max-width: 768px) {
         .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            padding-bottom: var(--space-md);
-            border-bottom: 1px solid var(--border);
-            width: 100%;
-        }
-        
-        .header-title h1 {
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            margin-bottom: var(--space-xs);
-        }
-        
-        .header-title p {
-            color: var(--secondary);
-            font-size: 14px;
-            font-weight: 500;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--space-md);
         }
         
         .header-actions {
-            display: flex;
-            gap: var(--space-sm);
+            width: 100%;
+            justify-content: flex-end;
         }
         
         .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: var(--space-lg);
-            width: 100%;
+            grid-template-columns: 1fr;
             margin: 0 0 15px 0;
-        }
-        
-        .kpi-card {
-            background: white;
-            padding: var(--space-lg);
-            border-left: 4px solid var(--primary);
-            box-shadow: var(--shadow-md);
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-        }
-        
-        .kpi-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .kpi-card.primary { border-left-color: var(--primary); }
-        .kpi-card.success { border-left-color: var(--success); }
-        .kpi-card.warning { border-left-color: var(--warning); }
-        .kpi-card.danger { border-left-color: var(--danger); }
-        
-        .kpi-value {
-            font-size: 32px;
-            font-weight: 700;
-            line-height: 1.2;
-            margin: var(--space-sm) 0;
-            color: var(--dark);
-        }
-        
-        .kpi-label {
-            font-size: 14px;
-            color: var(--secondary);
-            font-weight: 500;
-            opacity: 0.9;
-        }
-        
-        .kpi-trend {
-            display: inline-flex;
-            align-items: center;
-            gap: var(--space-xs);
-            font-size: 13px;
-            font-weight: 600;
-            margin-top: auto;
-            padding: var(--space-xs) var(--space-sm);
-            background: var(--primary-light);
-            color: var(--primary);
-            width: fit-content;
-        }
-         
-        .kpi-trend.success {
-            background: rgba(113, 221, 55, 0.12);
-            color: var(--success);
-        }
-        
-        .kpi-trend.danger {
-            background: rgba(255, 62, 29, 0.12);
-            color: var(--danger);
-        }
-        .kpi-trend.warning {
-            background: rgba(255, 171, 0, 0.12);
-            color: var(--warning);
-        }
-        .kpi-trend.primary {
-            background: rgba(105, 108, 255, 0.12);
-            color: var(--primary);
-        }        
-        .chart-area {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: var(--space-lg);
-            width: 100%;
-            min-width: 300px;
-            margin: 0 0 15px 0;
-        }
-        
-        @media (max-width: 1200px) {
-            .chart-area {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .chart-card {
-            background: white;
-            padding: var(--space-lg);
-            box-shadow: var(--shadow-md);
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            overflow: hidden;
-        }
-        
-        .chart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--space-lg);
-        }
-        
-        .chart-title {
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-            font-size: 16px;
-            font-weight: 600;
-        }
-        
-        .chart-title i {
-            color: var(--primary);
-        }
-        
-        .chart-actions {
-            display: flex;
-            gap: var(--space-sm);
-        }
-        
-        .chart-container {
-            position: relative;
-            height: 320px;
-            width: 100%;
-            flex-grow: 1;
-            min-width: 0;
-        }
-        
-        /* 原有活动区域样式保留 */
-        .activity-area {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--space-lg);
-            width: 100%;
-        }
-        
-        @media (max-width: 1200px) {
-            .activity-area {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .panel-card {
-            background: white;
-            padding: var(--space-lg);
-            box-shadow: var(--shadow-md);
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-        }
-        
-        .panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--space-lg);
-        }
-        
-        .panel-title {
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-            font-size: 16px;
-            font-weight: 600;
-        }
-        
-        .panel-title i {
-            color: var(--primary);
-        }
-        
-        .activity-list {
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-md);
-        }
-        
-        .activity-item {
-            display: flex;
-            gap: var(--space-md);
-            padding-bottom: var(--space-md);
-        }
-        
-        .activity-item:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-        
-        .activity-icon {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--primary-light);
-            color: var(--primary);
-            flex-shrink: 0;
-        }
-        
-        .activity-info {
-            flex-grow: 1;
-        }
-        
-        .activity-title {
-            font-weight: 500;
-            margin-bottom: var(--space-xs);
-        }
-        
-        .activity-desc {
-            font-size: 13px;
-            color: var(--secondary);
-            opacity: 0.8;
-        }
-        
-        .activity-time {
-            font-size: 12px;
-            color: var(--secondary);
-            text-align: right;
-            min-width: 80px;
-        }
-        
-        .quick-actions-container {
-            margin: 0 0 15px 0;
-        }
-        
-        .quick-actions-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: var(--space-md);
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-        }
-        
-        .quick-actions-title i {
-            color: var(--primary);
-        }
-        
-        .quick-actions-grid {
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            gap: var(--space-md);
-        }
-        
-        @media (max-width: 1500px) {
-            .quick-actions-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .quick-actions-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .quick-action {
-            background: white;
-            padding: var(--space-lg);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: var(--space-md);
-            box-shadow: var(--shadow-md);
-            transition: var(--transition);
-            border: 1px solid transparent;
-            border-radius: 0px;
-        }
-        
-        .quick-action:hover {
-            background: var(--primary);
-            border-color: var(--primary);
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-2px);
-        }
-        
-        .quick-action:hover i,
-        .quick-action:hover .action-title {
-            color: white;
-        }
-        
-        .quick-action i {
-            font-size: 24px;
-            color: var(--primary);
-        }
-        
-        .action-title {
-            font-weight: 500;
-            color: var(--dark);
-            font-size: 14px;
-            text-align: center;
         }
         
         .system-status {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: var(--space-lg);
+            grid-template-columns: 1fr;
         }
         
-        .status-card {
-            background: white;
-            padding: var(--space-lg);
-            box-shadow: var(--shadow-md);
-            border-radius: 0px;
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-md);
+        .chart-container {
+            height: 250px;
         }
         
-        .status-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .chart-card {
+            padding: var(--space-md);
         }
-        
-        .status-title {
-            font-weight: 600;
-            font-size: 15px;
-        }
-        
-        .status-badge {
-            padding: var(--space-xs) var(--space-sm);
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        
-        .status-badge.primary {
-            background: var(--primary-light);
-            color: var(--primary);
-        }
-        
-        .status-badge.success {
-            background: rgba(113, 221, 55, 0.12);
-            color: var(--success);
-        }
-        
-        .status-badge.warning {
-            background: rgba(255, 171, 0, 0.12);
-            color: var(--warning);
-        }
-        
-        .status-content {
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-sm);
-        }
-        
-        .status-item {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-        }
-        
-        .status-item-label {
-            color: var(--secondary);
-        }
-        
-        .status-item-value {
-            font-weight: 500;
-        }
-        
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: var(--space-xs);
-            padding: var(--space-sm) var(--space-md);
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            border: 1px solid var(--border);
-            background: white;
-            transition: var(--transition);
-            border-radius: 6px;
-        }
-        
-        .btn:hover {
-            background: rgba(105, 108, 255, 0.04);
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-        
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-        
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            border-color: var(--primary-dark);
-        }
-        
-        @media (max-width: 768px) {
-            .dashboard-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: var(--space-md);
-            }
-            
-            .header-actions {
-                width: 100%;
-                justify-content: flex-end;
-            }
-            
-            .kpi-grid {
-                grid-template-columns: 1fr;
-                margin: 0 0 15px 0;
-            }
-            
-            .system-status {
-                grid-template-columns: 1fr;
-            }
-            
-            .chart-container {
-                height: 250px;
-            }
-            
-            .chart-card {
-                padding: var(--space-md);
-            }
-        }
-
-        canvas {
-            max-width: 100%;
-            display: block;
-        }
-
-        /* 新增聊天室样式 */
+    }
+    
+    canvas {
+        max-width: 100%;
+        display: block;
+    }
+    
+    /* 新增聊天室样式 */
+    .new-activity-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-lg);
+        width: 100%;
+    }
+    
+    .left-activity-column {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-lg);
+    }
+    
+    .chat-room-panel {
+        background: white;
+        padding: var(--space-lg);
+        box-shadow: var(--shadow-md);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        position: relative;
+        min-height: 500px;
+    }
+    
+    .chat-header {
+        padding-bottom: var(--space-md);
+        border-bottom: 1px solid var(--border);
+        margin-bottom: var(--space-md);
+    }
+    
+    .chat-messages {
+        flex-grow: 1;
+        overflow-y: auto;
+        margin-bottom: var(--space-md);
+        max-height: 500px;
+        padding-bottom: 60px;
+    }
+    
+    .chat-input-area {
+        display: flex;
+        gap: var(--space-sm);
+        position: absolute;
+        bottom: var(--space-lg);
+        left: var(--space-lg);
+        right: var(--space-lg);
+        background: white;
+        padding-top: var(--space-sm);
+    }
+    
+    .btn:active {
+        transform: scale(0.98);
+    }
+    
+    .chat-send-btn:active {
+        background: var(--primary-dark);
+    }
+    
+    .chat-input {
+        flex-grow: 1;
+        padding: var(--space-sm);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+    }
+    
+    .chat-send-btn {
+        padding: var(--space-sm) var(--space-md);
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    @media (max-width: 1200px) {
         .new-activity-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--space-lg);
-            width: 100%;
+            grid-template-columns: 1fr;
         }
-
-        .left-activity-column {
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-lg);
-        }
-
+        
         .chat-room-panel {
-            background: white;
-            padding: var(--space-lg);
-            box-shadow: var(--shadow-md);
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            position: relative;
-            min-height: 500px;
-        }
-
-        .chat-header {
-            padding-bottom: var(--space-md);
-            border-bottom: 1px solid var(--border);
-            margin-bottom: var(--space-md);
-        }
-
-        .chat-messages {
-            flex-grow: 1;
-            overflow-y: auto;
-            margin-bottom: var(--space-md);
-            max-height: 500px;
-            padding-bottom: 60px;
-        }
-
-        .chat-input-area {
-            display: flex;
-            gap: var(--space-sm);
-            position: absolute; 
-            bottom: var(--space-lg);
-            left: var(--space-lg); 
-            right: var(--space-lg); 
-            background: white; 
-            padding-top: var(--space-sm); 
-        }
-        
-        .btn:active {
-            transform: scale(0.98);
-        }
-        
-        .chat-send-btn:active {
-            background: var(--primary-dark);
-        }
-
-        .chat-input {
-            flex-grow: 1;
-            padding: var(--space-sm);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-        }
-
-        .chat-send-btn {
-            padding: var(--space-sm) var(--space-md);
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        @media (max-width: 1200px) {
-            .new-activity-layout {
-                grid-template-columns: 1fr;
-            }
-            
-            .chat-room-panel {
-                height: auto;
-                min-height: 300px;
-            }
-        }
-        
-        /*右侧客服，日志开始*/
-        /* 右侧面板容器 */
-        .right-panel-container {
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-lg);
-            height: 100%;
-        }
-
-        /* 动态记录面板 */
-        .activity-log-panel {
-            background: white;
-            padding: var(--space-lg);
-            box-shadow: var(--shadow-md);
-            flex: 1;
-        }
-
-        .activity-log-list {
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-md);
-            margin-top: var(--space-md);
-        }
-
-        .log-item {
-            display: flex;
-            gap: var(--space-md);
-            padding: var(--space-sm) 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .log-item:last-child {
-            border-bottom: none;
-        }
-
-        .log-icon {
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        .log-content {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-        }
-
-        .log-text {
-            font-size: 14px;
-        }
-
-        .log-time {
-            color: var(--secondary);
-            font-size: 13px;
-            margin-left: var(--space-xs);
-        }
-
-        /* 在线客服面板 */
-        .customer-service-panel {
-            background: white;
-            padding: var(--space-lg);
-            box-shadow: var(--shadow-md);
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            position: relative;
+            height: auto;
             min-height: 300px;
         }
-
-        .service-status {
-            display: flex;
-            align-items: center;
-            gap: var(--space-xs);
-            font-size: 13px;
-            color: var(--secondary);
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-
-        .status-dot.online {
-            background: var(--success);
-        }
-
-        .status-dot.offline {
-            background: var(--secondary);
-        }
-
-        .service-messages {
-            flex-grow: 1;
-            overflow-y: auto;
-            margin: var(--space-md) 0;
-            padding-bottom: 60px;
-        }
-
-        .message-item {
-            display: flex;
-            gap: var(--space-md);
-            margin-bottom: var(--space-md);
-        }
-
-        .message-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .message-icon {
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(138, 141, 147, 0.12);
-            color: var(--secondary);
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        .system-message .message-icon {
-            background: rgba(105, 108, 255, 0.12);
-            color: var(--primary);
-        }
-
-        .message-content {
-            flex-grow: 1;
-        }
-
-        .message-text {
-            background: var(--light);
-            padding: var(--space-sm);
-            border-radius: 4px;
-            font-size: 14px;
-            display: inline-block;
-            max-width: 80%;
-        }
-
-        .message-time {
-            font-size: 12px;
-            color: var(--secondary);
-            margin-top: var(--space-xs);
-        }
-
-        .service-input-area {
-            display: flex;
-            gap: var(--space-sm);
-            position: absolute;
-            bottom: var(--space-lg);
-            left: var(--space-lg);
-            right: var(--space-lg);
-            background: white;
-            padding-top: var(--space-sm);
-        }
-
-        .service-input {
-            flex-grow: 1;
-            padding: var(--space-sm) var(--space-md);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            outline: none;
-            transition: var(--transition);
-        }
-
-        .service-input:focus {
-            border-color: var(--primary);
-        }
-
-        .service-send-btn {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .service-send-btn:hover {
-            background: var(--primary-dark);
-        }
-    </style>
+    }
+    
+    /*右侧客服，日志开始*/
+    /* 右侧面板容器 */
+    .right-panel-container {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-lg);
+        height: 100%;
+    }
+    
+    /* 动态记录面板 */
+    .activity-log-panel {
+        background: white;
+        padding: var(--space-lg);
+        box-shadow: var(--shadow-md);
+        flex: 1;
+    }
+    
+    .activity-log-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+        margin-top: var(--space-md);
+    }
+    
+    .log-item {
+        display: flex;
+        gap: var(--space-md);
+        padding: var(--space-sm) 0;
+        border-bottom: 1px solid var(--border);
+    }
+    
+    .log-item:last-child {
+        border-bottom: none;
+    }
+    
+    .log-icon {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+    
+    .log-content {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+    }
+    
+    .log-text {
+        font-size: 14px;
+    }
+    
+    .log-time {
+        color: var(--secondary);
+        font-size: 13px;
+        margin-left: var(--space-xs);
+    }
+    
+    /* 在线客服面板 */
+    .customer-service-panel {
+        background: white;
+        padding: var(--space-lg);
+        box-shadow: var(--shadow-md);
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        min-height: 300px;
+    }
+    
+    .service-status {
+        display: flex;
+        align-items: center;
+        gap: var(--space-xs);
+        font-size: 13px;
+        color: var(--secondary);
+    }
+    
+    .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+    
+    .status-dot.online {
+        background: var(--success);
+    }
+    
+    .status-dot.offline {
+        background: var(--secondary);
+    }
+    
+    .service-messages {
+        flex-grow: 1;
+        overflow-y: auto;
+        margin: var(--space-md) 0;
+        padding-bottom: 60px;
+    }
+    
+    .message-item {
+        display: flex;
+        gap: var(--space-md);
+        margin-bottom: var(--space-md);
+    }
+    
+    .message-item:last-child {
+        margin-bottom: 0;
+    }
+    
+    .message-icon {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(138, 141, 147, 0.12);
+        color: var(--secondary);
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+    
+    .system-message .message-icon {
+        background: rgba(105, 108, 255, 0.12);
+        color: var(--primary);
+    }
+    
+    .message-content {
+        flex-grow: 1;
+    }
+    
+    .message-text {
+        background: var(--light);
+        padding: var(--space-sm);
+        border-radius: 4px;
+        font-size: 14px;
+        display: inline-block;
+        max-width: 80%;
+    }
+    
+    .message-time {
+        font-size: 12px;
+        color: var(--secondary);
+        margin-top: var(--space-xs);
+    }
+    
+    .service-input-area {
+        display: flex;
+        gap: var(--space-sm);
+        position: absolute;
+        bottom: var(--space-lg);
+        left: var(--space-lg);
+        right: var(--space-lg);
+        background: white;
+        padding-top: var(--space-sm);
+    }
+    
+    .service-input {
+        flex-grow: 1;
+        padding: var(--space-sm) var(--space-md);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        outline: none;
+        transition: var(--transition);
+    }
+    
+    .service-input:focus {
+        border-color: var(--primary);
+    }
+    
+    .service-send-btn {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+    
+    .service-send-btn:hover {
+        background: var(--primary-dark);
+    }
+</style>
 {/block}
 
 {block name="content"}
@@ -878,6 +919,14 @@
     <div class="dashboard-content">
         <!-- 第一屏内容 -->
         <div class="screen">
+            <!-- 视频教程链接 -->
+            <div class="tutorial-link-container">
+                <a class="tutorial-link" href="https://www.bilibili.com/video/BV1SxttzjEjv" target="_blank"
+                   rel="noopener noreferrer">
+                    <i class="fas fa-circle-play"></i>
+                    <span>tfadmin后台使用教程链接</span>
+                </a>
+            </div>
             <!-- 快捷操作区 -->
             <div class="quick-actions-container">
                 <div class="quick-actions-grid">
@@ -1062,7 +1111,8 @@
                         </div>
                         <div class="activity-list">
                             <div class="activity-item">
-                                <div class="activity-icon" style="background: rgba(255, 62, 29, 0.12); color: var(--danger);">
+                                <div class="activity-icon"
+                                     style="background: rgba(255, 62, 29, 0.12); color: var(--danger);">
                                     <i class="fas fa-exclamation"></i>
                                 </div>
                                 <div class="activity-info">
@@ -1072,7 +1122,8 @@
                                 <button class="btn" style="align-self: center;">处理</button>
                             </div>
                             <div class="activity-item">
-                                <div class="activity-icon" style="background: rgba(255, 171, 0, 0.12); color: var(--warning);">
+                                <div class="activity-icon"
+                                     style="background: rgba(255, 171, 0, 0.12); color: var(--warning);">
                                     <i class="fas fa-clock"></i>
                                 </div>
                                 <div class="activity-info">
@@ -1082,7 +1133,8 @@
                                 <button class="btn" style="align-self: center;">审批</button>
                             </div>
                             <div class="activity-item">
-                                <div class="activity-icon" style="background: rgba(3, 195, 236, 0.12); color: var(--info);">
+                                <div class="activity-icon"
+                                     style="background: rgba(3, 195, 236, 0.12); color: var(--info);">
                                     <i class="fas fa-box-open"></i>
                                 </div>
                                 <div class="activity-info">
@@ -1105,7 +1157,8 @@
                         </div>
                         <div class="activity-list">
                             <div class="activity-item">
-                                <div class="activity-icon" style="background: rgba(105, 108, 255, 0.12); color: var(--primary);">
+                                <div class="activity-icon"
+                                     style="background: rgba(105, 108, 255, 0.12); color: var(--primary);">
                                     <i class="fas fa-user"></i>
                                 </div>
                                 <div class="activity-info">
@@ -1115,7 +1168,8 @@
                                 <div class="activity-time">新用户</div>
                             </div>
                             <div class="activity-item">
-                                <div class="activity-icon" style="background: rgba(113, 221, 55, 0.12); color: var(--success);">
+                                <div class="activity-icon"
+                                     style="background: rgba(113, 221, 55, 0.12); color: var(--success);">
                                     <i class="fas fa-user-tie"></i>
                                 </div>
                                 <div class="activity-info">
@@ -1125,7 +1179,8 @@
                                 <div class="activity-time">已验证</div>
                             </div>
                             <div class="activity-item">
-                                <div class="activity-icon" style="background: rgba(255, 171, 0, 0.12); color: var(--warning);">
+                                <div class="activity-icon"
+                                     style="background: rgba(255, 171, 0, 0.12); color: var(--warning);">
                                     <i class="fas fa-user-clock"></i>
                                 </div>
                                 <div class="activity-info">
@@ -1158,7 +1213,8 @@
                                 <div class="activity-time">10分钟前</div>
                             </div>
                             <div class="activity-item">
-                                <div class="activity-icon" style="background: rgba(3, 195, 236, 0.12); color: var(--info);">
+                                <div class="activity-icon"
+                                     style="background: rgba(3, 195, 236, 0.12); color: var(--info);">
                                     <i class="fas fa-box"></i>
                                 </div>
                                 <div class="activity-info">
@@ -1168,7 +1224,8 @@
                                 <div class="activity-time">25分钟前</div>
                             </div>
                             <div class="activity-item">
-                                <div class="activity-icon" style="background: rgba(113, 221, 55, 0.12); color: var(--success);">
+                                <div class="activity-icon"
+                                     style="background: rgba(113, 221, 55, 0.12); color: var(--success);">
                                     <i class="fas fa-check-circle"></i>
                                 </div>
                                 <div class="activity-info">
@@ -1194,27 +1251,36 @@
                         </div>
                         <div class="activity-log-list">
                             <div class="log-item">
-                                <div class="log-icon" style="background: rgba(105, 108, 255, 0.12); color: var(--primary);">
+                                <div class="log-icon"
+                                     style="background: rgba(105, 108, 255, 0.12); color: var(--primary);">
                                     <i class="fas fa-file-alt"></i>
                                 </div>
                                 <div class="log-content">
-                                    <div class="log-text">管理员 <strong>张三</strong> 于 <span class="log-time">14:30</span> 上传了工作日志</div>
+                                    <div class="log-text">管理员 <strong>张三</strong> 于 <span
+                                            class="log-time">14:30</span> 上传了工作日志
+                                    </div>
                                 </div>
                             </div>
                             <div class="log-item">
-                                <div class="log-icon" style="background: rgba(255, 171, 0, 0.12); color: var(--warning);">
+                                <div class="log-icon"
+                                     style="background: rgba(255, 171, 0, 0.12); color: var(--warning);">
                                     <i class="fas fa-lock"></i>
                                 </div>
                                 <div class="log-content">
-                                    <div class="log-text">用户 <strong>李四</strong> 于 <span class="log-time">13:45</span> 修改了登录密码</div>
+                                    <div class="log-text">用户 <strong>李四</strong> 于 <span
+                                            class="log-time">13:45</span> 修改了登录密码
+                                    </div>
                                 </div>
                             </div>
                             <div class="log-item">
-                                <div class="log-icon" style="background: rgba(113, 221, 55, 0.12); color: var(--success);">
+                                <div class="log-icon"
+                                     style="background: rgba(113, 221, 55, 0.12); color: var(--success);">
                                     <i class="fas fa-user-edit"></i>
                                 </div>
                                 <div class="log-content">
-                                    <div class="log-text">管理员 <strong>王五</strong> 于 <span class="log-time">11:20</span> 修改了会员ID:10086的信息</div>
+                                    <div class="log-text">管理员 <strong>王五</strong> 于 <span
+                                            class="log-time">11:20</span> 修改了会员ID:10086的信息
+                                    </div>
                                 </div>
                             </div>
                             <div class="log-item">
@@ -1222,15 +1288,19 @@
                                     <i class="fas fa-shopping-cart"></i>
                                 </div>
                                 <div class="log-content">
-                                    <div class="log-text">系统于 <span class="log-time">10:15</span> 自动处理了5笔待支付订单</div>
+                                    <div class="log-text">系统于 <span class="log-time">10:15</span> 自动处理了5笔待支付订单
+                                    </div>
                                 </div>
                             </div>
                             <div class="log-item">
-                                <div class="log-icon" style="background: rgba(255, 62, 29, 0.12); color: var(--danger);">
+                                <div class="log-icon"
+                                     style="background: rgba(255, 62, 29, 0.12); color: var(--danger);">
                                     <i class="fas fa-exclamation-triangle"></i>
                                 </div>
                                 <div class="log-content">
-                                    <div class="log-text"><strong>警告</strong> 于 <span class="log-time">09:30</span> 检测到异常登录尝试</div>
+                                    <div class="log-text"><strong>警告</strong> 于 <span class="log-time">09:30</span>
+                                        检测到异常登录尝试
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1357,7 +1427,7 @@
                     displayColors: true,
                     boxPadding: 4,
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                             let label = context.dataset.label || '';
                             if (label) {
                                 label += ': ';
@@ -1382,7 +1452,7 @@
                         font: {
                             size: 12
                         },
-                        callback: function(value) {
+                        callback: function (value) {
                             return (value / 1000) + 'k';
                         }
                     }
@@ -1405,7 +1475,7 @@
             }
         }
     });
-
+    
     // 饼图数据
     const pieCtx = document.getElementById('pieChart').getContext('2d');
     const pieChart = new Chart(pieCtx, {
@@ -1446,7 +1516,7 @@
                     },
                     padding: 12,
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                             return `${context.label}: ${context.raw}%`;
                         }
                     }
@@ -1455,11 +1525,11 @@
             cutout: '75%'
         }
     });
-
+    
     // 窗口大小改变时重新调整图表
     // 带防抖的窗口resize处理
     let resizeTimer;
-    window.addEventListener('resize', function() {
+    window.addEventListener('resize', function () {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
             lineChart.resize();
@@ -1477,49 +1547,49 @@
 
 <!-- 在线客服功能实现 -->
 <script>
-// 动态记录数据
-const activityLogs = [
-    {
-        icon: 'file-alt',
-        color: 'primary',
-        text: '管理员 <strong>张三</strong> 于 <span class="log-time">14:30</span> 上传了工作日志'
-    },
-    {
-        icon: 'lock',
-        color: 'warning',
-        text: '用户 <strong>李四</strong> 于 <span class="log-time">13:45</span> 修改了登录密码'
-    },
-    {
-        icon: 'user-edit',
-        color: 'success',
-        text: '管理员 <strong>王五</strong> 于 <span class="log-time">11:20</span> 修改了会员ID:10086的信息'
-    },
-    {
-        icon: 'shopping-cart',
-        color: 'info',
-        text: '系统于 <span class="log-time">10:15</span> 自动处理了5笔待支付订单'
-    },
-    {
-        icon: 'exclamation-triangle',
-        color: 'danger',
-        text: '<strong>警告</strong> 于 <span class="log-time">09:30</span> 检测到异常登录尝试'
-    }
-];
-
-// 在线客服功能
-document.addEventListener('DOMContentLoaded', function() {
-    const serviceMessages = document.getElementById('serviceMessages');
-    const serviceInput = document.getElementById('serviceInput');
-    const sendServiceBtn = document.getElementById('sendServiceBtn');
+    // 动态记录数据
+    const activityLogs = [
+        {
+            icon: 'file-alt',
+            color: 'primary',
+            text: '管理员 <strong>张三</strong> 于 <span class="log-time">14:30</span> 上传了工作日志'
+        },
+        {
+            icon: 'lock',
+            color: 'warning',
+            text: '用户 <strong>李四</strong> 于 <span class="log-time">13:45</span> 修改了登录密码'
+        },
+        {
+            icon: 'user-edit',
+            color: 'success',
+            text: '管理员 <strong>王五</strong> 于 <span class="log-time">11:20</span> 修改了会员ID:10086的信息'
+        },
+        {
+            icon: 'shopping-cart',
+            color: 'info',
+            text: '系统于 <span class="log-time">10:15</span> 自动处理了5笔待支付订单'
+        },
+        {
+            icon: 'exclamation-triangle',
+            color: 'danger',
+            text: '<strong>警告</strong> 于 <span class="log-time">09:30</span> 检测到异常登录尝试'
+        }
+    ];
     
-    // 添加客服消息
-    function addServiceMessage(text, isSystem = false) {
-        const messageElement = document.createElement('div');
-        messageElement.className = `message-item ${isSystem ? 'system-message' : ''}`;
+    // 在线客服功能
+    document.addEventListener('DOMContentLoaded', function () {
+        const serviceMessages = document.getElementById('serviceMessages');
+        const serviceInput = document.getElementById('serviceInput');
+        const sendServiceBtn = document.getElementById('sendServiceBtn');
         
-        const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        
-        messageElement.innerHTML = `
+        // 添加客服消息
+        function addServiceMessage(text, isSystem = false) {
+            const messageElement = document.createElement('div');
+            messageElement.className = `message-item ${isSystem ? 'system-message' : ''}`;
+            
+            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+            
+            messageElement.innerHTML = `
             <div class="message-icon">
                 <i class="fas fa-${isSystem ? 'robot' : 'user'}"></i>
             </div>
@@ -1528,130 +1598,130 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="message-time">${time}</div>
             </div>
         `;
-        
-        serviceMessages.appendChild(messageElement);
-        serviceMessages.scrollTop = serviceMessages.scrollHeight;
-    }
-    
-    // 发送消息处理
-    sendServiceBtn.addEventListener('click', function() {
-        const message = serviceInput.value.trim();
-        if (message) {
-            addServiceMessage(message);
-            serviceInput.value = '';
             
-            // 模拟客服回复
-            setTimeout(() => {
-                const replies = [
-                    '感谢您的咨询，我们会尽快处理',
-                    '请问您能提供更多细节吗？',
-                    '这个问题我们已经记录，会尽快解决',
-                    '我们的工作时间是周一至周五 9:00-18:00',
-                    '您可以查看帮助中心获取更多信息'
-                ];
-                const randomReply = replies[Math.floor(Math.random() * replies.length)];
-                addServiceMessage(randomReply, true);
-            }, 1000 + Math.random() * 2000);
+            serviceMessages.appendChild(messageElement);
+            serviceMessages.scrollTop = serviceMessages.scrollHeight;
         }
-    });
-    
-    // 回车键发送
-    serviceInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            sendServiceBtn.click();
-        }
-    });
-    
-    // 初始欢迎消息
-    setTimeout(() => {
-        addServiceMessage('您好，请问有什么可以帮助您？', true);
-    }, 500);
-});
-
-// 全屏滚动控制
-document.addEventListener('DOMContentLoaded', function() {
-    const dashboardContent = document.querySelector('.dashboard-content');
-    const screenDots = document.querySelectorAll('.screen-dot');
-    let currentScreen = 0;
-    const totalScreens = 2;
-    let isScrolling = false;
-    
-    // 滚动到指定屏幕
-    function goToScreen(screenIndex) {
-        if (screenIndex < 0 || screenIndex >= totalScreens || isScrolling) return;
         
-        currentScreen = screenIndex;
-        isScrolling = true;
-        
-        // 移动内容
-        dashboardContent.style.transform = `translateY(-${currentScreen * 100}vh)`;
-        
-        // 更新导航点
-        screenDots.forEach((dot, index) => {
-            dot.classList.toggle('active', index === currentScreen);
+        // 发送消息处理
+        sendServiceBtn.addEventListener('click', function () {
+            const message = serviceInput.value.trim();
+            if (message) {
+                addServiceMessage(message);
+                serviceInput.value = '';
+                
+                // 模拟客服回复
+                setTimeout(() => {
+                    const replies = [
+                        '感谢您的咨询，我们会尽快处理',
+                        '请问您能提供更多细节吗？',
+                        '这个问题我们已经记录，会尽快解决',
+                        '我们的工作时间是周一至周五 9:00-18:00',
+                        '您可以查看帮助中心获取更多信息'
+                    ];
+                    const randomReply = replies[Math.floor(Math.random() * replies.length)];
+                    addServiceMessage(randomReply, true);
+                }, 1000 + Math.random() * 2000);
+            }
         });
         
-        // 防止滚动过快
+        // 回车键发送
+        serviceInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendServiceBtn.click();
+            }
+        });
+        
+        // 初始欢迎消息
         setTimeout(() => {
-            isScrolling = false;
+            addServiceMessage('您好，请问有什么可以帮助您？', true);
         }, 500);
-    }
-    
-    // 鼠标滚轮事件
-    window.addEventListener('wheel', function(e) {
-        if (isScrolling) return;
-        
-        if (e.deltaY > 0) {
-            // 向下滚动
-            goToScreen(Math.min(currentScreen + 1, totalScreens - 1));
-        } else {
-            // 向上滚动
-            goToScreen(Math.max(currentScreen - 1, 0));
-        }
-    }, { passive: false });
-    
-    // 点击导航点
-    screenDots.forEach(dot => {
-        dot.addEventListener('click', function() {
-            const screenIndex = parseInt(this.getAttribute('data-screen'));
-            goToScreen(screenIndex);
-        });
     });
     
-    // 触摸设备支持
-    let touchStartY = 0;
-    
-    dashboardContent.addEventListener('touchstart', function(e) {
-        touchStartY = e.touches[0].clientY;
-    }, { passive: true });
-    
-    dashboardContent.addEventListener('touchend', function(e) {
-        if (isScrolling) return;
+    // 全屏滚动控制
+    document.addEventListener('DOMContentLoaded', function () {
+        const dashboardContent = document.querySelector('.dashboard-content');
+        const screenDots = document.querySelectorAll('.screen-dot');
+        let currentScreen = 0;
+        const totalScreens = 2;
+        let isScrolling = false;
         
-        const touchEndY = e.changedTouches[0].clientY;
-        const diff = touchStartY - touchEndY;
+        // 滚动到指定屏幕
+        function goToScreen(screenIndex) {
+            if (screenIndex < 0 || screenIndex >= totalScreens || isScrolling) return;
+            
+            currentScreen = screenIndex;
+            isScrolling = true;
+            
+            // 移动内容
+            dashboardContent.style.transform = `translateY(-${currentScreen * 100}vh)`;
+            
+            // 更新导航点
+            screenDots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentScreen);
+            });
+            
+            // 防止滚动过快
+            setTimeout(() => {
+                isScrolling = false;
+            }, 500);
+        }
         
-        if (Math.abs(diff) > 50) { // 滑动阈值
-            if (diff > 0) {
-                // 向上滑动
+        // 鼠标滚轮事件
+        window.addEventListener('wheel', function (e) {
+            if (isScrolling) return;
+            
+            if (e.deltaY > 0) {
+                // 向下滚动
                 goToScreen(Math.min(currentScreen + 1, totalScreens - 1));
             } else {
-                // 向下滑动
+                // 向上滚动
                 goToScreen(Math.max(currentScreen - 1, 0));
             }
-        }
-    }, { passive: true });
-    
-    // 键盘控制（可选）
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'ArrowDown') {
-            goToScreen(Math.min(currentScreen + 1, totalScreens - 1));
-            e.preventDefault();
-        } else if (e.key === 'ArrowUp') {
-            goToScreen(Math.max(currentScreen - 1, 0));
-            e.preventDefault();
-        }
+        }, {passive: false});
+        
+        // 点击导航点
+        screenDots.forEach(dot => {
+            dot.addEventListener('click', function () {
+                const screenIndex = parseInt(this.getAttribute('data-screen'));
+                goToScreen(screenIndex);
+            });
+        });
+        
+        // 触摸设备支持
+        let touchStartY = 0;
+        
+        dashboardContent.addEventListener('touchstart', function (e) {
+            touchStartY = e.touches[0].clientY;
+        }, {passive: true});
+        
+        dashboardContent.addEventListener('touchend', function (e) {
+            if (isScrolling) return;
+            
+            const touchEndY = e.changedTouches[0].clientY;
+            const diff = touchStartY - touchEndY;
+            
+            if (Math.abs(diff) > 50) { // 滑动阈值
+                if (diff > 0) {
+                    // 向上滑动
+                    goToScreen(Math.min(currentScreen + 1, totalScreens - 1));
+                } else {
+                    // 向下滑动
+                    goToScreen(Math.max(currentScreen - 1, 0));
+                }
+            }
+        }, {passive: true});
+        
+        // 键盘控制（可选）
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'ArrowDown') {
+                goToScreen(Math.min(currentScreen + 1, totalScreens - 1));
+                e.preventDefault();
+            } else if (e.key === 'ArrowUp') {
+                goToScreen(Math.max(currentScreen - 1, 0));
+                e.preventDefault();
+            }
+        });
     });
-});
 </script>
 {/block}

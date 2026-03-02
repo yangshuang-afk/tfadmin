@@ -44,6 +44,9 @@
 (http://tfadmin.tiefen.net/customer/login/index)
 注册账号，创建应用已获取生成代码appid和secrect。
 
+### 视频教程
+[官方视频讲解(B站)]
+(https://www.bilibili.com/video/BV1SxttzjEjv)
 
 > **A. 测试或体验环境**
 >
