@@ -302,6 +302,22 @@ class Config
                 'item' => true,
                 'search' => true,
             ],
+            [
+                'name' => '横版二级单选',
+                'type' => 43,
+                'property' => 3,
+                'mongoProperty' => 2,
+                'item' => true,
+                'search' => true,
+            ],
+            [
+                'name' => '横版二级多选',
+                'type' => 44,
+                'property' => 1,
+                'mongoProperty' => 1,
+                'item' => true,
+                'search' => true,
+            ],
         ];
         return $list;
     }

@@ -2998,3 +2998,662 @@ Vue.component('guige', {
 		},
 	}
 });
+
+
+
+Vue.component('horizontal-select', {
+	template: `
+		<div style="width:100%;">
+			<el-popover
+				v-model="popoverVisible"
+				placement="bottom-start"
+				trigger="click"
+				width="760"
+				:disabled="disabled">
+				<div style="max-height:420px;padding: 10px 14px;overflow-y:auto;background:#fff;box-sizing:border-box;">
+					<div v-if="normalizedGroups.length === 0" style="padding:18px 10px;color:#909399;font-size:13px;text-align:center;">{{emptyText}}</div>
+					<el-radio-group v-else :value="currentValue" @input="handleSelect" style="display:block;width:100%;">
+						<div v-for="group in normalizedGroups" :key="group.key" style="margin-bottom:12px;border:1px solid #e7edf5;border-radius:10px;background:#fff;overflow:hidden;box-sizing:border-box;">
+							<div @click="toggleGroupOpen(group.key)" style="display:flex;align-items:center;justify-content:space-between;min-height:35px;padding:0 14px;background:#f8fbff;cursor:pointer;box-sizing:border-box;">
+								<span style="min-width:0;font-size:14px;font-weight:600;color:#303133;line-height:1.4;">{{group.label}}</span>
+								<div style="display:flex;align-items:center;gap:10px;flex:0 0 auto;padding-left:12px;">
+									<span style="font-size:12px;color:#909399;">{{group.leaves.length}}项</span>
+									<i class="el-icon-arrow-down" :style="{fontSize:'12px',color:'#909399',transition:'transform .2s ease',transform:isGroupOpen(group.key) ? 'rotate(0deg)' : 'rotate(-90deg)'}"></i>
+								</div>
+							</div>
+								<div v-show="isGroupOpen(group.key)" style="padding:14px;border-top:1px solid #edf1f7;box-sizing:border-box;">
+									<div style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:flex-start;gap:10px 12px;">
+										<div v-for="leaf in group.leaves" :key="leaf.key" style="min-width:0;max-width:100%;box-sizing:border-box;">
+											<el-radio :label="leaf.id" style="display:inline-block;max-width:100%;margin-right:0;line-height:1.4;white-space:normal;vertical-align:middle;word-break:break-all;">{{leaf.label}}</el-radio>
+										</div>
+									</div>
+								</div>
+						</div>
+					</el-radio-group>
+				</div>
+				<div slot="reference" style="position:relative;display:flex;align-items:center;justify-content:space-between;width:100%;min-height:32px;padding:5px 34px 5px 11px;border:1px solid #dcdfe6;border-radius:4px;background:#fff;color:#606266;font-size:13px;line-height:20px;box-sizing:border-box;">
+					<span style="min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{displayText || placeholder}}</span>
+					<span style="position:absolute;top:50%;right:10px;display:flex;align-items:center;transform:translateY(-50%);color:#c0c4cc;">
+						<i
+							v-if="clearable && currentValue !== '' && currentValue !== null && currentValue !== undefined && !disabled"
+							class="el-icon-circle-close"
+							style="cursor:pointer;margin-right:6px;"
+							@click.stop="clearSingle"></i>
+						<i class="el-icon-arrow-down" style="font-size:12px;"></i>
+					</span>
+				</div>
+			</el-popover>
+		</div>
+	`,
+	props: {
+		value: {
+			type: [String, Number, Array],
+			default: undefined
+		},
+		selectval: {
+			type: [String, Number, Array],
+			default: undefined
+		},
+		options: {
+			type: Array,
+			default: function () {
+				return [];
+			}
+		},
+		placeholder: {
+			type: String,
+			default: '请选择'
+		},
+		disabled: {
+			type: Boolean,
+			default: false
+		},
+		clearable: {
+			type: Boolean,
+			default: true
+		},
+		emptyText: {
+			type: String,
+			default: '暂无可选项'
+		}
+	},
+	data() {
+		return {
+			popoverVisible: false,
+			openKeys: []
+		}
+	},
+	watch: {
+		options: {
+			handler() {
+				this.syncOpenKeys()
+			},
+			deep: true,
+			immediate: true
+		}
+	},
+	computed: {
+		normalizedGroups() {
+			return this.buildGroups(this.options)
+		},
+		leafMap() {
+			return this.buildLeafMap(this.normalizedGroups)
+		},
+		currentValue() {
+			let value = this.value !== undefined ? this.value : this.selectval
+			return value === undefined ? '' : value
+		},
+		displayText() {
+			let leaf = this.findLeafById(this.currentValue)
+			return leaf ? leaf.label : ''
+		}
+	},
+	methods: {
+		syncOpenKeys() {
+			let groupKeys = this.normalizedGroups.map(function (group) {
+				return group.key
+			})
+			if (groupKeys.length === 0) {
+				this.openKeys = []
+				return
+			}
+			let nextOpenKeys = this.openKeys.filter(function (key) {
+				return groupKeys.indexOf(key) > -1
+			})
+			if (nextOpenKeys.length === 0) {
+				nextOpenKeys = [groupKeys[0]]
+			}
+			this.openKeys = nextOpenKeys
+		},
+		getNodeKey(value) {
+			if (value === null || value === undefined) {
+				return ''
+			}
+			return String(value)
+		},
+		getOptionValue(option, path) {
+			if (option === null || option === undefined) {
+				return path
+			}
+			if (typeof option !== 'object') {
+				return option
+			}
+			if (Object.prototype.hasOwnProperty.call(option, 'id')) {
+				return option.id
+			}
+			if (Object.prototype.hasOwnProperty.call(option, 'val')) {
+				return option.val
+			}
+			if (Object.prototype.hasOwnProperty.call(option, 'value')) {
+				return option.value
+			}
+			if (Object.prototype.hasOwnProperty.call(option, 'field')) {
+				return option.field
+			}
+			return path
+		},
+		getOptionLabel(option, fallback) {
+			if (option === null || option === undefined) {
+				return fallback
+			}
+			if (typeof option !== 'object') {
+				return option
+			}
+			if (option.label !== undefined && option.label !== null && option.label !== '') {
+				return option.label
+			}
+			if (option.key !== undefined && option.key !== null && option.key !== '') {
+				return option.key
+			}
+			if (option.title !== undefined && option.title !== null && option.title !== '') {
+				return option.title
+			}
+			if (option.name !== undefined && option.name !== null && option.name !== '') {
+				return option.name
+			}
+			return fallback
+		},
+		normalizeNodes(options, pathPrefix) {
+			let vm = this
+			if (!Array.isArray(options)) {
+				return []
+			}
+			return options.map(function (option, index) {
+				let node = option && typeof option === 'object' ? option : option
+				let path = (pathPrefix || 'root') + '-' + index
+				let value = vm.getOptionValue(node, path)
+				let label = vm.getOptionLabel(node, value)
+				let childrenSource = []
+				if (node && typeof node === 'object') {
+					if (Array.isArray(node.children)) {
+						childrenSource = node.children
+					} else if (Array.isArray(node.items)) {
+						childrenSource = node.items
+					} else if (Array.isArray(node.options)) {
+						childrenSource = node.options
+					}
+				}
+				return {
+					id: value,
+					key: vm.getNodeKey(value),
+					label: label,
+					children: vm.normalizeNodes(childrenSource, path)
+				}
+			})
+		},
+		collectLeaves(node) {
+			let vm = this
+			if (!node) {
+				return []
+			}
+			if (!Array.isArray(node.children) || node.children.length === 0) {
+				return [node]
+			}
+			let leaves = []
+			node.children.forEach(function (child) {
+				leaves = leaves.concat(vm.collectLeaves(child))
+			})
+			return leaves
+		},
+		buildGroups(options) {
+			let vm = this
+			return this.normalizeNodes(options).map(function (group) {
+				let leaves = vm.collectLeaves(group)
+				let leafKeys = []
+				leaves.forEach(function (item) {
+					leafKeys.push(item.key)
+				})
+				group.leaves = leaves
+				group.leafKeys = leafKeys
+				return group
+			})
+		},
+		buildLeafMap(groups) {
+			let map = {}
+			groups.forEach(function (group) {
+				group.leaves.forEach(function (leaf) {
+					map[leaf.key] = leaf
+				})
+			})
+			return map
+		},
+		findLeafById(id) {
+			return this.leafMap[this.getNodeKey(id)] || null
+		},
+		isGroupOpen(groupKey) {
+			return this.openKeys.indexOf(groupKey) > -1
+		},
+		toggleGroupOpen(groupKey) {
+			let nextOpenKeys = this.openKeys.slice()
+			let index = nextOpenKeys.indexOf(groupKey)
+			if (index > -1) {
+				nextOpenKeys.splice(index, 1)
+			} else {
+				nextOpenKeys.push(groupKey)
+			}
+			this.openKeys = nextOpenKeys
+		},
+		clearSingle() {
+			if (this.disabled) {
+				return
+			}
+			this.$emit('input', '')
+			this.$emit('update:value', '')
+			this.$emit('update:selectval', '')
+			this.$emit('change', '', null)
+		},
+		handleSelect(value) {
+			let leaf = this.findLeafById(value)
+			this.$emit('input', value)
+			this.$emit('update:value', value)
+			this.$emit('update:selectval', value)
+			this.$emit('change', value, leaf)
+			this.popoverVisible = false
+		},
+	}
+});
+
+Vue.component('horizontal-multi-select', {
+	template: `
+		<div style="width:100%;">
+			<el-popover
+				v-model="popoverVisible"
+				placement="bottom-start"
+				trigger="click"
+				width="760"
+				:disabled="disabled">
+				<div style="max-height:420px;padding: 10px 14px;overflow-y:auto;background:#fff;box-sizing:border-box;">
+					<div v-if="normalizedGroups.length === 0" style="padding:18px 10px;color:#909399;font-size:13px;text-align:center;">{{emptyText}}</div>
+					<div v-else>
+						<div v-for="group in normalizedGroups" :key="group.key" style="margin-bottom:12px;border:1px solid #e7edf5;border-radius:10px;background:#fff;overflow:hidden;box-sizing:border-box;">
+							<div @click="toggleGroupOpen(group.key)" style="display:flex;align-items:center;justify-content:space-between;min-height:35px;padding:0 14px;background:#f8fbff;cursor:pointer;box-sizing:border-box;">
+								<div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1;">
+									<span style="display:flex;align-items:center;flex:0 0 auto;" @click.stop>
+										<el-checkbox
+											:value="isGroupChecked(group)"
+											:indeterminate="isGroupIndeterminate(group)"
+											style="margin-right:0;line-height:1.4;"
+											@change="toggleGroup(group, $event)">
+										</el-checkbox>
+									</span>
+									<span style="min-width:0;font-size:14px;font-weight:600;color:#303133;line-height:1.4;">{{group.label}}</span>
+								</div>
+								<div style="display:flex;align-items:center;gap:10px;flex:0 0 auto;padding-left:12px;">
+									<span style="font-size:12px;color:#909399;">{{groupSelectedCount(group)}}/{{group.leaves.length}}</span>
+									<i class="el-icon-arrow-down" :style="{fontSize:'12px',color:'#909399',transition:'transform .2s ease',transform:isGroupOpen(group.key) ? 'rotate(0deg)' : 'rotate(-90deg)'}"></i>
+								</div>
+							</div>
+								<div v-show="isGroupOpen(group.key)" style="padding:14px;border-top:1px solid #edf1f7;box-sizing:border-box;">
+									<div style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:flex-start;gap:10px 12px;">
+										<div v-for="leaf in group.leaves" :key="leaf.key" style="min-width:0;max-width:100%;box-sizing:border-box;">
+											<el-checkbox
+												:value="isLeafSelected(leaf.id)"
+												style="display:inline-block;max-width:100%;margin-right:0;line-height:1.4;white-space:normal;vertical-align:middle;word-break:break-all;"
+												@change="toggleLeaf(leaf, $event)">
+												{{leaf.label}}
+											</el-checkbox>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div slot="reference" style="position:relative;display:flex;align-items:center;justify-content:space-between;width:100%;min-height:32px;padding:5px 34px 5px 11px;border:1px solid #dcdfe6;border-radius:4px;background:#fff;color:#606266;font-size:13px;line-height:20px;box-sizing:border-box;">
+					<span style="min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{displayText || placeholder}}</span>
+					<span style="position:absolute;top:50%;right:10px;display:flex;align-items:center;transform:translateY(-50%);color:#c0c4cc;">
+						<i
+							v-if="clearable && selectedValues.length > 0 && !disabled"
+							class="el-icon-circle-close"
+							style="cursor:pointer;margin-right:6px;"
+							@click.stop="clearMultiple"></i>
+						<i class="el-icon-arrow-down" style="font-size:12px;"></i>
+					</span>
+				</div>
+			</el-popover>
+		</div>
+	`,
+	props: {
+		value: {
+			type: [String, Number, Array],
+			default: undefined
+		},
+		selectval: {
+			type: [String, Number, Array],
+			default: undefined
+		},
+		options: {
+			type: Array,
+			default: function () {
+				return [];
+			}
+		},
+		placeholder: {
+			type: String,
+			default: '请选择'
+		},
+		disabled: {
+			type: Boolean,
+			default: false
+		},
+		clearable: {
+			type: Boolean,
+			default: true
+		},
+		emptyText: {
+			type: String,
+			default: '暂无可选项'
+		}
+	},
+	data() {
+		return {
+			popoverVisible: false,
+			openKeys: []
+		}
+	},
+	watch: {
+		options: {
+			handler() {
+				this.syncOpenKeys()
+			},
+			deep: true,
+			immediate: true
+		}
+	},
+	computed: {
+		normalizedGroups() {
+			return this.buildGroups(this.options)
+		},
+		leafMap() {
+			return this.buildLeafMap(this.normalizedGroups)
+		},
+		flatLeaves() {
+			let list = []
+			this.normalizedGroups.forEach(function (group) {
+				list = list.concat(group.leaves)
+			})
+			return list
+		},
+		selectedValues() {
+			let value = this.value !== undefined ? this.value : this.selectval
+			if (Array.isArray(value)) {
+				return value.slice()
+			}
+			if (value === '' || value === null || value === undefined) {
+				return []
+			}
+			return [value]
+		},
+		selectedLabels() {
+			let vm = this
+			return this.selectedValues.map(function (item) {
+				let leaf = vm.findLeafById(item)
+				return leaf ? leaf.label : ''
+			}).filter(Boolean)
+		},
+		displayText() {
+			if (this.selectedLabels.length === 0) {
+				return ''
+			}
+			if (this.selectedLabels.length <= 2) {
+				return this.selectedLabels.join('、')
+			}
+			return this.selectedLabels.slice(0, 2).join('、') + ' 等' + this.selectedLabels.length + '项'
+		}
+	},
+	methods: {
+		syncOpenKeys() {
+			let groupKeys = this.normalizedGroups.map(function (group) {
+				return group.key
+			})
+			if (groupKeys.length === 0) {
+				this.openKeys = []
+				return
+			}
+			let nextOpenKeys = this.openKeys.filter(function (key) {
+				return groupKeys.indexOf(key) > -1
+			})
+			if (nextOpenKeys.length === 0) {
+				nextOpenKeys = [groupKeys[0]]
+			}
+			this.openKeys = nextOpenKeys
+		},
+		getNodeKey(value) {
+			if (value === null || value === undefined) {
+				return ''
+			}
+			return String(value)
+		},
+		getOptionValue(option, path) {
+			if (option === null || option === undefined) {
+				return path
+			}
+			if (typeof option !== 'object') {
+				return option
+			}
+			if (Object.prototype.hasOwnProperty.call(option, 'id')) {
+				return option.id
+			}
+			if (Object.prototype.hasOwnProperty.call(option, 'val')) {
+				return option.val
+			}
+			if (Object.prototype.hasOwnProperty.call(option, 'value')) {
+				return option.value
+			}
+			if (Object.prototype.hasOwnProperty.call(option, 'field')) {
+				return option.field
+			}
+			return path
+		},
+		getOptionLabel(option, fallback) {
+			if (option === null || option === undefined) {
+				return fallback
+			}
+			if (typeof option !== 'object') {
+				return option
+			}
+			if (option.label !== undefined && option.label !== null && option.label !== '') {
+				return option.label
+			}
+			if (option.key !== undefined && option.key !== null && option.key !== '') {
+				return option.key
+			}
+			if (option.title !== undefined && option.title !== null && option.title !== '') {
+				return option.title
+			}
+			if (option.name !== undefined && option.name !== null && option.name !== '') {
+				return option.name
+			}
+			return fallback
+		},
+		normalizeNodes(options, pathPrefix) {
+			let vm = this
+			if (!Array.isArray(options)) {
+				return []
+			}
+			return options.map(function (option, index) {
+				let node = option && typeof option === 'object' ? option : option
+				let path = (pathPrefix || 'root') + '-' + index
+				let value = vm.getOptionValue(node, path)
+				let label = vm.getOptionLabel(node, value)
+				let childrenSource = []
+				if (node && typeof node === 'object') {
+					if (Array.isArray(node.children)) {
+						childrenSource = node.children
+					} else if (Array.isArray(node.items)) {
+						childrenSource = node.items
+					} else if (Array.isArray(node.options)) {
+						childrenSource = node.options
+					}
+				}
+				return {
+					id: value,
+					key: vm.getNodeKey(value),
+					label: label,
+					children: vm.normalizeNodes(childrenSource, path)
+				}
+			})
+		},
+		collectLeaves(node) {
+			let vm = this
+			if (!node) {
+				return []
+			}
+			if (!Array.isArray(node.children) || node.children.length === 0) {
+				return [node]
+			}
+			let leaves = []
+			node.children.forEach(function (child) {
+				leaves = leaves.concat(vm.collectLeaves(child))
+			})
+			return leaves
+		},
+		buildGroups(options) {
+			let vm = this
+			return this.normalizeNodes(options).map(function (group) {
+				let leaves = vm.collectLeaves(group)
+				let leafKeys = []
+				leaves.forEach(function (item) {
+					leafKeys.push(item.key)
+				})
+				group.leaves = leaves
+				group.leafKeys = leafKeys
+				return group
+			})
+		},
+		buildLeafMap(groups) {
+			let map = {}
+			groups.forEach(function (group) {
+				group.leaves.forEach(function (leaf) {
+					map[leaf.key] = leaf
+				})
+			})
+			return map
+		},
+		findLeafById(id) {
+			return this.leafMap[this.getNodeKey(id)] || null
+		},
+		hasLeafKey(key) {
+			for (let i = 0; i < this.selectedValues.length; i++) {
+				if (this.getNodeKey(this.selectedValues[i]) === key) {
+					return true
+				}
+			}
+			return false
+		},
+		getSelectedKeys() {
+			let keyList = []
+			this.selectedValues.forEach(function (item) {
+				let key = String(item)
+				if (item === null || item === undefined) {
+					key = ''
+				}
+				if (keyList.indexOf(key) === -1) {
+					keyList.push(key)
+				}
+			})
+			return keyList
+		},
+		buildValuesFromKeys(keyList) {
+			let valueList = []
+			this.flatLeaves.forEach(function (leaf) {
+				if (keyList.indexOf(leaf.key) > -1) {
+					valueList.push(leaf.id)
+				}
+			})
+			return valueList
+		},
+		emitMultiValue(valueList) {
+			let vm = this
+			let emitList = Array.isArray(valueList) ? valueList.slice() : []
+			let selectedList = emitList.map(function (item) {
+				return vm.findLeafById(item)
+			}).filter(Boolean)
+			this.$emit('input', emitList)
+			this.$emit('update:value', emitList)
+			this.$emit('update:selectval', emitList)
+			this.$emit('change', emitList, selectedList)
+		},
+		clearMultiple() {
+			if (this.disabled) {
+				return
+			}
+			this.emitMultiValue([])
+		},
+		isLeafSelected(leafId) {
+			return this.hasLeafKey(this.getNodeKey(leafId))
+		},
+		groupSelectedCount(group) {
+			let count = 0
+			group.leafKeys.forEach((key) => {
+				if (this.hasLeafKey(key)) {
+					count++
+				}
+			})
+			return count
+		},
+		isGroupChecked(group) {
+			return group.leafKeys.length > 0 && this.groupSelectedCount(group) === group.leafKeys.length
+		},
+		isGroupIndeterminate(group) {
+			let selectedCount = this.groupSelectedCount(group)
+			return selectedCount > 0 && selectedCount < group.leafKeys.length
+		},
+		isGroupOpen(groupKey) {
+			return this.openKeys.indexOf(groupKey) > -1
+		},
+		toggleGroupOpen(groupKey) {
+			let nextOpenKeys = this.openKeys.slice()
+			let index = nextOpenKeys.indexOf(groupKey)
+			if (index > -1) {
+				nextOpenKeys.splice(index, 1)
+			} else {
+				nextOpenKeys.push(groupKey)
+			}
+			this.openKeys = nextOpenKeys
+		},
+		toggleLeaf(leaf, checked) {
+			let nextKeys = this.getSelectedKeys()
+			let leafIndex = nextKeys.indexOf(leaf.key)
+			if (checked && leafIndex === -1) {
+				nextKeys.push(leaf.key)
+			}
+			if (!checked && leafIndex > -1) {
+				nextKeys.splice(leafIndex, 1)
+			}
+			this.emitMultiValue(this.buildValuesFromKeys(nextKeys))
+		},
+		toggleGroup(group, checked) {
+			let nextKeys = this.getSelectedKeys()
+			group.leafKeys.forEach(function (key) {
+				let index = nextKeys.indexOf(key)
+				if (checked && index === -1) {
+					nextKeys.push(key)
+				}
+				if (!checked && index > -1) {
+					nextKeys.splice(index, 1)
+				}
+			})
+			this.emitMultiValue(this.buildValuesFromKeys(nextKeys))
+		},
+	}
+});

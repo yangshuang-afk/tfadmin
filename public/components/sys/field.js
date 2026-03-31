@@ -925,7 +925,7 @@ Vue.component('AdminAdd', {
 									<el-checkbox key="1" label="sort">表头排序</el-checkbox>
 									<el-checkbox key="2" label="sum">字段汇总求和</el-checkbox>
 									<el-checkbox v-if="[2,3,4,5].includes(form.type)" key="3" label="tabs">列表选项卡</el-checkbox>
-									<el-checkbox v-if="[2,3,4,5,35,30,33,41].includes(form.type) && form.sql != ''" key="4" label="fanzhuan">数据显示反转</el-checkbox>
+									<el-checkbox v-if="[2,3,4,5,35,30,33,41,43,44].includes(form.type) && form.sql != ''" key="4" label="fanzhuan">数据显示反转</el-checkbox>
 									<el-checkbox v-if="![13,14,15,16,21,39,25,26,27,38,30].includes(form.type)" key="5" label="readonly">编辑只读</el-checkbox>
 								</el-checkbox-group>
 							</el-form-item>
@@ -1980,7 +1980,7 @@ Vue.component('AdminUpdate', {
 									<el-checkbox key="1" label="sort">表头排序</el-checkbox>
 									<el-checkbox key="2" label="sum">字段汇总求和</el-checkbox>
 									<el-checkbox v-if="[2,3,4,5].includes(form.type)" key="3" label="tabs">列表选项卡</el-checkbox>
-									<el-checkbox v-if="[2,3,4,5,35,30,33,41].includes(form.type) && form.sql != ''" key="4" label="fanzhuan">数据显示反转</el-checkbox>
+									<el-checkbox v-if="[2,3,4,5,35,30,33,41,43,44].includes(form.type) && form.sql != ''" key="4" label="fanzhuan">数据显示反转</el-checkbox>
 									<el-checkbox v-if="![13,14,15,16,21,39,25,26,27,38,30].includes(form.type)" key="5" label="readonly">编辑只读</el-checkbox>
 								</el-checkbox-group>
 							</el-form-item>
