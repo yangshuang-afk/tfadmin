@@ -26,7 +26,8 @@ class Index extends Admin
     public function main()
     {
         if (!$this->request->isPost()) {
-            return view('main');
+            $info = db('secrect')->column('data', 'name');
+            return view('main', $info);
         } else {
             //折线图数据
             $echat_data['day_count'] = [
