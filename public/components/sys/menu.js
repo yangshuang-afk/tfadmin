@@ -83,6 +83,16 @@ Vue.component('AdminAdd', {
                             </el-input>
                         </el-form-item>
                     </el-row>
+                    <el-row>
+                        <el-col :span="24">
+                            <el-form-item label="打开方式" prop="open_mode">
+                                <el-radio-group v-model="form.open_mode">
+                                    <el-radio :label="1">iframe0</el-radio>
+                                    <el-radio :label="2">_blank</el-radio>
+                                </el-radio-group>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
 					<el-row v-if="form.create_code == 0 && form.status == 1">
                         <el-form-item label="跳转地址" prop="url">
                             <el-input v-model="form.url" placeholder="请输入跳转地址" clearable></el-input>
@@ -206,6 +216,7 @@ Vue.component('AdminAdd', {
                 notice:'',
                 prompt:0,
                 prompt_session:'',
+                open_mode:1,
             },
             dbtype:'',
             disabledPk:false,
@@ -243,6 +254,7 @@ Vue.component('AdminAdd', {
         },
         open(){
             this.form.app_id = this.app_id
+            this.form.open_mode = Number(this.form.open_mode) || 1
             axios.post(base_url+'/Sys.Base/getUploadList',{app_id:this.app_id}).then(res => {
                 if(res.data.status == 200){
                     this.upload_list = res.data.data
@@ -384,6 +396,16 @@ Vue.component('AdminUpdate', {
                             </el-input>
                         </el-form-item>
                     </el-row>
+                    <el-row>
+                        <el-col :span="24">
+                            <el-form-item label="打开方式" prop="open_mode">
+                                <el-radio-group v-model="form.open_mode">
+                                    <el-radio :label="1">iframe0</el-radio>
+                                    <el-radio :label="2">_blank</el-radio>
+                                </el-radio-group>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
 					<el-row v-if="form.create_code == 0 && form.status == 1">
                         <el-form-item label="跳转地址" prop="url">
                             <el-input v-model="form.url" placeholder="请输入跳转地址" clearable></el-input>
@@ -507,6 +529,7 @@ Vue.component('AdminUpdate', {
                 notice:'',
                 prompt:0,
                 prompt_session:'',
+                open_mode:1,
             },
             dbtype:'',
             disabledPk:false,
@@ -548,6 +571,7 @@ Vue.component('AdminUpdate', {
                 this.$delete(this.info,'pid')
             }
             this.form = this.info
+            this.form.open_mode = Number(this.form.open_mode) || 1
             axios.post(base_url+'/Sys.Base/getUploadList',{app_id:this.app_id}).then(res => {
                 if(res.data.status == 200){
                     this.upload_list = res.data.data

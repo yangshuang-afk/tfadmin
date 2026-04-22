@@ -59,7 +59,7 @@ class Admin extends BaseController
         $appname = app('http')->getName();
         $field = 'menu_id,pid,title,controller_name,status,icon,sortid,url';
         // 提醒 - 2025-08-29
-        $field .= ",prompt,table_name,prompt_session";
+        $field .= ",prompt,table_name,prompt_session,open_mode";
 
         $list = db("menu")->field($field)->where(['status' => 1, 'app_id' => 1])->order('sortid asc')->select()->toArray();
         if ($list) {
@@ -71,6 +71,7 @@ class Admin extends BaseController
                 $menus[$key]['icon'] = $val['icon'] ? $val['icon'] : 'el-icon-menu';
                 $menus[$key]['url'] = $this->getUrl($val, $appname);
                 $menus[$key]['access'] = $val['url'] ? $val['url'] : $appname . '/' . $val['controller_name'];
+                $menus[$key]['open_mode'] = intval($val['open_mode'] ?? 1) ?: 1;
 
 
                 // 提醒 - 2025-08-29

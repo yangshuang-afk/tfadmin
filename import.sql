@@ -6,57 +6,57 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_action`;
 CREATE TABLE `cd_action`  (
-                              `id` int NOT NULL AUTO_INCREMENT COMMENT '点击添加备注',
-                              `menu_id` int NOT NULL COMMENT '模块ID',
-                              `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '动作名称',
-                              `action_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '动作名称',
-                              `type` tinyint NOT NULL COMMENT '点击添加备注',
-                              `icon` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'icon图标',
-                              `pagesize` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '每页显示数据条数',
-                              `group_button_status` tinyint NULL DEFAULT NULL COMMENT '按钮组显示状态',
-                              `list_button_status` tinyint NULL DEFAULT NULL COMMENT '按钮是否显示列表',
-                              `button_color` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                              `fields` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '操作的字段',
-                              `sortid` int NULL DEFAULT 0 COMMENT '排序',
-                              `orderby` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '配置排序',
-                              `tree_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-                              `jump` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '按钮跳转地址',
-                              `server_create_status` tinyint NULL DEFAULT 1,
-                              `vue_create_status` tinyint NULL DEFAULT 1 COMMENT '视图生成',
-                              `cache_time` mediumint NULL DEFAULT NULL COMMENT '缓存时间',
-                              `api_auth` tinyint NULL DEFAULT NULL COMMENT '接口是否鉴权',
-                              `img_auth` tinyint NULL DEFAULT NULL COMMENT '图片验证码鉴权',
-                              `sms_auth` tinyint NULL DEFAULT NULL COMMENT '短信验证',
-                              `list_filter` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '过滤',
-                              `tab_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-                              `sql` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-                              `dialog_size` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                              `status_val` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                              `validate` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '无备注',
-                              `select_type` tinyint NULL DEFAULT 1 COMMENT '选中方式 1多选 2单选',
-                              `table_height` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '表格高度',
-                              `left_tree_sql` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '侧栏生成的sql',
-                              `with_join` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '关联模型',
-                              `other_config` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '字段配置',
-                              `dialog_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '页面打开方式',
-                              `version` int NULL DEFAULT NULL COMMENT 'apipost接口文档版本号',
-                              `remark` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '方法备注',
-                              `remark_desc` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '功能描述',
-                              `q_template` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-                              `h_php` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-                              `action_pid` int NULL DEFAULT NULL COMMENT '联动方法id（例如：审批流关联方法）',
-                              `action_show` tinyint NULL DEFAULT 1 COMMENT '列表显示 0不显示 1显示',
-                              PRIMARY KEY (`id`) USING BTREE,
-                              INDEX `menu_id`(`menu_id` ASC) USING BTREE,
-                              INDEX `name`(`name` ASC) USING BTREE,
-                              INDEX `type`(`type` ASC) USING BTREE,
-                              INDEX `pagesize`(`pagesize` ASC) USING BTREE,
-                              INDEX `group_button_status`(`group_button_status` ASC) USING BTREE,
-                              INDEX `list_button_status`(`list_button_status` ASC) USING BTREE,
-                              INDEX `sortid`(`sortid` ASC) USING BTREE,
-                              INDEX `server_create_status`(`server_create_status` ASC) USING BTREE,
-                              INDEX `vue_create_status`(`vue_create_status` ASC) USING BTREE,
-                              INDEX `select_type`(`select_type` ASC) USING BTREE
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '点击添加备注',
+  `menu_id` int NOT NULL COMMENT '模块ID',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '动作名称',
+  `action_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '动作名称',
+  `type` tinyint NOT NULL COMMENT '点击添加备注',
+  `icon` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'icon图标',
+  `pagesize` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '每页显示数据条数',
+  `group_button_status` tinyint NULL DEFAULT NULL COMMENT '按钮组显示状态',
+  `list_button_status` tinyint NULL DEFAULT NULL COMMENT '按钮是否显示列表',
+  `button_color` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `fields` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '操作的字段',
+  `sortid` int NULL DEFAULT 0 COMMENT '排序',
+  `orderby` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '配置排序',
+  `tree_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `jump` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '按钮跳转地址',
+  `server_create_status` tinyint NULL DEFAULT 1,
+  `vue_create_status` tinyint NULL DEFAULT 1 COMMENT '视图生成',
+  `cache_time` mediumint NULL DEFAULT NULL COMMENT '缓存时间',
+  `api_auth` tinyint NULL DEFAULT NULL COMMENT '接口是否鉴权',
+  `img_auth` tinyint NULL DEFAULT NULL COMMENT '图片验证码鉴权',
+  `sms_auth` tinyint NULL DEFAULT NULL COMMENT '短信验证',
+  `list_filter` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '过滤',
+  `tab_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `sql` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `dialog_size` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `status_val` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `validate` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '无备注',
+  `select_type` tinyint NULL DEFAULT 1 COMMENT '选中方式 1多选 2单选',
+  `table_height` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '表格高度',
+  `left_tree_sql` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '侧栏生成的sql',
+  `with_join` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '关联模型',
+  `other_config` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '字段配置',
+  `dialog_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '页面打开方式',
+  `version` int NULL DEFAULT NULL COMMENT 'apipost接口文档版本号',
+  `remark` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '方法备注',
+  `remark_desc` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '功能描述',
+  `q_template` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `h_php` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `action_pid` int NULL DEFAULT NULL COMMENT '联动方法id（例如：审批流关联方法）',
+  `action_show` tinyint NULL DEFAULT 1 COMMENT '列表显示 0不显示 1显示',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `menu_id`(`menu_id` ASC) USING BTREE,
+  INDEX `name`(`name` ASC) USING BTREE,
+  INDEX `type`(`type` ASC) USING BTREE,
+  INDEX `pagesize`(`pagesize` ASC) USING BTREE,
+  INDEX `group_button_status`(`group_button_status` ASC) USING BTREE,
+  INDEX `list_button_status`(`list_button_status` ASC) USING BTREE,
+  INDEX `sortid`(`sortid` ASC) USING BTREE,
+  INDEX `server_create_status`(`server_create_status` ASC) USING BTREE,
+  INDEX `vue_create_status`(`vue_create_status` ASC) USING BTREE,
+  INDEX `select_type`(`select_type` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4941 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -100,16 +100,16 @@ INSERT INTO `cd_action` VALUES (4927, 2, '查看详情', 'detail', 5, 'el-icon-v
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_action_remarks`;
 CREATE TABLE `cd_action_remarks`  (
-                                      `id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
-                                      `action_id` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'action_id',
-                                      `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '代码内容',
-                                      `description` tinytext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '功能描述',
-                                      `create_time` int NULL DEFAULT NULL COMMENT '创建时间',
-                                      `menu_id` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '所属菜单',
-                                      PRIMARY KEY (`id`) USING BTREE,
-                                      INDEX `action_id`(`action_id` ASC) USING BTREE,
-                                      INDEX `menu_id`(`menu_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '版本记录' ROW_FORMAT = DYNAMIC;
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
+  `action_id` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'action_id',
+  `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '代码内容',
+  `description` tinytext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '功能描述',
+  `create_time` int NULL DEFAULT NULL COMMENT '创建时间',
+  `menu_id` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '所属菜单',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `action_id`(`action_id` ASC) USING BTREE,
+  INDEX `menu_id`(`menu_id` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '版本记录' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of cd_action_remarks
@@ -120,45 +120,45 @@ CREATE TABLE `cd_action_remarks`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_admin_user`;
 CREATE TABLE `cd_admin_user`  (
-                                  `user_id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
-                                  `name` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户姓名',
-                                  `user` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户名',
-                                  `pwd` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '密码',
-                                  `role_id` int NULL DEFAULT NULL COMMENT '所属分组',
-                                  `note` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
-                                  `status` tinyint NULL DEFAULT NULL COMMENT '状态',
-                                  `create_time` int NULL DEFAULT NULL COMMENT '创建时间',
-                                  `session_token` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '唯一登录',
-                                  PRIMARY KEY (`user_id`) USING BTREE
+  `user_id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
+  `name` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户姓名',
+  `user` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户名',
+  `pwd` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '密码',
+  `role_id` int NULL DEFAULT NULL COMMENT '所属分组',
+  `note` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `status` tinyint NULL DEFAULT NULL COMMENT '状态',
+  `create_time` int NULL DEFAULT NULL COMMENT '创建时间',
+  `session_token` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '唯一登录',
+  PRIMARY KEY (`user_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 341 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户管理' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of cd_admin_user
 -- ----------------------------
-INSERT INTO `cd_admin_user` VALUES (1, '铁粉', 'admin', '35bfa44f104ddfe466d1889daeff6e35', 1, '超级管理员', 1, 1548558919, 'c5a550f2da5a04b2e22b5e285484f1b6');
+INSERT INTO `cd_admin_user` VALUES (1, '铁粉', 'admin', '35bfa44f104ddfe466d1889daeff6e35', 1, '超级管理员', 1, 1548558919, 'e3321288b635c0e315903208d6a89ea7');
 
 -- ----------------------------
 -- Table structure for cd_application
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_application`;
 CREATE TABLE `cd_application`  (
-                                   `app_id` int NOT NULL AUTO_INCREMENT,
-                                   `application_name` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                                   `app_dir` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                                   `status` tinyint NULL DEFAULT NULL,
-                                   `app_type` tinyint NULL DEFAULT NULL,
-                                   `login_table` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                                   `login_fields` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                                   `domain` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                                   `pk` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '登录表主键',
-                                   `connect` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据库连接',
-                                   `project_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'apipost项目id',
-                                   `register` tinyint(1) NULL DEFAULT NULL COMMENT '是否开启注册 1开启 0禁用',
-                                   PRIMARY KEY (`app_id`) USING BTREE,
-                                   INDEX `status`(`status` ASC) USING BTREE,
-                                   INDEX `app_type`(`app_type` ASC) USING BTREE,
-                                   INDEX `pk`(`pk` ASC) USING BTREE,
-                                   INDEX `project_id`(`project_id` ASC) USING BTREE
+  `app_id` int NOT NULL AUTO_INCREMENT,
+  `application_name` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `app_dir` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `status` tinyint NULL DEFAULT NULL,
+  `app_type` tinyint NULL DEFAULT NULL,
+  `login_table` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `login_fields` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `domain` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `pk` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '登录表主键',
+  `connect` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据库连接',
+  `project_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'apipost项目id',
+  `register` tinyint(1) NULL DEFAULT NULL COMMENT '是否开启注册 1开启 0禁用',
+  PRIMARY KEY (`app_id`) USING BTREE,
+  INDEX `status`(`status` ASC) USING BTREE,
+  INDEX `app_type`(`app_type` ASC) USING BTREE,
+  INDEX `pk`(`pk` ASC) USING BTREE,
+  INDEX `project_id`(`project_id` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 310 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -171,11 +171,11 @@ INSERT INTO `cd_application` VALUES (1, '后台管理', 'admin', 1, 1, '', '', '
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_base_config`;
 CREATE TABLE `cd_base_config`  (
-                                   `id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
-                                   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-                                   `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-                                   PRIMARY KEY (`id`) USING BTREE,
-                                   INDEX `name`(`name` ASC) USING BTREE
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
+  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `name`(`name` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 29 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -205,44 +205,44 @@ INSERT INTO `cd_base_config` VALUES (28, 'deepseekkey', NULL);
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_field`;
 CREATE TABLE `cd_field`  (
-                             `id` int NOT NULL AUTO_INCREMENT,
-                             `menu_id` int NOT NULL COMMENT '模块ID',
-                             `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字段名称',
-                             `field` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-                             `type` smallint NOT NULL COMMENT '表单类型1输入框 2下拉框 3单选框 4多选框 5上传图片 6编辑器 7时间',
-                             `list_show` tinyint NULL DEFAULT NULL COMMENT '列表显示',
-                             `search_type` tinyint NULL DEFAULT NULL COMMENT '1精确匹配 2模糊搜索',
-                             `post_status` tinyint NULL DEFAULT NULL COMMENT '是否前台录入',
-                             `create_table_field` tinyint NULL DEFAULT NULL,
-                             `validate` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '验证方式',
-                             `rule` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '验证规则',
-                             `sortid` mediumint NULL DEFAULT 0 COMMENT '排序号',
-                             `sql` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '字段配置数据源sql',
-                             `default_value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                             `datatype` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字段数据类型',
-                             `length` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字段长度',
-                             `indexdata` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '索引',
-                             `show_condition` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                             `item_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-                             `width` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '单元格宽度',
-                             `datetime_config` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他配置',
-                             `other_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-                             `belong_table` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '虚拟字段所属表 用户多表关联',
-                             `icon` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字体图标',
-                             `key_placeholder` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '建站位文本',
-                             `value_placeholder` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '值占位文本',
-                             `tx_tiaojian` smallint NULL DEFAULT NULL COMMENT '鎻愰啋鏉′欢',
-                             `tx_zhi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '体型值',
-                             `tx_color` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '提醒颜色',
-                             `improve_tiaojian` smallint NULL DEFAULT NULL COMMENT '完善条件',
-                             `improve_zhi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '完善条件校验值',
-                             `improve_color` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '完善条件提醒颜色',
-                             `tx_config` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '列表文字变色配置项',
-                             `list_background_config` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '列表背景变色配置项',
-                             `field_show` tinyint NULL DEFAULT 1 COMMENT '列表显示 0不显示 1显示',
-                             PRIMARY KEY (`id`) USING BTREE,
-                             INDEX `menu_id`(`menu_id` ASC) USING BTREE,
-                             INDEX `tx_tiaojian`(`tx_tiaojian` ASC) USING BTREE
+  `id` int NOT NULL AUTO_INCREMENT,
+  `menu_id` int NOT NULL COMMENT '模块ID',
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字段名称',
+  `field` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `type` smallint NOT NULL COMMENT '表单类型1输入框 2下拉框 3单选框 4多选框 5上传图片 6编辑器 7时间',
+  `list_show` tinyint NULL DEFAULT NULL COMMENT '列表显示',
+  `search_type` tinyint NULL DEFAULT NULL COMMENT '1精确匹配 2模糊搜索',
+  `post_status` tinyint NULL DEFAULT NULL COMMENT '是否前台录入',
+  `create_table_field` tinyint NULL DEFAULT NULL,
+  `validate` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '验证方式',
+  `rule` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '验证规则',
+  `sortid` mediumint NULL DEFAULT 0 COMMENT '排序号',
+  `sql` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '字段配置数据源sql',
+  `default_value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `datatype` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字段数据类型',
+  `length` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字段长度',
+  `indexdata` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '索引',
+  `show_condition` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `item_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `width` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '单元格宽度',
+  `datetime_config` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '其他配置',
+  `other_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `belong_table` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '虚拟字段所属表 用户多表关联',
+  `icon` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '字体图标',
+  `key_placeholder` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '建站位文本',
+  `value_placeholder` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '值占位文本',
+  `tx_tiaojian` smallint NULL DEFAULT NULL COMMENT '鎻愰啋鏉′欢',
+  `tx_zhi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '体型值',
+  `tx_color` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '提醒颜色',
+  `improve_tiaojian` smallint NULL DEFAULT NULL COMMENT '完善条件',
+  `improve_zhi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '完善条件校验值',
+  `improve_color` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '完善条件提醒颜色',
+  `tx_config` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '列表文字变色配置项',
+  `list_background_config` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '列表背景变色配置项',
+  `field_show` tinyint NULL DEFAULT 1 COMMENT '列表显示 0不显示 1显示',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `menu_id`(`menu_id` ASC) USING BTREE,
+  INDEX `tx_tiaojian`(`tx_tiaojian` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 5457 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -310,17 +310,17 @@ INSERT INTO `cd_field` VALUES (5310, 3, '腾讯地图KEY', 'txKey', 1, 2, 1, 1, 
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_file`;
 CREATE TABLE `cd_file`  (
-                            `id` int NOT NULL AUTO_INCREMENT,
-                            `filepath` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图片路径',
-                            `hash` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件hash值',
-                            `create_time` int NULL DEFAULT NULL COMMENT '创建时间',
-                            `disk` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '存储类似',
-                            `type` tinyint NULL DEFAULT NULL COMMENT '文件类型',
-                            `use_in` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-                            `only_param` int NOT NULL,
-                            PRIMARY KEY (`id`) USING BTREE,
-                            INDEX `hash`(`hash` ASC) USING BTREE,
-                            INDEX `only_param`(`only_param` ASC) USING BTREE
+  `id` int NOT NULL AUTO_INCREMENT,
+  `filepath` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图片路径',
+  `hash` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件hash值',
+  `create_time` int NULL DEFAULT NULL COMMENT '创建时间',
+  `disk` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '存储类似',
+  `type` tinyint NULL DEFAULT NULL COMMENT '文件类型',
+  `use_in` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `only_param` int NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `hash`(`hash` ASC) USING BTREE,
+  INDEX `only_param`(`only_param` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -332,189 +332,91 @@ CREATE TABLE `cd_file`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_log`;
 CREATE TABLE `cd_log`  (
-                           `id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
-                           `application_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '应用名称',
-                           `username` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作用户',
-                           `url` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求url',
-                           `ip` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'ip',
-                           `useragent` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'useragent',
-                           `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '请求内容',
-                           `errmsg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '异常信息',
-                           `create_time` int NULL DEFAULT NULL COMMENT '创建时间',
-                           `type` smallint NULL DEFAULT NULL COMMENT '类型',
-                           `times` int NULL DEFAULT NULL COMMENT '日期',
-                           PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 97 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
+  `application_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '应用名称',
+  `username` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作用户',
+  `url` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求url',
+  `ip` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'ip',
+  `useragent` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'useragent',
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '请求内容',
+  `errmsg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '异常信息',
+  `create_time` int NULL DEFAULT NULL COMMENT '创建时间',
+  `type` smallint NULL DEFAULT NULL COMMENT '类型',
+  `times` int NULL DEFAULT NULL COMMENT '日期',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 347 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
--- ----------------------------
--- Records of cd_log
--- ----------------------------
-INSERT INTO `cd_log` VALUES (1, 'admin', 'admin', 'http://git.tiefen.net/admin/Login/index.html', '112.98.93.24', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', NULL, NULL, 1754637533, 1, NULL);
-INSERT INTO `cd_log` VALUES (2, 'admin', 'admin', 'http://ultra.hl.jf.ivimoo.com/admin/Login/index.html', '112.98.93.24', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 HBPC/12.1.4.300', NULL, NULL, 1754873160, 1, NULL);
-INSERT INTO `cd_log` VALUES (3, 'admin', 'admin', 'http://git.tiefen.net/admin/Login/index.html', '112.98.93.24', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', NULL, NULL, 1754880945, 1, NULL);
-INSERT INTO `cd_log` VALUES (4, 'admin', 'admin', 'http://git.tiefen.net/admin/Login/index.html', '112.98.73.27', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 HBPC/12.1.4.300', NULL, NULL, 1755311170, 1, NULL);
-INSERT INTO `cd_log` VALUES (5, 'admin', 'admin', 'http://git.tiefen.net/admin/Login/index.html', '112.99.70.172', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', NULL, NULL, 1756114299, 1, NULL);
-INSERT INTO `cd_log` VALUES (6, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/secrect.html', '112.99.70.172', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '[]', NULL, 1756114323, 2, NULL);
-INSERT INTO `cd_log` VALUES (7, 'admin', 'admin', 'http://git.tiefen.net/admin/Login/index.html', '112.99.70.172', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', NULL, NULL, 1756258591, 1, NULL);
-INSERT INTO `cd_log` VALUES (8, 'admin', 'admin', 'http://git.tiefen.net/admin/Login/index.html', '112.99.70.172', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', NULL, NULL, 1756258632, 1, NULL);
-INSERT INTO `cd_log` VALUES (9, 'admin', 'admin', 'http://git.tiefen.net/admin/Login/index.html', '112.99.68.93', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 HBPC/12.1.4.300', NULL, NULL, 1756710665, 1, NULL);
-INSERT INTO `cd_log` VALUES (10, 'admin', 'admin', 'http://git.tiefen.net/admin/Login/index.html', '112.99.68.93', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', NULL, NULL, 1756798136, 1, NULL);
-INSERT INTO `cd_log` VALUES (11, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/updateFieldExt', '112.99.68.93', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '{\"id\":3612,\"title\":\"站点名称\"}', NULL, 1756798144, 2, NULL);
-INSERT INTO `cd_log` VALUES (12, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/updateFieldExt', '112.99.68.93', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '{\"id\":3612,\"title\":\"站点名称\"}', NULL, 1756798144, 2, NULL);
-INSERT INTO `cd_log` VALUES (13, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/createMenu', '112.99.68.93', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '{\"status\":1,\"create_table\":1,\"is_post\":0,\"create_code\":1,\"connect\":\"mysql\",\"app_id\":\"1\",\"page_type\":1,\"table_name\":\"ceshi\",\"pk\":\"ceshi_id\",\"url\":\"\",\"upload_config_id\":\"\",\"controller_name\":\"ceshi\",\"title\":\"测试\",\"home_show\":0,\"menu_pic\":\"\",\"notice\":\"\",\"prompt\":0,\"prompt_session\":\"\"}', NULL, 1756798173, 2, NULL);
-INSERT INTO `cd_log` VALUES (14, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/createMenu', '112.99.68.93', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '{\"status\":1,\"create_table\":1,\"is_post\":0,\"create_code\":1,\"connect\":\"mysql\",\"app_id\":\"1\",\"page_type\":1,\"table_name\":\"ceshi\",\"pk\":\"ceshi_id\",\"url\":\"\",\"upload_config_id\":\"\",\"controller_name\":\"ceshi\",\"title\":\"测试\",\"home_show\":0,\"menu_pic\":\"\",\"notice\":\"\",\"prompt\":0,\"prompt_session\":\"\"}', NULL, 1756798173, 2, NULL);
-INSERT INTO `cd_log` VALUES (15, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/updateField', '112.99.68.93', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '{\"id\":5456,\"menu_id\":180,\"title\":\"编号\",\"field\":\"ceshi_id\",\"type\":1,\"list_show\":2,\"search_type\":null,\"post_status\":0,\"create_table_field\":1,\"validate\":null,\"rule\":null,\"sortid\":1,\"sql\":null,\"default_value\":null,\"datatype\":\"int\",\"length\":\"11\",\"indexdata\":null,\"show_condition\":null,\"item_config\":null,\"width\":\"70\",\"datetime_config\":null,\"other_config\":{\"search_all\":0},\"belong_table\":null,\"icon\":null,\"key_placeholder\":null,\"value_placeholder\":\"值占位文本\",\"tx_tiaojian\":null,\"tx_zhi\":null,\"tx_color\":null,\"improve_tiaojian\":null,\"improve_zhi\":null,\"improve_color\":null,\"tx_config\":null,\"list_background_config\":null,\"field_type\":1}', NULL, 1756798176, 2, NULL);
-INSERT INTO `cd_log` VALUES (16, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/updateField', '112.99.68.93', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '{\"id\":5456,\"menu_id\":180,\"title\":\"编号\",\"field\":\"ceshi_id\",\"type\":1,\"list_show\":2,\"search_type\":null,\"post_status\":0,\"create_table_field\":1,\"validate\":null,\"rule\":null,\"sortid\":1,\"sql\":null,\"default_value\":null,\"datatype\":\"int\",\"length\":\"11\",\"indexdata\":null,\"show_condition\":null,\"item_config\":null,\"width\":\"70\",\"datetime_config\":null,\"other_config\":{\"search_all\":0},\"belong_table\":null,\"icon\":null,\"key_placeholder\":null,\"value_placeholder\":\"值占位文本\",\"tx_tiaojian\":null,\"tx_zhi\":null,\"tx_color\":null,\"improve_tiaojian\":null,\"improve_zhi\":null,\"improve_color\":null,\"tx_config\":null,\"list_background_config\":null,\"field_type\":1}', NULL, 1756798176, 2, NULL);
-INSERT INTO `cd_log` VALUES (17, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/deleteMenu', '112.99.68.93', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '{\"menu_id\":180}', NULL, 1756798181, 2, NULL);
-INSERT INTO `cd_log` VALUES (18, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/deleteMenu', '112.99.68.93', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36', '{\"menu_id\":180}', NULL, 1756798181, 2, NULL);
-INSERT INTO `cd_log` VALUES (19, 'admin', 'admin', 'http://git.tiefen.net/admin/Login/index.html', '112.99.69.134', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 HBPC/12.1.4.300', NULL, NULL, 1757493719, 1, NULL);
-INSERT INTO `cd_log` VALUES (20, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/secrect.html', '112.99.69.134', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 HBPC/12.1.4.300', '[]', NULL, 1757493725, 2, NULL);
-INSERT INTO `cd_log` VALUES (21, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/secrect.html', '112.99.69.134', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 HBPC/12.1.4.300', '[]', NULL, 1757494269, 2, NULL);
-INSERT INTO `cd_log` VALUES (22, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/secrect.html', '112.99.69.134', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 HBPC/12.1.4.300', '[]', NULL, 1757494306, 2, NULL);
-INSERT INTO `cd_log` VALUES (23, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/secrect.html', '112.99.69.134', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 HBPC/12.1.4.300', '[]', NULL, 1757494382, 2, NULL);
-INSERT INTO `cd_log` VALUES (24, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/secrect.html', '112.99.69.134', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 HBPC/12.1.4.300', '[]', NULL, 1757494515, 2, NULL);
-INSERT INTO `cd_log` VALUES (25, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/secrect.html', '112.99.69.134', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 HBPC/12.1.4.300', '[]', NULL, 1757494555, 2, NULL);
-INSERT INTO `cd_log` VALUES (26, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/secrect.html', '112.99.69.134', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 HBPC/12.1.4.300', '[]', NULL, 1757494671, 2, NULL);
-INSERT INTO `cd_log` VALUES (27, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/secrect.html', '112.99.69.134', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 HBPC/12.1.4.300', '[]', NULL, 1757494878, 2, NULL);
-INSERT INTO `cd_log` VALUES (28, 'admin', 'admin', 'http://git.tiefen.net/admin/Login/index.html', '112.99.69.134', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 HBPC/12.1.4.300', NULL, NULL, 1757582628, 1, NULL);
-INSERT INTO `cd_log` VALUES (29, 'admin', 'admin', 'http://git.tiefen.net/admin/Login/index.html', '112.99.69.134', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 HBPC/12.1.4.300', NULL, NULL, 1757582685, 1, NULL);
-INSERT INTO `cd_log` VALUES (30, 'admin', NULL, 'http://git.tiefen.net/admin/Login/index.html', '112.98.92.247', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '[]', NULL, 1759884617, 2, NULL);
-INSERT INTO `cd_log` VALUES (31, 'admin', NULL, 'http://git.tiefen.net/admin/Login/verify.html', '112.98.92.247', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '[]', NULL, 1759884620, 2, NULL);
-INSERT INTO `cd_log` VALUES (32, 'admin', NULL, 'http://git.tiefen.net/admin/Login/index.html', '111.172.7.65', 'Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5672.53 Mobile Safari/537.36', '[]', NULL, 1764645985, 2, NULL);
-INSERT INTO `cd_log` VALUES (33, 'admin', NULL, 'http://git.tiefen.net/admin/Login/index.html', '112.99.70.31', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766050851, 2, NULL);
-INSERT INTO `cd_log` VALUES (34, 'admin', NULL, 'http://git.tiefen.net/admin/Login/verify.html', '112.99.70.31', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766050854, 2, NULL);
-INSERT INTO `cd_log` VALUES (35, 'admin', NULL, 'http://127.0.0.1:32555/admin/Login/index.html', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36', '[]', NULL, 1766128907, 2, NULL);
-INSERT INTO `cd_log` VALUES (36, 'admin', NULL, 'http://127.0.0.1:32555/admin/Login/verify.html', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36', '[]', NULL, 1766128907, 2, NULL);
-INSERT INTO `cd_log` VALUES (37, 'admin', NULL, 'http://127.0.0.1:32555/admin/Login/index.html', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36', '{\"username\":\"admin\",\"rememberMe\":false,\"verify\":\"\",\"key\":\"6944fd0bc9fb9\"}', NULL, 1766128916, 2, NULL);
-INSERT INTO `cd_log` VALUES (38, 'admin', 'admin', 'http://127.0.0.1:32555/admin/Login/index.html', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36', NULL, NULL, 1766128916, 1, NULL);
-INSERT INTO `cd_log` VALUES (39, 'admin', 'admin', 'http://127.0.0.1:32555/admin/Index/index.html', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36', '[]', NULL, 1766128916, 2, NULL);
-INSERT INTO `cd_log` VALUES (40, 'admin', 'admin', 'http://127.0.0.1:32555/admin/Base/getMenu', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36', '[]', NULL, 1766128916, 2, NULL);
-INSERT INTO `cd_log` VALUES (41, 'admin', 'admin', 'http://127.0.0.1:32555/admin/index/main.html', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36', '[]', NULL, 1766128916, 2, NULL);
-INSERT INTO `cd_log` VALUES (42, 'admin', 'admin', 'http://127.0.0.1:32555/admin/Base/watermark', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36', '[]', NULL, 1766128916, 2, NULL);
-INSERT INTO `cd_log` VALUES (43, 'admin', 'admin', 'http://127.0.0.1:32555/admin/Sys.Base/menu.html', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36', '[]', NULL, 1766128918, 2, NULL);
-INSERT INTO `cd_log` VALUES (44, 'admin', 'admin', 'http://127.0.0.1:32555/admin/Base/watermark', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36', '[]', NULL, 1766128918, 2, NULL);
-INSERT INTO `cd_log` VALUES (45, 'admin', 'admin', 'http://127.0.0.1:32555/admin/Sys.Base/menu', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36', '{\"app_id\":\"1\"}', NULL, 1766128919, 2, NULL);
-INSERT INTO `cd_log` VALUES (46, 'admin', NULL, 'http://git.tiefen.net/admin/login/index', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131832, 2, NULL);
-INSERT INTO `cd_log` VALUES (47, 'admin', NULL, 'http://git.tiefen.net/admin/Login/verify.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131832, 2, NULL);
-INSERT INTO `cd_log` VALUES (48, 'admin', NULL, 'http://git.tiefen.net/admin/login/index', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131834, 2, NULL);
-INSERT INTO `cd_log` VALUES (49, 'admin', NULL, 'http://git.tiefen.net/admin/login/index', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131834, 2, NULL);
-INSERT INTO `cd_log` VALUES (50, 'admin', NULL, 'http://git.tiefen.net/admin/login/index', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131834, 2, NULL);
-INSERT INTO `cd_log` VALUES (51, 'admin', NULL, 'http://git.tiefen.net/admin/Login/verify.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131839, 2, NULL);
-INSERT INTO `cd_log` VALUES (52, 'admin', NULL, 'http://git.tiefen.net/admin/Login/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"username\":\"admin\",\"rememberMe\":false,\"verify\":\"\",\"key\":\"6945087ff34ac\"}', NULL, 1766131846, 2, NULL);
-INSERT INTO `cd_log` VALUES (53, 'admin', 'admin', 'http://git.tiefen.net/admin/Login/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', NULL, NULL, 1766131846, 1, NULL);
-INSERT INTO `cd_log` VALUES (54, 'admin', 'admin', 'http://git.tiefen.net/admin/Index/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131846, 2, NULL);
-INSERT INTO `cd_log` VALUES (55, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/getMenu', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131846, 2, NULL);
-INSERT INTO `cd_log` VALUES (56, 'admin', 'admin', 'http://git.tiefen.net/admin/index/main.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131846, 2, NULL);
-INSERT INTO `cd_log` VALUES (57, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/watermark', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131846, 2, NULL);
-INSERT INTO `cd_log` VALUES (58, 'admin', 'admin', 'http://git.tiefen.net/admin/Baseconfig/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131848, 2, NULL);
-INSERT INTO `cd_log` VALUES (59, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/watermark', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131848, 2, NULL);
-INSERT INTO `cd_log` VALUES (60, 'admin', 'admin', 'http://git.tiefen.net/admin/Baseconfig/getInfo', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131849, 2, NULL);
-INSERT INTO `cd_log` VALUES (61, 'admin', 'admin', 'http://git.tiefen.net/admin/Baseconfig/index', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"site_title\":\"开源泽润\",\"logo\":\"\\/uploads\\/admin\\/202508\\/688c25bf0b48e.png\",\"keyword\":[],\"descrip\":\"平衡之道|创新之源\",\"copyright\":\"泽润九福\",\"filesize\":\"100\",\"filetype\":\"gif,png,jpg,jpeg,doc,docx,xls,xlsx,csv,pdf,rar,zip,txt,mp4,flv,wgt\",\"water_status\":\"0\",\"water_position\":\"5\",\"domain\":\"\",\"water_alpha\":90,\"pop_status\":\"0\",\"search_status\":\"1\",\"watermark_status\":\"0\",\"bdKey\":null,\"gdKey\":null,\"txKey\":null,\"deepseekkey\":null}', NULL, 1766131850, 2, NULL);
-INSERT INTO `cd_log` VALUES (62, 'admin', 'admin', 'http://git.tiefen.net/admin/Baseconfig/index', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"site_title\":\"开源泽润\",\"logo\":\"\\/uploads\\/admin\\/202508\\/688c25bf0b48e.png\",\"keyword\":[],\"descrip\":\"平衡之道|创新之源\",\"copyright\":\"泽润九福\",\"filesize\":\"100\",\"filetype\":\"gif,png,jpg,jpeg,doc,docx,xls,xlsx,csv,pdf,rar,zip,txt,mp4,flv,wgt\",\"water_status\":\"0\",\"water_position\":\"5\",\"domain\":\"\",\"water_alpha\":90,\"pop_status\":\"0\",\"search_status\":\"0\",\"watermark_status\":\"0\",\"bdKey\":null,\"gdKey\":null,\"txKey\":null,\"deepseekkey\":null}', NULL, 1766131851, 2, NULL);
-INSERT INTO `cd_log` VALUES (63, 'admin', 'admin', 'http://git.tiefen.net/admin/Index/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131853, 2, NULL);
-INSERT INTO `cd_log` VALUES (64, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/getMenu', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131853, 2, NULL);
-INSERT INTO `cd_log` VALUES (65, 'admin', 'admin', 'http://git.tiefen.net/admin/index/main.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131853, 2, NULL);
-INSERT INTO `cd_log` VALUES (66, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/watermark', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131853, 2, NULL);
-INSERT INTO `cd_log` VALUES (67, 'admin', 'admin', 'http://git.tiefen.net/admin/Baseconfig/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131854, 2, NULL);
-INSERT INTO `cd_log` VALUES (68, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/watermark', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131854, 2, NULL);
-INSERT INTO `cd_log` VALUES (69, 'admin', 'admin', 'http://git.tiefen.net/admin/Baseconfig/getInfo', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131854, 2, NULL);
-INSERT INTO `cd_log` VALUES (70, 'admin', 'admin', 'http://git.tiefen.net/admin/Baseconfig/index', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"site_title\":\"开源泽润\",\"logo\":\"\\/uploads\\/admin\\/202508\\/688c25bf0b48e.png\",\"keyword\":[],\"descrip\":\"平衡之道|创新之源\",\"copyright\":\"泽润九福\",\"filesize\":\"100\",\"filetype\":\"gif,png,jpg,jpeg,doc,docx,xls,xlsx,csv,pdf,rar,zip,txt,mp4,flv,wgt\",\"water_status\":\"0\",\"water_position\":\"5\",\"domain\":\"\",\"water_alpha\":90,\"pop_status\":\"0\",\"search_status\":\"1\",\"watermark_status\":\"0\",\"bdKey\":null,\"gdKey\":null,\"txKey\":null,\"deepseekkey\":null}', NULL, 1766131855, 2, NULL);
-INSERT INTO `cd_log` VALUES (71, 'admin', 'admin', 'http://git.tiefen.net/admin/Index/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131856, 2, NULL);
-INSERT INTO `cd_log` VALUES (72, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/getMenu', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131856, 2, NULL);
-INSERT INTO `cd_log` VALUES (73, 'admin', 'admin', 'http://git.tiefen.net/admin/index/main.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131856, 2, NULL);
-INSERT INTO `cd_log` VALUES (74, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/watermark', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766131856, 2, NULL);
-INSERT INTO `cd_log` VALUES (75, 'admin', NULL, 'http://git.tiefen.net/admin/Login/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766193032, 2, NULL);
-INSERT INTO `cd_log` VALUES (76, 'admin', NULL, 'http://git.tiefen.net/admin/Login/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '[]', NULL, 1766209365, 2, NULL);
-INSERT INTO `cd_log` VALUES (77, 'admin', NULL, 'http://git.tiefen.net/admin/Login/verify.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '[]', NULL, 1766209367, 2, NULL);
-INSERT INTO `cd_log` VALUES (78, 'admin', NULL, 'http://git.tiefen.net/admin/Login/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766477595, 2, NULL);
-INSERT INTO `cd_log` VALUES (79, 'admin', NULL, 'http://git.tiefen.net/admin/Login/verify.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766477597, 2, NULL);
-INSERT INTO `cd_log` VALUES (80, 'admin', NULL, 'http://git.tiefen.net/admin/Login/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"username\":\"admin\",\"rememberMe\":false,\"verify\":\"\",\"key\":\"694a4f1d86734\"}', NULL, 1766477599, 2, NULL);
-INSERT INTO `cd_log` VALUES (81, 'admin', 'admin', 'http://git.tiefen.net/admin/Login/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', NULL, NULL, 1766477599, 1, NULL);
-INSERT INTO `cd_log` VALUES (82, 'admin', 'admin', 'http://git.tiefen.net/admin/Index/index.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766477600, 2, NULL);
-INSERT INTO `cd_log` VALUES (83, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/getMenu', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766477600, 2, NULL);
-INSERT INTO `cd_log` VALUES (84, 'admin', 'admin', 'http://git.tiefen.net/admin/index/main.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766477600, 2, NULL);
-INSERT INTO `cd_log` VALUES (85, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/watermark', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766477601, 2, NULL);
-INSERT INTO `cd_log` VALUES (86, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/menu.html', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766477601, 2, NULL);
-INSERT INTO `cd_log` VALUES (87, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/watermark', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766477601, 2, NULL);
-INSERT INTO `cd_log` VALUES (88, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/menu', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"app_id\":\"1\"}', NULL, 1766477603, 2, NULL);
-INSERT INTO `cd_log` VALUES (89, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/updateMenuExt', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"menu_id\":179,\"create_code\":0}', NULL, 1766477607, 2, NULL);
-INSERT INTO `cd_log` VALUES (90, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/create', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"menu_id\":179,\"type\":2}', NULL, 1766477612, 2, NULL);
-INSERT INTO `cd_log` VALUES (91, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/fieldList?menu_id=179&appid=1', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"menu_id\":\"179\",\"appid\":\"1\"}', NULL, 1766477613, 2, NULL);
-INSERT INTO `cd_log` VALUES (92, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/watermark', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766477613, 2, NULL);
-INSERT INTO `cd_log` VALUES (93, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/fieldList', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"limit\":100,\"page\":1,\"appid\":\"1\",\"menu_id\":\"179\"}', NULL, 1766477614, 2, NULL);
-INSERT INTO `cd_log` VALUES (94, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/menu?appid=1', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"appid\":\"1\"}', NULL, 1766477615, 2, NULL);
-INSERT INTO `cd_log` VALUES (95, 'admin', 'admin', 'http://git.tiefen.net/admin/Base/watermark', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '[]', NULL, 1766477615, 2, NULL);
-INSERT INTO `cd_log` VALUES (96, 'admin', 'admin', 'http://git.tiefen.net/admin/Sys.Base/menu', '123.164.89.204', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '{\"app_id\":\"1\"}', NULL, 1766477615, 2, NULL);
 
 -- ----------------------------
 -- Table structure for cd_menu
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_menu`;
 CREATE TABLE `cd_menu`  (
-                            `menu_id` int NOT NULL AUTO_INCREMENT,
-                            `pid` mediumint NULL DEFAULT 0 COMMENT '父级id',
-                            `controller_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '模块名称',
-                            `title` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '模块标题',
-                            `pk` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '主键名',
-                            `table_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '模块数据库表',
-                            `create_code` tinyint NULL DEFAULT NULL COMMENT '是否允许生成模块',
-                            `status` tinyint NULL DEFAULT 1 COMMENT '0隐藏 1显示',
-                            `sortid` mediumint NULL DEFAULT 0 COMMENT '排序号',
-                            `create_table` tinyint NULL DEFAULT NULL COMMENT '是否生成数据库表',
-                            `url` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '组件路径',
-                            `icon` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'icon字体图标',
-                            `tab_config` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'tab选项卡菜单配置',
-                            `app_id` int NULL DEFAULT NULL COMMENT '所属模块',
-                            `is_post` tinyint NULL DEFAULT NULL COMMENT '是否允许投稿',
-                            `upload_config_id` smallint NULL DEFAULT NULL COMMENT '上传配置id',
-                            `connect` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据库连接',
-                            `page_type` tinyint NULL DEFAULT NULL COMMENT '页面类型',
-                            `home_show` tinyint NULL DEFAULT 0 COMMENT '首页快捷导航显示状态',
-                            `menu_pic` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '快捷导航的图片',
-                            `notice` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '列表提示说明',
-                            `prompt_session` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '提醒区别session字段名',
-                            `prompt` tinyint NULL DEFAULT 0 COMMENT '显示提醒图标',
-                            `flow_subtable` tinyint NULL DEFAULT 0 COMMENT '是否为审核流子表 默认0 不是',
-                            `menu_show` tinyint NULL DEFAULT 1 COMMENT '列表显示 0不显示 1显示',
-                            `enable_es` tinyint NULL DEFAULT 0 COMMENT '启用es 1=>启用 0 禁用',
-                            PRIMARY KEY (`menu_id`) USING BTREE,
-                            INDEX `controller_name`(`controller_name` ASC) USING BTREE,
-                            INDEX `module_id`(`app_id` ASC) USING BTREE,
-                            INDEX `pid`(`pid` ASC) USING BTREE
+  `menu_id` int NOT NULL AUTO_INCREMENT,
+  `pid` mediumint NULL DEFAULT 0 COMMENT '父级id',
+  `controller_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '模块名称',
+  `title` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '模块标题',
+  `pk` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '主键名',
+  `table_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '模块数据库表',
+  `create_code` tinyint NULL DEFAULT NULL COMMENT '是否允许生成模块',
+  `status` tinyint NULL DEFAULT 1 COMMENT '0隐藏 1显示',
+  `sortid` mediumint NULL DEFAULT 0 COMMENT '排序号',
+  `create_table` tinyint NULL DEFAULT NULL COMMENT '是否生成数据库表',
+  `url` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '组件路径',
+  `icon` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'icon字体图标',
+  `tab_config` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'tab选项卡菜单配置',
+  `app_id` int NULL DEFAULT NULL COMMENT '所属模块',
+  `is_post` tinyint NULL DEFAULT NULL COMMENT '是否允许投稿',
+  `upload_config_id` smallint NULL DEFAULT NULL COMMENT '上传配置id',
+  `connect` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据库连接',
+  `page_type` tinyint NULL DEFAULT NULL COMMENT '页面类型',
+  `home_show` tinyint NULL DEFAULT 0 COMMENT '首页快捷导航显示状态',
+  `menu_pic` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '快捷导航的图片',
+  `notice` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '列表提示说明',
+  `prompt_session` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '提醒区别session字段名',
+  `prompt` tinyint NULL DEFAULT 0 COMMENT '显示提醒图标',
+  `flow_subtable` tinyint NULL DEFAULT 0 COMMENT '是否为审核流子表 默认0 不是',
+  `menu_show` tinyint NULL DEFAULT 1 COMMENT '列表显示 0不显示 1显示',
+  `enable_es` tinyint NULL DEFAULT 0 COMMENT '启用es 1=>启用 0 禁用',
+  `open_mode` tinyint(1) NOT NULL DEFAULT 1 COMMENT '打开方式 1=iframe0 2=_blank',
+  PRIMARY KEY (`menu_id`) USING BTREE,
+  INDEX `controller_name`(`controller_name` ASC) USING BTREE,
+  INDEX `module_id`(`app_id` ASC) USING BTREE,
+  INDEX `pid`(`pid` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 181 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of cd_menu
 -- ----------------------------
-INSERT INTO `cd_menu` VALUES (1, 0, '', '控制台', '', '', 0, 1, 1, 0, '/admin/Index/main.html', 'el-icon-platform-eleme', NULL, 1, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0, 0, 1, 0);
-INSERT INTO `cd_menu` VALUES (2, 0, 'Config', '站长配置', NULL, NULL, NULL, 1, 1000, NULL, NULL, 'fas fa-database', NULL, 1, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0, 0, 1, 0);
-INSERT INTO `cd_menu` VALUES (3, 2, 'Baseconfig', '基本配置', 'id', 'base_config', 1, 1, 1, 1, NULL, NULL, NULL, 1, NULL, NULL, 'mysql', NULL, 0, NULL, '', NULL, 0, 0, 1, 0);
-INSERT INTO `cd_menu` VALUES (4, 2, 'Uploadconfig', '缩略图配置', 'id', 'upload_config', 1, 1, 2, 1, NULL, 'el-icon-camera-solid', NULL, 1, NULL, NULL, 'mysql', 1, 0, NULL, '', NULL, 0, 0, 1, 0);
-INSERT INTO `cd_menu` VALUES (5, 0, 'System', '系统管理', '', '', 0, 1, 1001, 0, '', 'fas fa-user-cog', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0);
-INSERT INTO `cd_menu` VALUES (6, 5, 'Adminuser', '用户管理', 'user_id', 'admin_user', 1, 1, 6, 1, '', 'el-icon-user-solid', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0);
-INSERT INTO `cd_menu` VALUES (7, 5, 'Role', '角色管理', 'role_id', 'role', 1, 1, 7, 1, '', 'el-icon-s-check', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0);
-INSERT INTO `cd_menu` VALUES (8, 5, 'Log', '日志管理', 'id', 'log', 1, 1, 8, 1, '', 'el-icon-s-promotion', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0);
-INSERT INTO `cd_menu` VALUES (9, 0, 'Tool', '工具管理', '', '', 1, 1, 1002, 0, '', 'dripicons-gear', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0);
-INSERT INTO `cd_menu` VALUES (10, 9, 'Application', '应用管理', '', '', 0, 1, 10, 0, '/admin/Sys.Base/applicationList', 'el-icon-s-shop', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0);
-INSERT INTO `cd_menu` VALUES (11, 0, 'Menu', '菜单管理', '', '', 1, 1, 9999, 0, '/admin/Sys.Base/menu', '', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0);
-INSERT INTO `cd_menu` VALUES (12, 11, 'Action', '方法管理', '', '', 1, 0, 12, 0, '', '', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0);
-INSERT INTO `cd_menu` VALUES (13, 11, 'Field', '字段管理', '', '', 0, 0, 13, 0, '', '', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0);
-INSERT INTO `cd_menu` VALUES (19, 9, 'Secrect', '秘钥管理', '', '', 0, 1, 19, 0, '/admin/Sys.Base/secrect', 'el-icon-s-tools', NULL, 1, 0, NULL, 'mysql', 2, 0, NULL, NULL, NULL, 0, 0, 1, 0);
-INSERT INTO `cd_menu` VALUES (104, 11, 'Actionremarks', '版本记录', 'id', 'action_remarks', 1, 0, 104, 1, '', NULL, NULL, 1, 0, 0, 'mysql', 1, 0, '', '', NULL, 0, 0, 1, 0);
-INSERT INTO `cd_menu` VALUES (179, 2, 'MyConfig', '系统配置', '', '', 0, 1, 179, 0, '', 'el-icon-cpu', NULL, 1, 0, 0, 'mysql', 1, 0, '', '', NULL, 0, 0, 1, 0);
+INSERT INTO `cd_menu` VALUES (1, 0, '', '控制台', '', '', 0, 1, 1, 0, '/admin/Index/main.html', 'el-icon-platform-eleme', NULL, 1, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0, 0, 1, 0, 1);
+INSERT INTO `cd_menu` VALUES (2, 0, 'Config', '站长配置', NULL, NULL, NULL, 1, 1000, NULL, NULL, 'fas fa-database', NULL, 1, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0, 0, 1, 0, 1);
+INSERT INTO `cd_menu` VALUES (3, 2, 'Baseconfig', '基本配置', 'id', 'base_config', 1, 1, 1, 1, NULL, NULL, NULL, 1, NULL, NULL, 'mysql', NULL, 0, NULL, '', NULL, 0, 0, 1, 0, 1);
+INSERT INTO `cd_menu` VALUES (4, 2, 'Uploadconfig', '缩略图配置', 'id', 'upload_config', 1, 1, 2, 1, NULL, 'el-icon-camera-solid', NULL, 1, NULL, NULL, 'mysql', 1, 0, NULL, '', NULL, 0, 0, 1, 0, 1);
+INSERT INTO `cd_menu` VALUES (5, 0, 'System', '系统管理', '', '', 0, 1, 1001, 0, '', 'fas fa-user-cog', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0, 1);
+INSERT INTO `cd_menu` VALUES (6, 5, 'Adminuser', '用户管理', 'user_id', 'admin_user', 1, 1, 6, 1, '', 'el-icon-user-solid', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0, 1);
+INSERT INTO `cd_menu` VALUES (7, 5, 'Role', '角色管理', 'role_id', 'role', 1, 1, 7, 1, '', 'el-icon-s-check', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0, 1);
+INSERT INTO `cd_menu` VALUES (8, 5, 'Log', '日志管理', 'id', 'log', 1, 1, 8, 1, '', 'el-icon-s-promotion', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0, 1);
+INSERT INTO `cd_menu` VALUES (9, 0, 'Tool', '工具管理', '', '', 1, 1, 1002, 0, '', 'dripicons-gear', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0, 1);
+INSERT INTO `cd_menu` VALUES (10, 9, 'Application', '应用管理', '', '', 0, 1, 10, 0, '/admin/Sys.Base/applicationList', 'el-icon-s-shop', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0, 1);
+INSERT INTO `cd_menu` VALUES (11, 0, 'Menu', '菜单管理', '', '', 1, 1, 9999, 0, '/admin/Sys.Base/menu', '', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0, 1);
+INSERT INTO `cd_menu` VALUES (12, 11, 'Action', '方法管理', '', '', 1, 0, 12, 0, '', '', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0, 1);
+INSERT INTO `cd_menu` VALUES (13, 11, 'Field', '字段管理', '', '', 0, 0, 13, 0, '', '', NULL, 1, 0, NULL, 'mysql', 1, 0, NULL, NULL, NULL, 0, 0, 1, 0, 1);
+INSERT INTO `cd_menu` VALUES (19, 9, 'Secrect', '秘钥管理', '', '', 0, 1, 19, 0, '/admin/Sys.Base/secrect', 'el-icon-s-tools', NULL, 1, 0, NULL, 'mysql', 2, 0, NULL, NULL, NULL, 0, 0, 1, 0, 1);
+INSERT INTO `cd_menu` VALUES (104, 11, 'Actionremarks', '版本记录', 'id', 'action_remarks', 1, 0, 104, 1, '', NULL, NULL, 1, 0, 0, 'mysql', 1, 0, '', '', NULL, 0, 0, 1, 0, 1);
+INSERT INTO `cd_menu` VALUES (179, 2, 'MyConfig', '系统配置', '', '', 0, 1, 179, 0, '', 'el-icon-cpu', NULL, 1, 0, 0, 'mysql', 1, 0, '', '', NULL, 0, 0, 1, 0, 1);
 
 -- ----------------------------
 -- Table structure for cd_role
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_role`;
 CREATE TABLE `cd_role`  (
-                            `role_id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
-                            `name` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '分组名称',
-                            `status` tinyint NULL DEFAULT NULL COMMENT '状态',
-                            `pid` smallint NULL DEFAULT NULL COMMENT '所属父类',
-                            `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '描述',
-                            `access` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '权限节点',
-                            PRIMARY KEY (`role_id`) USING BTREE
+  `role_id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
+  `name` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '分组名称',
+  `status` tinyint NULL DEFAULT NULL COMMENT '状态',
+  `pid` smallint NULL DEFAULT NULL COMMENT '所属父类',
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '描述',
+  `access` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '权限节点',
+  PRIMARY KEY (`role_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 60 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -527,11 +429,11 @@ INSERT INTO `cd_role` VALUES (1, '超级管理员', 1, 0, '超级管理员', '')
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_secrect`;
 CREATE TABLE `cd_secrect`  (
-                               `secrect_id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
-                               `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-                               `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-                               `appid` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'appid',
-                               PRIMARY KEY (`secrect_id`) USING BTREE
+  `secrect_id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
+  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `appid` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'appid',
+  PRIMARY KEY (`secrect_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -545,14 +447,14 @@ INSERT INTO `cd_secrect` VALUES (2, 'secrect', '', NULL);
 -- ----------------------------
 DROP TABLE IF EXISTS `cd_upload_config`;
 CREATE TABLE `cd_upload_config`  (
-                                     `id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
-                                     `title` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '配置名称',
-                                     `upload_replace` tinyint NULL DEFAULT NULL COMMENT '覆盖同名文件',
-                                     `thumb_status` tinyint NULL DEFAULT NULL COMMENT '缩图开关',
-                                     `thumb_width` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '缩放宽度',
-                                     `thumb_height` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '缩放高度',
-                                     `thumb_type` smallint NULL DEFAULT NULL COMMENT '缩图方式',
-                                     PRIMARY KEY (`id`) USING BTREE
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
+  `title` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '配置名称',
+  `upload_replace` tinyint NULL DEFAULT NULL COMMENT '覆盖同名文件',
+  `thumb_status` tinyint NULL DEFAULT NULL COMMENT '缩图开关',
+  `thumb_width` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '缩放宽度',
+  `thumb_height` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '缩放高度',
+  `thumb_type` smallint NULL DEFAULT NULL COMMENT '缩图方式',
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '缩略图配置' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------

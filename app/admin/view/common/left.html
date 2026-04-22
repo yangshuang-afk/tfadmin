@@ -15,6 +15,13 @@
 </div>
 <script type="text/javascript">
     const base_url = '<?php echo getBaseUrl()?>';
+    function getMenuTarget(menuItem) {
+        return Number(menuItem.open_mode) == 2 ? '_blank' : 'iframe0';
+    }
+    function buildLeafMenuHtml(menuItem, promptIcon) {
+        const target = getMenuTarget(menuItem);
+        return `<li><a target="${target}" data-open-mode="${Number(menuItem.open_mode) || 1}" class="waves-effect j_menu" href="${menuItem.url}"><i class="${menuItem.icon}"></i><span key="${menuItem.url}">${menuItem.title}${promptIcon}</span></a></li>`;
+    }
     
     axios.post(base_url + '/Base/getMenu').then(res => {
         if(res.data.status == 200){
@@ -47,7 +54,7 @@
                         : '';
                 
                 if (!one.children || one.children.length == 0) {
-                    str += `<li><a target="iframe0" class="waves-effect j_menu" href="${one.url}"><i class="${one.icon}"></i><span key="${one.url}">${one.title}${prompt_icon}</span></a></li>`;
+                    str += buildLeafMenuHtml(one, prompt_icon);
                 } else {
                     str += `<li><a target="iframe0" class="has-arrow waves-effect" href="javascript: void(0);"><i class="${one.icon}"></i><span key="${one.url}">${one.title}${prompt_icon}</span></a>`;
                     str += '<ul class="sub-menu" aria-expanded="false">';
@@ -59,7 +66,7 @@
                                 : '';
                         
                         if (!two.children || two.children.length == 0) {
-                            str += `<li><a target="iframe0" class="waves-effect j_menu" href="${two.url}"><i class="${two.icon}"></i><span key="${two.url}">${two.title}${two_prompt_icon}</span></a></li>`;
+                            str += buildLeafMenuHtml(two, two_prompt_icon);
                         } else {
                             str += `<li><a target="iframe0" class="has-arrow waves-effect" href="javascript: void(0);"><i class="${two.icon}"></i><span key="${two.url}">${two.title}${two_prompt_icon}</span></a>`;
                             str += '<ul class="sub-menu" aria-expanded="false">';
@@ -70,7 +77,7 @@
                                         ? '<i class="fas fa-circle" style="font-size: 8px;margin-left: 5px;color: red !important;"></i>'
                                         : '';
                                 
-                                str += `<li><a target="iframe0" class="waves-effect j_menu" href="${third.url}"><i class="${third.icon}"></i><span key="${third.url}">${third.title}${third_prompt_icon}</span></a></li>`;
+                                str += buildLeafMenuHtml(third, third_prompt_icon);
                             });
                             
                             str += '</ul>';
@@ -91,6 +98,9 @@
     $(function(){
         Cookies.set(base_url+'menu','')
         $(document).on('click','.j_menu',function(){
+            if(Number($(this).data('open-mode')) === 2){
+                return
+            }
             menu = []
             var path = {
                 title:$(this).find('span').text(),
