@@ -694,7 +694,8 @@ Vue.component('AdminAdd', {
 						<h3>拓展信息</h3>
 					</div>
 					<div class="section-content">
-						<el-row v-if="form.type ==1 || form.type == 17">
+						<!-- 最大输入只给 el-input 文本框和 textarea，计数器没有 maxlength。 -->
+						<el-row v-if="form.type ==1 || form.type == 8">
 							<el-col :span="12">
 								<el-form-item label="最大输入" prop="input_length">
 									<el-input v-model="form.other_config.input_length" placeholder="请输入长度">
@@ -702,6 +703,9 @@ Vue.component('AdminAdd', {
 									</el-input>
 								</el-form-item>
 							</el-col>
+						</el-row>
+						<!-- 背景色用于生成列表单元格背景，不是表单输入框背景。 -->
+						<el-row v-if="form.type ==1 || form.type == 17">
 							<el-col :span="12">
 								<el-form-item label="背景色" prop="label_color">
 									<el-select style="width:100%" v-model="form.other_config.label_color" :size="size" clearable filterable placeholder="请选择">
@@ -729,6 +733,7 @@ Vue.component('AdminAdd', {
 								</el-form-item>
 							</el-col>
 						</el-row>
+						<!-- 输入前缀和后缀只适合普通文本框，textarea 和计数器不渲染这些 slot。 -->
 						<el-row v-if="form.type ==1">
 							<el-col :span="12">
 								<el-form-item label="输入前缀" prop="prefix">
@@ -741,7 +746,8 @@ Vue.component('AdminAdd', {
 								</el-form-item>
 							</el-col>
 						</el-row>
-						<el-row v-if="form.type ==1 || form.type == 8 || form.type == 17">
+						<!-- 前置图标只给普通文本框生成 prefix-icon。 -->
+						<el-row v-if="form.type ==1">
 							<el-form-item label="前置图标" prop="pre_icon">
 								<el-input v-model="form.icon" placeholder="点击选择图标" clearable>
 									<el-button type="success" slot="append" icon="el-icon-thumb"  @click="iconDialogStatus = true">请选择</el-button>
@@ -1750,7 +1756,8 @@ Vue.component('AdminUpdate', {
 						<h3>拓展信息</h3>
 					</div>
 					<div class="section-content">
-						<el-row v-if="form.type ==1 || form.type == 17">
+						<!-- 最大输入只给 el-input 文本框和 textarea，计数器没有 maxlength。 -->
+						<el-row v-if="form.type ==1 || form.type == 8">
 							<el-col :span="12">
 								<el-form-item label="最大输入" prop="input_length">
 									<el-input v-model="form.other_config.input_length" placeholder="请输入长度">
@@ -1758,6 +1765,9 @@ Vue.component('AdminUpdate', {
 									</el-input>
 								</el-form-item>
 							</el-col>
+						</el-row>
+						<!-- 背景色用于生成列表单元格背景，不是表单输入框背景。 -->
+						<el-row v-if="form.type ==1 || form.type == 17">
 							<el-col :span="12">
 								<el-form-item label="背景色" prop="label_color">
 									<el-select style="width:100%" v-model="form.other_config.label_color" :size="size" clearable filterable placeholder="请选择">
@@ -1785,6 +1795,7 @@ Vue.component('AdminUpdate', {
 								</el-form-item>
 							</el-col>
 						</el-row>
+						<!-- 输入前缀和后缀只适合普通文本框，textarea 和计数器不渲染这些 slot。 -->
 						<el-row v-if="form.type ==1">
 							<el-col :span="12">
 								<el-form-item label="输入前缀" prop="prefix">
@@ -1797,7 +1808,8 @@ Vue.component('AdminUpdate', {
 								</el-form-item>
 							</el-col>
 						</el-row>
-						<el-row v-if="form.type ==1 || form.type == 8 || form.type == 17">
+						<!-- 前置图标只给普通文本框生成 prefix-icon。 -->
+						<el-row v-if="form.type ==1">
 							<el-form-item label="前置图标" prop="pre_icon">
 								<el-input v-model="form.icon" placeholder="点击选择图标" clearable>
 									<el-button type="success" slot="append" icon="el-icon-thumb"  @click="iconDialogStatus = true">请选择</el-button>
