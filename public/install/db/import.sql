@@ -1,9 +1,5 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
-
--- ----------------------------
--- Table structure for cd_action
--- ----------------------------
 DROP TABLE IF EXISTS `cd_action`;
 CREATE TABLE `cd_action`  (
                               `id` int NOT NULL AUTO_INCREMENT COMMENT '点击添加备注',
@@ -58,10 +54,6 @@ CREATE TABLE `cd_action`  (
                               INDEX `vue_create_status`(`vue_create_status` ASC) USING BTREE,
                               INDEX `select_type`(`select_type` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4941 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of cd_action
--- ----------------------------
 INSERT INTO `cd_action` VALUES (3316, 4, '数据列表', 'index', 1, NULL, '20', 0, NULL, NULL, NULL, 1, NULL, NULL, NULL, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1);
 INSERT INTO `cd_action` VALUES (3317, 4, '修改排序开关', 'updateExt', 12, NULL, '', 0, NULL, NULL, NULL, 2, NULL, NULL, NULL, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1);
 INSERT INTO `cd_action` VALUES (3318, 4, '添加', 'add', 2, 'el-icon-plus', '', 1, NULL, 'success', NULL, 3, NULL, NULL, NULL, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '600px', NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1);
@@ -94,10 +86,6 @@ INSERT INTO `cd_action` VALUES (4504, 104, '删除', 'delete', 4, 'el-icon-delet
 INSERT INTO `cd_action` VALUES (4505, 104, '查看详情', 'detail', 5, 'el-icon-view', '', 1, NULL, 'info', NULL, 6, NULL, NULL, NULL, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '600px', NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1);
 INSERT INTO `cd_action` VALUES (4678, 6, '修改角色', 'batupdate', 19, 'el-icon-edit', '20', 1, NULL, 'primary', 'role_id', 4678, '', '', '', 1, 1, NULL, NULL, NULL, NULL, '', '', '', '1000px', '', NULL, 1, '', NULL, '', '{\"export_type\":\"\",\"hook\":[],\"excel\":\"\",\"left_tree_show\":\"\",\"tree_show\":1,\"after_hook\":\"\",\"befor_hook\":\"\",\"printer_status\":2,\"list_button_style\":1}', NULL, NULL, NULL, NULL, '<div class=\"super-page\">\n  <h1>自定义页面</h1>\n</div>', 'public function ygluntan() {\n   if (!$this->request->isPost()){\n     return view(\'ygluntan\');\n   }\n}\n', NULL, 1);
 INSERT INTO `cd_action` VALUES (4927, 2, '查看详情', 'detail', 5, 'el-icon-view', '20', 1, NULL, 'info', '', 4927, '', '', '', 1, 1, NULL, NULL, NULL, NULL, '', '', '', '', '', NULL, 1, '', NULL, '', '{\"export_type\":\"\",\"hook\":[],\"excel\":\"\",\"left_tree_show\":\"\",\"tree_show\":1,\"after_hook\":\"\",\"befor_hook\":\"\",\"printer_status\":2,\"list_button_style\":1}', NULL, NULL, NULL, NULL, '<div class=\"super-page\">\n  <h1>自定义页面</h1>\n</div>', 'public function ygluntan() {\n   if (!$this->request->isPost()){\n     return view(\'ygluntan\');\n   }\n}\n', NULL, 1);
-
--- ----------------------------
--- Table structure for cd_action_remarks
--- ----------------------------
 DROP TABLE IF EXISTS `cd_action_remarks`;
 CREATE TABLE `cd_action_remarks`  (
                                       `id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
@@ -110,14 +98,6 @@ CREATE TABLE `cd_action_remarks`  (
                                       INDEX `action_id`(`action_id` ASC) USING BTREE,
                                       INDEX `menu_id`(`menu_id` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '版本记录' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of cd_action_remarks
--- ----------------------------
-
--- ----------------------------
--- Table structure for cd_admin_user
--- ----------------------------
 DROP TABLE IF EXISTS `cd_admin_user`;
 CREATE TABLE `cd_admin_user`  (
                                   `user_id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
@@ -131,15 +111,6 @@ CREATE TABLE `cd_admin_user`  (
                                   `session_token` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '唯一登录',
                                   PRIMARY KEY (`user_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 341 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户管理' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of cd_admin_user
--- ----------------------------
-INSERT INTO `cd_admin_user` VALUES (1, '铁粉', 'admin', '35bfa44f104ddfe466d1889daeff6e35', 1, '超级管理员', 1, 1548558919, 'b80cc9d3b68af73304c590b99a462510');
-
--- ----------------------------
--- Table structure for cd_application
--- ----------------------------
 DROP TABLE IF EXISTS `cd_application`;
 CREATE TABLE `cd_application`  (
                                    `app_id` int NOT NULL AUTO_INCREMENT,
@@ -160,15 +131,7 @@ CREATE TABLE `cd_application`  (
                                    INDEX `pk`(`pk` ASC) USING BTREE,
                                    INDEX `project_id`(`project_id` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 310 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of cd_application
--- ----------------------------
 INSERT INTO `cd_application` VALUES (1, '后台管理', 'admin', 1, 1, '', '', '', '', NULL, NULL, NULL);
-
--- ----------------------------
--- Table structure for cd_base_config
--- ----------------------------
 DROP TABLE IF EXISTS `cd_base_config`;
 CREATE TABLE `cd_base_config`  (
                                    `id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
@@ -177,10 +140,6 @@ CREATE TABLE `cd_base_config`  (
                                    PRIMARY KEY (`id`) USING BTREE,
                                    INDEX `name`(`name` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 29 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of cd_base_config
--- ----------------------------
 INSERT INTO `cd_base_config` VALUES (1, 'site_title', '开源泽润');
 INSERT INTO `cd_base_config` VALUES (2, 'logo', '/uploads/admin/202508/688c25bf0b48e.png');
 INSERT INTO `cd_base_config` VALUES (3, 'keyword', '');
@@ -199,10 +158,6 @@ INSERT INTO `cd_base_config` VALUES (25, 'bdKey', NULL);
 INSERT INTO `cd_base_config` VALUES (26, 'gdKey', NULL);
 INSERT INTO `cd_base_config` VALUES (27, 'txKey', NULL);
 INSERT INTO `cd_base_config` VALUES (28, 'deepseekkey', NULL);
-
--- ----------------------------
--- Table structure for cd_field
--- ----------------------------
 DROP TABLE IF EXISTS `cd_field`;
 CREATE TABLE `cd_field`  (
                              `id` int NOT NULL AUTO_INCREMENT,
@@ -244,10 +199,6 @@ CREATE TABLE `cd_field`  (
                              INDEX `menu_id`(`menu_id` ASC) USING BTREE,
                              INDEX `tx_tiaojian`(`tx_tiaojian` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 5457 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of cd_field
--- ----------------------------
 INSERT INTO `cd_field` VALUES (3579, 6, '编号', 'user_id', 1, 2, 0, 0, 0, NULL, NULL, 1, NULL, NULL, 'int', '11', NULL, NULL, '', '70', NULL, 'null', NULL, NULL, NULL, '值占位文本', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1);
 INSERT INTO `cd_field` VALUES (3580, 6, '用户姓名', 'name', 1, 2, 0, 1, 1, ',notempty', NULL, 3, NULL, NULL, 'varchar', '250', NULL, NULL, '', '90', NULL, '{\"shuxing\":[]}', NULL, NULL, NULL, '值占位文本', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1);
 INSERT INTO `cd_field` VALUES (3581, 6, '登录账号', 'user', 1, 2, 1, 1, 0, ',notempty', NULL, 4, NULL, NULL, 'varchar', '250', NULL, NULL, '', '90', NULL, '{\"shuxing\":[]}', NULL, NULL, NULL, '值占位文本', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1);
@@ -304,10 +255,6 @@ INSERT INTO `cd_field` VALUES (5257, 3, 'DSkey', 'deepseekkey', 1, 2, 1, 1, 1, '
 INSERT INTO `cd_field` VALUES (5308, 3, '百度地图KEY', 'bdKey', 1, 2, 1, 1, 1, '', NULL, 5308, '', '', 'varchar', '250', NULL, NULL, '', NULL, NULL, '{\"address_type\":\"1\",\"now_time\":false,\"placeholder\":\"\",\"rand_config\":\"\",\"filetype\":\"\",\"liandong_field\":\"\",\"shuxing\":[\"tooltip\"],\"jdt\":\"changtiao\",\"remote_research_field\":\"\",\"rename_status\":\"\",\"default_tabs_value\":\"\",\"application_id\":\"\",\"crop\":\"\",\"time_search_tempate\":true,\"guige\":[[]],\"maxrows\":4,\"inputRemark\":\"\",\"rangetime_type\":\"date\",\"tx_tiaojian\":\"\",\"tx_zhi\":\"\"}', '', NULL, '', '', 0, '', NULL, NULL, NULL, NULL, NULL, NULL, 1);
 INSERT INTO `cd_field` VALUES (5309, 3, '高德地图KEY', 'gdKey', 1, 2, 1, 1, 1, '', NULL, 5309, '', '', 'varchar', '250', NULL, NULL, '', NULL, NULL, '{\"shuxing\":[\"tooltip\"],\"guige\":[[]],\"tx_tiaojian\":\"\",\"tx_zhi\":\"\"}', '', NULL, '', '', 0, '', NULL, NULL, NULL, NULL, NULL, NULL, 1);
 INSERT INTO `cd_field` VALUES (5310, 3, '腾讯地图KEY', 'txKey', 1, 2, 1, 1, 1, '', NULL, 5310, '', '', 'varchar', '250', NULL, NULL, '', NULL, NULL, '{\"shuxing\":[\"tooltip\"],\"guige\":[[]]}', '', NULL, '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1);
-
--- ----------------------------
--- Table structure for cd_file
--- ----------------------------
 DROP TABLE IF EXISTS `cd_file`;
 CREATE TABLE `cd_file`  (
                             `id` int NOT NULL AUTO_INCREMENT,
@@ -322,14 +269,6 @@ CREATE TABLE `cd_file`  (
                             INDEX `hash`(`hash` ASC) USING BTREE,
                             INDEX `only_param`(`only_param` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of cd_file
--- ----------------------------
-
--- ----------------------------
--- Table structure for cd_log
--- ----------------------------
 DROP TABLE IF EXISTS `cd_log`;
 CREATE TABLE `cd_log`  (
                            `id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
@@ -345,10 +284,6 @@ CREATE TABLE `cd_log`  (
                            `times` int NULL DEFAULT NULL COMMENT '日期',
                            PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 377 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Table structure for cd_menu
--- ----------------------------
 DROP TABLE IF EXISTS `cd_menu`;
 CREATE TABLE `cd_menu`  (
                             `menu_id` int NOT NULL AUTO_INCREMENT,
@@ -383,10 +318,6 @@ CREATE TABLE `cd_menu`  (
                             INDEX `module_id`(`app_id` ASC) USING BTREE,
                             INDEX `pid`(`pid` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 181 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of cd_menu
--- ----------------------------
 INSERT INTO `cd_menu` VALUES (1, 0, '', '控制台', '', '', 0, 1, 1, 0, '/admin/Index/main.html', 'el-icon-platform-eleme', NULL, 1, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0, 0, 1, 0, 1);
 INSERT INTO `cd_menu` VALUES (2, 0, 'Config', '站长配置', NULL, NULL, NULL, 1, 1000, NULL, NULL, 'fas fa-database', NULL, 1, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0, 0, 1, 0, 1);
 INSERT INTO `cd_menu` VALUES (3, 2, 'Baseconfig', '基本配置', 'id', 'base_config', 1, 1, 1, 1, NULL, NULL, NULL, 1, NULL, NULL, 'mysql', NULL, 0, NULL, '', NULL, 0, 0, 1, 0, 1);
@@ -403,10 +334,6 @@ INSERT INTO `cd_menu` VALUES (13, 11, 'Field', '字段管理', '', '', 0, 0, 13,
 INSERT INTO `cd_menu` VALUES (19, 9, 'Secrect', '秘钥管理', '', '', 0, 1, 19, 0, '/admin/Sys.Base/secrect', 'el-icon-s-tools', NULL, 1, 0, NULL, 'mysql', 2, 0, NULL, NULL, NULL, 0, 0, 1, 0, 1);
 INSERT INTO `cd_menu` VALUES (104, 11, 'Actionremarks', '版本记录', 'id', 'action_remarks', 1, 0, 104, 1, '', NULL, NULL, 1, 0, 0, 'mysql', 1, 0, '', '', NULL, 0, 0, 1, 0, 1);
 INSERT INTO `cd_menu` VALUES (179, 2, 'MyConfig', '系统配置', '', '', 0, 1, 179, 0, '', 'el-icon-cpu', NULL, 1, 0, 0, 'mysql', 1, 0, '', '', NULL, 0, 0, 1, 0, 1);
-
--- ----------------------------
--- Table structure for cd_role
--- ----------------------------
 DROP TABLE IF EXISTS `cd_role`;
 CREATE TABLE `cd_role`  (
                             `role_id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
@@ -417,15 +344,7 @@ CREATE TABLE `cd_role`  (
                             `access` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '权限节点',
                             PRIMARY KEY (`role_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 60 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of cd_role
--- ----------------------------
 INSERT INTO `cd_role` VALUES (1, '超级管理员', 1, 0, '超级管理员', '');
-
--- ----------------------------
--- Table structure for cd_secrect
--- ----------------------------
 DROP TABLE IF EXISTS `cd_secrect`;
 CREATE TABLE `cd_secrect`  (
                                `secrect_id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
@@ -434,16 +353,8 @@ CREATE TABLE `cd_secrect`  (
                                `appid` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'appid',
                                PRIMARY KEY (`secrect_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of cd_secrect
--- ----------------------------
 INSERT INTO `cd_secrect` VALUES (1, 'appid', '', NULL);
 INSERT INTO `cd_secrect` VALUES (2, 'secrect', '', NULL);
-
--- ----------------------------
--- Table structure for cd_upload_config
--- ----------------------------
 DROP TABLE IF EXISTS `cd_upload_config`;
 CREATE TABLE `cd_upload_config`  (
                                      `id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
@@ -455,10 +366,5 @@ CREATE TABLE `cd_upload_config`  (
                                      `thumb_type` smallint NULL DEFAULT NULL COMMENT '缩图方式',
                                      PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '缩略图配置' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of cd_upload_config
--- ----------------------------
 INSERT INTO `cd_upload_config` VALUES (1, '默认配置', 1, 1, '600', '400', 1);
-
 SET FOREIGN_KEY_CHECKS = 1;
