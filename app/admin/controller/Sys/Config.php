@@ -775,6 +775,19 @@ class Config
                 'sortid' => 59,
                 'show_admin' => true,
             ],
+            [
+                'name' => '恢复初始值',
+                'type' => 61,
+                'dialog' => true,
+                'button' => true,
+                'icon' => 'fas fa-circle-notch',
+                'button_color' => 'danger',
+                'group_button_status' => true,
+                'action_name' => 'setDefault',
+                'sortid' => 61,
+                'show_admin' => true,
+                'show_api' => true
+            ]
         ];
         return $list;
     }

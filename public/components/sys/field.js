@@ -636,13 +636,13 @@ Vue.component('AdminAdd', {
                         
                         
                         <!-- 在.extended-info-section部分添加 -->
-                        <el-row v-if="form.type == 21">
-                          <el-col :span="12">
+                        <el-row v-if="form.type == 21 || form.type == 42">
+                          <el-col :span="12"  v-if="form.type == 21 || form.type == 42">
                             <el-form-item label="键占位文本" prop="key_placeholder">
                               <el-input v-model="form.other_config.key_placeholder" clearable placeholder="键输入框的占位文本"/>
                             </el-form-item>
                           </el-col>
-                          <el-col :span="12">
+                          <el-col :span="12"  v-if="form.type == 21">
                             <el-form-item label="值占位文本" prop="value_placeholder">
                               <el-input v-model="form.other_config.value_placeholder" clearable placeholder="值输入框的占位文本"/>
                             </el-form-item>
@@ -686,6 +686,7 @@ Vue.component('AdminAdd', {
 							</el-col>
 						</el-row>
 						
+			
 					</div>
 				</div>
 				<!-- 右侧 - 拓展信息 -->
@@ -695,15 +696,15 @@ Vue.component('AdminAdd', {
 					</div>
 					<div class="section-content">
 						<!-- 最大输入只给 el-input 文本框和 textarea，计数器没有 maxlength。 -->
-						<el-row v-if="form.type ==1 || form.type == 8">
-							<el-col :span="12">
-								<el-form-item label="最大输入" prop="input_length">
-									<el-input v-model="form.other_config.input_length" placeholder="请输入长度">
-										<el-button type="success" slot="append">个字符</el-button>
-									</el-input>
-								</el-form-item>
-							</el-col>
-						</el-row>
+						<el-row v-if="[1,8,17].includes(form.type)">
+                            <el-col :span="12">
+                                <el-form-item :label="maxInputLabel" prop="input_length">
+                                    <el-input v-model="form.other_config.input_length" :placeholder="'请输入' + maxInputLabel">
+                                        <el-button type="success" slot="append">{{ maxInputSuffix }}</el-button>
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
 						<!-- 背景色用于生成列表单元格背景，不是表单输入框背景。 -->
 						<el-row v-if="form.type ==1 || form.type == 17">
 							<el-col :span="12">
@@ -1090,6 +1091,40 @@ Vue.component('AdminAdd', {
             },
             tx_tiaojian: [{required: false, message: '请选择条件类型', trigger: 'change'}],
             // 'other_config.tx_zhi': [{ required: false, message: '请输入条件值', trigger: 'blur' }]
+        }
+    },
+    computed: {
+        // 最大输入字段的标签
+        maxInputLabel() {
+            // 计数器始终为数值
+            if (this.form.type === 17) {
+                return '最大值';
+            }
+            // 文本框或文本域
+            if (this.form.type === 1 || this.form.type === 8) {
+                const numericTypes = ['int', 'decimal', 'float', 'double', 'tinyint', 'smallint', 'mediumint', 'bigint'];
+                if (numericTypes.includes(this.form.datatype)) {
+                    return '最大值';
+                } else {
+                    return '最大字符数';
+                }
+            }
+            return '最大输入';
+        },
+        // 最大输入字段的后缀
+        maxInputSuffix() {
+            if (this.form.type === 17) {
+                return '最大值';
+            }
+            if (this.form.type === 1 || this.form.type === 8) {
+                const numericTypes = ['int', 'decimal', 'float', 'double', 'tinyint', 'smallint', 'mediumint', 'bigint'];
+                if (numericTypes.includes(this.form.datatype)) {
+                    return '最大值';
+                } else {
+                    return '个字符';
+                }
+            }
+            return '';
         }
     },
     methods: {
@@ -1700,13 +1735,13 @@ Vue.component('AdminUpdate', {
 							</el-col>
 						</el-row>
 						
-                        <el-row v-if="form.type == 21">
-                          <el-col :span="12">
+                         <el-row v-if="form.type == 21 || form.type == 42">
+                          <el-col :span="12"  v-if="form.type == 21 || form.type == 42">
                             <el-form-item label="键占位文本" prop="key_placeholder">
                               <el-input v-model="form.other_config.key_placeholder" clearable placeholder="键输入框的占位文本"/>
                             </el-form-item>
                           </el-col>
-                          <el-col :span="12">
+                          <el-col :span="12"  v-if="form.type == 21">
                             <el-form-item label="值占位文本" prop="value_placeholder">
                               <el-input v-model="form.other_config.value_placeholder" clearable placeholder="值输入框的占位文本"/>
                             </el-form-item>
@@ -1757,15 +1792,15 @@ Vue.component('AdminUpdate', {
 					</div>
 					<div class="section-content">
 						<!-- 最大输入只给 el-input 文本框和 textarea，计数器没有 maxlength。 -->
-						<el-row v-if="form.type ==1 || form.type == 8">
-							<el-col :span="12">
-								<el-form-item label="最大输入" prop="input_length">
-									<el-input v-model="form.other_config.input_length" placeholder="请输入长度">
-										<el-button type="success" slot="append">个字符</el-button>
-									</el-input>
-								</el-form-item>
-							</el-col>
-						</el-row>
+                        <el-row v-if="[1,8,17].includes(form.type)">
+                            <el-col :span="12">
+                                <el-form-item :label="maxInputLabel" prop="input_length">
+                                    <el-input v-model="form.other_config.input_length" :placeholder="'请输入' + maxInputLabel">
+                                        <el-button type="success" slot="append">{{ maxInputSuffix }}</el-button>
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
 						<!-- 背景色用于生成列表单元格背景，不是表单输入框背景。 -->
 						<el-row v-if="form.type ==1 || form.type == 17">
 							<el-col :span="12">
@@ -2151,6 +2186,40 @@ Vue.component('AdminUpdate', {
                 tx_tiaojian: [{required: false, message: '请选择条件类型', trigger: 'change'}],
                 // 'other_config.tx_zhi': [{required: false, message: '请输入条件值', trigger: 'blur'}],
             },
+        }
+    },
+    computed: {
+        // 最大输入字段的标签
+        maxInputLabel() {
+            // 计数器始终为数值
+            if (this.form.type === 17) {
+                return '最大值';
+            }
+            // 文本框或文本域
+            if (this.form.type === 1 || this.form.type === 8) {
+                const numericTypes = ['int', 'decimal', 'float', 'double', 'tinyint', 'smallint', 'mediumint', 'bigint'];
+                if (numericTypes.includes(this.form.datatype)) {
+                    return '最大值';
+                } else {
+                    return '最大字符数';
+                }
+            }
+            return '最大输入';
+        },
+        // 最大输入字段的后缀
+        maxInputSuffix() {
+            if (this.form.type === 17) {
+                return '最大值';
+            }
+            if (this.form.type === 1 || this.form.type === 8) {
+                const numericTypes = ['int', 'decimal', 'float', 'double', 'tinyint', 'smallint', 'mediumint', 'bigint'];
+                if (numericTypes.includes(this.form.datatype)) {
+                    return '最大值';
+                } else {
+                    return '个字符';
+                }
+            }
+            return '';
         }
     },
     methods: {
