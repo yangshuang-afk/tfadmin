@@ -94,7 +94,7 @@ Vue.component('Upload', {
 		</div>
 		<el-progress v-if="progress" :stroke-width="5" :percentage="progressPercent"></el-progress>
 		<ImagesPick :imagesDiaShow.sync="imagesDialogStatus" :siglepic.sync ="siglepic" size="small"></ImagesPick>
-		<VueCrop :cropDiaShow.sync="cropDialogStatus" :only_param="only_param" :imgbase64="imgbase64" :cropFileName="cropFileName" :siglepic.sync="siglepic" :cropsize="cropsize" :rename="rename"></VueCrop>
+		<VueCrop :cropDiaShow.sync="cropDialogStatus" :only_param="only_param" :coverage_tfadmin="coverage_tfadmin" :imgbase64="imgbase64" :cropFileName="cropFileName" :siglepic.sync="siglepic" :cropsize="cropsize" :rename="rename"></VueCrop>
 	</div>
 	`
 	,
@@ -362,6 +362,10 @@ Vue.component('Upload', {
 				only_param:{
 					type: Number,
 					default: null
+				},
+				coverage_tfadmin:{
+					type: Number,
+					default: null
 				}
 			},
 			watch:{
@@ -413,6 +417,7 @@ Vue.component('Upload', {
 					formdata.append('file', file)
 					formdata.append('rename', this.rename)
 					formdata.append('only_param', this.only_param)
+			        formdata.append('coverage_tfadmin', this.coverage_tfadmin)
 					const config = {
 						onUploadProgress: progressEvent => {
 							if (progressEvent.lengthComputable) {
@@ -555,6 +560,10 @@ Vue.component('Upload', {
 		only_param:{
 			type: Number,
 			default: null
+		},
+		coverage_tfadmin: {
+			type: Number,
+			default: null
 		}
 	},
 	watch: {
@@ -633,6 +642,7 @@ Vue.component('Upload', {
 			formdata.append('upload_config_id', this.upload_config_id)
 			formdata.append('rename', this.rename)
 			formdata.append('only_param', this.only_param)
+			formdata.append('coverage_tfadmin', this.coverage_tfadmin)
 			const config = {
 				onUploadProgress: progressEvent => {
 					if(progressEvent.lengthComputable) {
@@ -1407,6 +1417,10 @@ Vue.component('WangEditor', {
 		only_param:{
 			type:Number,
 			default: null
+		},
+		coverage_tfadmin: {
+			type:Number,
+			default: null
 		}
 	},
 	data() {
@@ -1465,6 +1479,7 @@ Vue.component('WangEditor', {
 					formdata.append('edit', true)
 					formdata.append('only_param', _this.only_param)
 					formdata.append('upload_config_id', _this.upload_config_id)
+			        formdata.append('coverage_tfadmin', _this.coverage_tfadmin)
 					axios.post(base_url+'/Upload/upload', formdata).then(res => { //
 						insertImgFn(res.data.data)
 					})
@@ -1487,6 +1502,10 @@ Vue.component('tinymce', {
 			default:""
 		},
 		only_param:{
+			type:Number,
+			default: null
+		},
+		coverage_tfadmin:{
 			type:Number,
 			default: null
 		}
@@ -1541,6 +1560,7 @@ Vue.component('tinymce', {
 									let formdata = new FormData()
 									formdata.append('file', file)
 									formdata.append('only_param', _this.only_param)
+			                        formdata.append('coverage_tfadmin', _this.coverage_tfadmin)
 									formdata.append('edit', true)
 									axios.post(base_url+'/Upload/upload', formdata).then(res => {
 										e.setContent(e.getContent().replace(t.url,res.data.data))

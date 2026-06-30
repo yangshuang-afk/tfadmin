@@ -416,6 +416,19 @@ Vue.component('AdminAdd', {
 									</el-select>
 								</el-form-item>
 							</el-col>
+							<el-col :span="24">
+								<el-form-item label="相同文件上传" prop="coverage_tfadmin">
+									<el-select style="width:100%" v-model="form.other_config.coverage_tfadmin" clearable placeholder="文件上传方式">
+										<el-option key="0" label="返回首次上传路径" value="1"></el-option>
+										<el-option key="1" label="覆盖旧文件" value="2"></el-option>
+									</el-select>
+            						<label style="color:red;font-size:13px;display:block;">
+            						返回首次上传路径：不上传，返回相同文件路径<br>
+            						      覆盖旧文件：新文件替换旧文件，新文件仍是旧文件路径<br>
+            						        相同文件：计算哈希值方式比较
+            						</label>
+								</el-form-item>
+							</el-col>
 						</el-row>
 						<el-row v-if="form.type == 13">
 							<el-col :span="24">
@@ -1012,6 +1025,7 @@ Vue.component('AdminAdd', {
                     jdt: 'changtiao',
                     remote_research_field: '',
                     rename_status: '',
+                    coverage_tfadmin: '',
                     default_tabs_value: '',
                     application_id: '',
                     crop: '',
@@ -1515,6 +1529,19 @@ Vue.component('AdminUpdate', {
 										<el-option key="0" label="重命名文件" value="1"></el-option>
 										<el-option key="1" label="保持原名" value="2"></el-option>
 									</el-select>
+								</el-form-item>
+							</el-col>
+							<el-col :span="24">
+								<el-form-item label="相同文件上传" prop="coverage_tfadmin">
+									<el-select style="width:100%" v-model="form.other_config.coverage_tfadmin" clearable placeholder="文件上传方式">
+										<el-option key="0" label="返回首次上传路径" value="1"></el-option>
+										<el-option key="1" label="覆盖旧文件" value="2"></el-option>
+									</el-select>
+            						<label style="color:red;font-size:13px;display:block;">
+            						返回首次上传路径：不上传，返回相同文件路径<br>
+            						      覆盖旧文件：新文件替换旧文件，新文件仍是旧文件路径<br>
+            						        相同文件：计算哈希值方式比较
+            						</label>
 								</el-form-item>
 							</el-col>
 						</el-row>
@@ -2110,6 +2137,7 @@ Vue.component('AdminUpdate', {
                     jdt: '',
                     remote_research_field: '',
                     rename_status: '',
+                    coverage_tfadmin: '',
                     default_tabs_value: '',
                     application_id: '',
                     crop: '',

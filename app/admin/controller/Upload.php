@@ -18,10 +18,14 @@ class Upload extends Admin{
 	public function upload(){
 		$file = $this->request->file('file');
 		$only_param = $this->request->post('only_param');
-        	if (empty($only_param) || $only_param == 'undefined' || $only_param == 'null')$only_param = 0;
+        if (empty($only_param) || $only_param == 'undefined' || $only_param == 'null')
+        {
+            $only_param = 0;
+        }
 		$upload_config_id = $this->request->post('upload_config_id');
 		$rename_type =  $this->request->post('rename',1);
 		$file_type = upload_replace(config('base_config.filetype')); //上传黑名单过滤
+        $coverage_tfadmin =  $this->request->post('coverage_tfadmin',1);
 
 		if(!Validate::fileSize($file,config('base_config.filesize') * 1024 * 1024)){
 			throw new ValidateException('文件大小验证失败');
@@ -32,7 +36,15 @@ class Upload extends Admin{
 		}
 		$filepath = $this->getFile($file,$only_param);
 		if($filepath){
-			return json(['status'=>200,'data'=>$filepath,'filestatus'=>true]);
+            if ($coverage_tfadmin == 1) {
+                return json(['status'=>200,'data'=>$filepath,'filestatus'=>true]);
+            } elseif($coverage_tfadmin == 2) {
+                if (config('my.oss_upload_type') !== 'client') {
+                    if($url = $this->up($file,$only_param,$upload_config_id,$rename_type,$filepath)){
+                        return json(['status'=>200,'data'=>$url]);
+                    }
+                }
+            }
 		}else{
 			$edit = $this->request->post('edit');	//检测是否编辑器上传  如果是则不走oss客户端传
 			if(config('my.oss_status') && config('my.oss_upload_type') == 'client' && !$edit){
@@ -102,17 +114,23 @@ class Upload extends Admin{
 	}
 
 	//开始上传
-	protected function up($file,$only_param,$upload_config_id='',$rename_type){
+	protected function up($file,$only_param,$upload_config_id='',$rename_type,$filepath = ''){
 		try{
+		    $filepath = str_replace('/uploads/', '',$filepath);
 			if(config('my.oss_status')){
-				$url = \utils\oss\OssService::OssUpload($file,$rename_type);
+				$url = \utils\oss\OssService::OssUpload($file,$rename_type,'',$filepath);
 				$disk = config('my.oss_default_type');
 			}else{
-				if($rename_type == 1){
-					$filename = Filesystem::disk('public')->putFile($this->getFileName(),$file,'uniqid');
-				}else{
-					$filename = Filesystem::disk('public')->putFileAs($this->getFileName(),$file,$file->getOriginalName());
-				}
+                if (empty($filepath)) {
+                    if($rename_type == 1){
+                        $filename = Filesystem::disk('public')->putFile($this->getFileName(),$file,'uniqid');
+                    }else{
+                        $filename = Filesystem::disk('public')->putFileAs($this->getFileName(),$file,$file->getOriginalName());
+                    }
+                } else {
+                    $oldPath = ltrim(str_replace(config('base_config.domain'), '', $filepath), '/');;
+                    $filename = Filesystem::disk('public')->putFileAs(dirname($oldPath), $file, basename($oldPath));
+                }
 				$url = config('base_config.domain').config('filesystem.disks.public.url').'/'.$filename;
 				if($upload_config_id){
 					$this->thumb(config('filesystem.disks.public.url').'/'.$filename,$upload_config_id);
@@ -134,7 +152,7 @@ class Upload extends Admin{
 
 	public function markDownUpload() {
 		$file = $this->request->file('editormd-image-file');
-        	$only_param = $this->request->post('only_param');
+        $only_param = $this->request->post('only_param');
 		$url = $this->up($file,$only_param,$upload_config_id='');
 		if($url){
 			return json(['url'=>$url,'success'=>1,'message'=>'图片上传成功!']);
