@@ -632,6 +632,10 @@ Vue.component('AdminAdd', {
 												<el-option key="0" value="=">=</el-option>
 												<el-option key="1" value="<>"><></el-option>
 												<el-option key="2" value="in">in</el-option>
+												<el-option key="3" value=">">&gt;</el-option>
+                                                <el-option key="4" value=">=">&gt;=</el-option>
+                                                <el-option key="5" value="<">&lt;</el-option>
+                                                <el-option key="6" value="<=">&lt;=</el-option>
 											</el-select>
 										</el-form-item>
 									</el-col>
@@ -921,6 +925,14 @@ Vue.component('AdminAdd', {
         submit() {
             this.$refs['form'].validate(valid => {
                 if (valid) {
+                    if (this.form.action_name && /SearchAuth/i.test(this.form.action_name)) {
+                        this.$message.error('方法英文名称不能包含系统保留字【SearchAuth】！')
+                        return false; // 阻止提交
+                    }
+                    if (this.form.action_name && /remote.+?List/i.test(this.form.action_name)) {
+                        this.$message.error('方法英文名称不能包含系统保留字【remote{xxx}List】！')
+                        return false
+                    }
                     this.loading = true
                     // 新增超级页面安全验证开始
                     if (this.form.type == 55 && !this.validateSuperPage()) {
@@ -1532,6 +1544,10 @@ Vue.component('AdminUpdate', {
 												<el-option key="0" value="=">=</el-option>
 												<el-option key="1" value="<>"><></el-option>
 												<el-option key="2" value="in">in</el-option>
+												<el-option key="3" value=">">&gt;</el-option>
+                                                <el-option key="4" value=">=">&gt;=</el-option>
+                                                <el-option key="5" value="<">&lt;</el-option>
+                                                <el-option key="6" value="<=">&lt;=</el-option>
 											</el-select>
 										</el-form-item>
 									</el-col>
@@ -1863,6 +1879,14 @@ Vue.component('AdminUpdate', {
         submit() {
             this.$refs['form'].validate(valid => {
                 if (valid) {
+					if (this.form.action_name && /SearchAuth/i.test(this.form.action_name)) {
+                        this.$message.error('方法英文名称不能包含系统保留字【SearchAuth】！')
+                        return false; // 阻止提交
+                    }
+                    if (this.form.action_name && /remote.+?List/i.test(this.form.action_name)) {
+                        this.$message.error('方法英文名称不能包含系统保留字【remote{xxx}List】！')
+                        return false
+                    }
                     //超级页面开始
                     if (this.form.type == 55 && !this.validateSuperPage()) {
                         this.loading = false
@@ -2306,6 +2330,10 @@ Vue.component('ApiAdd', {
                                             <el-option key="0" value="=">=</el-option>
 											<el-option key="1" value="<>"><></el-option>
 											<el-option key="2" value="in">in</el-option>
+											<el-option key="3" value=">">&gt;</el-option>
+											<el-option key="4" value=">=">&gt;=</el-option>
+											<el-option key="5" value="<">&lt;</el-option>
+											<el-option key="6" value="<=">&lt;=</el-option>
                                         </el-select>
                                     </el-form-item>
                                 </el-col>
@@ -2490,6 +2518,14 @@ Vue.component('ApiAdd', {
         submit() {
             this.$refs['form'].validate(valid => {
                 if (valid) {
+					if (this.form.action_name && /SearchAuth/i.test(this.form.action_name)) {
+                        this.$message.error('方法英文名称不能包含系统保留字【SearchAuth】！')
+                        return false; // 阻止提交
+                    }
+                    if (this.form.action_name && /remote.+?List/i.test(this.form.action_name)) {
+                        this.$message.error('方法英文名称不能包含系统保留字【remote{xxx}List】！')
+                        return false
+                    }
                     this.loading = true
                     axios.post(base_url + '/Sys.Base/createAction', this.form).then(res => {
                         if (res.data.status == 200) {
@@ -2717,6 +2753,10 @@ Vue.component('ApiUpdate', {
                                             <el-option key="0" value="=">=</el-option>
 											<el-option key="1" value="<>"><></el-option>
 											<el-option key="2" value="in">in</el-option>
+											<el-option key="3" value=">">&gt;</el-option>
+											<el-option key="4" value=">=">&gt;=</el-option>
+											<el-option key="5" value="<">&lt;</el-option>
+											<el-option key="6" value="<=">&lt;=</el-option>
                                         </el-select>
                                     </el-form-item>
                                 </el-col>
@@ -2899,6 +2939,14 @@ Vue.component('ApiUpdate', {
         submit() {
             this.$refs['form'].validate(valid => {
                 if (valid) {
+                    if (this.form.action_name && /SearchAuth/i.test(this.form.action_name)) {
+                        this.$message.error('方法英文名称不能包含系统保留字【SearchAuth】！')
+                        return false; // 阻止提交
+                    }
+                    if (this.form.action_name && /remote.+?List/i.test(this.form.action_name)) {
+                        this.$message.error('方法英文名称不能包含系统保留字【remote{xxx}List】！')
+                        return false
+                    }
                     this.loading = true
                     axios.post(base_url + '/Sys.Base/updateAction', this.form).then(res => {
                         if (res.data.status == 200) {
