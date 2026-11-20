@@ -38,7 +38,10 @@ class Admin extends BaseController
                 'watermark',
                 'loginEX',
                 'preview',
-            ])){
+            ])
+		    && !preg_match('/.+?SearchAuth/i', $action)
+            && !preg_match('/remote.+?List/i', $action)
+		    ){
             if(!in_array($url,session('admin.access'))){
                 throw new ValidateException ('你没操作权限');
             }
